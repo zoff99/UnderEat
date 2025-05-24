@@ -26,6 +26,7 @@ android {
     defaultConfig {
         applicationId 'com.zoffcc.applications.undereat'
         minSdk 21
+        //noinspection OldTargetApi
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -65,7 +66,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        // jvmTarget = '1.8'
     }
     dependenciesInfo {
         // Disables dependency metadata when building APKs.
@@ -92,14 +93,17 @@ android {
 
 dependencies {
     // we need desugaring here to support APIs down to 21
+    //noinspection GradleDependency
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'
     // we need desugaring here to support APIs down to 21
-    // implementation 'androidx.sqlite:sqlite:2.2.0'
     // add sqlite-jdbc module here -------------
     implementation 'com.github.zoff99:pkgs_zoffccAndroidJDBC:1.0.5'
     // add sqlite-jdbc module here -------------
+    //noinspection GradleDependency
     implementation 'androidx.core:core-ktx:1.8.0'
+    //noinspection GradleDependency
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
+    //noinspection GradleDependency
     implementation 'androidx.activity:activity-compose:1.5.1'
     implementation platform('androidx.compose:compose-bom:2022.10.00')
     implementation 'androidx.compose.ui:ui'

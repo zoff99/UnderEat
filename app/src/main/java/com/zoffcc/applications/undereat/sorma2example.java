@@ -190,6 +190,7 @@ public class sorma2example
         ret = ret + "\n" + "sqlcipher p.ver.: " + debug__cipher_provider_version;
 
 
+        /*
         orma.selectFromRestaurant().toList();
         Restaurant r = new Restaurant();
         r.name = "Restaurant 001";
@@ -200,6 +201,7 @@ public class sorma2example
         orma.insertIntoRestaurant(r);
         List<Restaurant> rl = orma.selectFromRestaurant().toList();
         System.out.println(TAG + "size=" + rl.size());
+         */
 
 
         // all finished
