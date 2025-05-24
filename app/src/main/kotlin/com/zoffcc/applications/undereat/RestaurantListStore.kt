@@ -1,7 +1,8 @@
+@file:Suppress("LocalVariableName", "SpellCheckingInspection")
+
 package com.zoffcc.applications.undereat
 
 import com.zoffcc.applications.sorm.Restaurant
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -10,14 +11,16 @@ data class StateRestaurantList(val restaurantlist: List<Restaurant> = emptyList(
 
 interface RestaurantListStore
 {
-    fun add(item: Restaurant)
     fun clear()
+    fun add(item: Restaurant)
     fun update(item: Restaurant)
+    fun sortByName()
+    fun sortByAddress()
     val stateFlow: StateFlow<StateRestaurantList>
     val state get() = stateFlow.value
 }
 
-fun CoroutineScope.createRestaurantListStore(): RestaurantListStore
+fun createRestaurantListStore(): RestaurantListStore
 {
     val mutableStateFlow = MutableStateFlow(StateRestaurantList())
 
@@ -37,7 +40,7 @@ fun CoroutineScope.createRestaurantListStore(): RestaurantListStore
             }
             if (!found)
             {
-                var new_list: ArrayList<Restaurant> = ArrayList()
+                val new_list: ArrayList<Restaurant> = ArrayList()
                 new_list.addAll(state.restaurantlist)
                 new_list.forEach { item2 ->
                     if (item2.id == item.id)
@@ -57,8 +60,15 @@ fun CoroutineScope.createRestaurantListStore(): RestaurantListStore
 
         override fun clear()
         {
-            @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
             mutableStateFlow.value = state.copy(restaurantlist = emptyList())
+        }
+
+        override fun sortByName() {
+            mutableStateFlow.value = state.copy(restaurantlist = state.restaurantlist.sortedBy { it.name })
+        }
+
+        override fun sortByAddress() {
+            mutableStateFlow.value = state.copy(restaurantlist = state.restaurantlist.sortedBy { it.address })
         }
     }
 }

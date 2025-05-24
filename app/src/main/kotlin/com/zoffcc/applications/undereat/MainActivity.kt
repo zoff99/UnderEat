@@ -1,33 +1,37 @@
+@file:Suppress("FunctionName")
+
 package com.zoffcc.applications.undereat
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -35,55 +39,71 @@ import androidx.compose.ui.unit.sp
 import com.zoffcc.applications.sorm.Restaurant
 import com.zoffcc.applications.undereat.corefuncs.orma
 import com.zoffcc.applications.undereat.ui.theme.UnderEatAppTheme
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
+import java.util.Random
+
+val TAG = "UnderEat"
 
 val messages = MutableStateFlow("running tests ...")
-val TAG = "UnderEat"
+const val DEBUG_COMPOSE_UI_UPDATES = false // set "false" for release builds
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             UnderEatAppTheme() {
-                SortScreen()
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    MainScreen()
+                }
             }
         }
         val result = corefuncs().init_me(this)
         messages.value = messages.value + result
+        load_restaurants()
     }
 }
 
-@Composable
-fun Greeting(modifier: Modifier = Modifier) {
-    val txt by messages.collectAsState()
-    Text(
-        text = "" + txt,
-        modifier = modifier,
-        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 21.sp, lineHeight = 25.0.sp)
-    )
-}
-
-val restaurantliststore = CoroutineScope(SupervisorJob()).createRestaurantListStore()
+val restaurantliststore = createRestaurantListStore()
 
 @Composable
-fun SortScreen() {
+fun MainScreen() {
     val restaurants by restaurantliststore.stateFlow.collectAsState()
+    Log.i(TAG, "size_list=" + restaurants.restaurantlist.size)
     Column(
-        //modifier = Modifier.background(MaterialTheme.colorScheme.background),
         content = {
-            Text(
-                text = "${restaurants.restaurantlist.size} Restaurants",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                style = TextStyle(
-                    fontSize = 25.sp,
-                    textAlign = TextAlign.Center,
-                    //color = MaterialTheme.colorScheme.onBackground
+            // Header Row
+            Row() {
+                Text(
+                    text = "${restaurants.restaurantlist.size} Restaurants",
+                    modifier = Modifier
+                        .fillMaxWidth().weight(10F)
+                        .padding(1.dp),
+                    style = TextStyle(
+                        fontSize = 20.sp,
+                        textAlign = TextAlign.Start,
+                    )
                 )
-            )
+                Button(
+                    modifier = Modifier.height(20.dp).width(20.dp),
+                    shape = RoundedCornerShape(10.dp),
+                    elevation = ButtonDefaults.buttonElevation(4.dp),
+                    onClick = {
+                    },
+                    content = {
+                        Text(
+                            text = "add",
+                            style = TextStyle(
+                                fontSize = 15.sp,
+                            )
+                        )
+                    }
+                )
+            }
+            // Button Row
             Row(
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.Top,
@@ -94,18 +114,15 @@ fun SortScreen() {
                     Button(
                         shape = RoundedCornerShape(10.dp),
                         elevation = ButtonDefaults.buttonElevation(4.dp),
-                        //colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.background),
-                        //border = BorderStroke(4.dp, MaterialTheme.colorScheme.secondaryContainer),
                         onClick = {
-                            // restaurantliststore.clear()
-                            // listSorted.addAll(RestaurantList.sortedBy { it.name })
+                            restaurantliststore.sortByName()
+                            Log.i(TAG, " s1:" + restaurants.restaurantlist.size + " " + restaurants.restaurantlist)
                         },
                         content = {
                             Text(
-                                text = "Sort by Name",
+                                text = "Name",
                                 style = TextStyle(
                                     fontSize = 15.sp,
-                                    //color = MaterialTheme.colorScheme.onBackground
                                 )
                             )
                         }
@@ -113,138 +130,77 @@ fun SortScreen() {
                     Button(
                         shape = RoundedCornerShape(10.dp),
                         elevation = ButtonDefaults.buttonElevation(4.dp),
-                        //colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.background),
-                        //border = BorderStroke(4.dp, MaterialTheme.colorScheme.secondaryContainer),
                         onClick = {
-                            //listSorted.clear()
-                            //listSorted.addAll(RestaurantList.sortedBy { it.city })
+                            restaurantliststore.sortByAddress()
+                            Log.i(TAG, " s2:" + restaurants.restaurantlist.size + " " + restaurants.restaurantlist)
                         },
                         content = {
                             Text(
-                                text = "Sort by City",
+                                text = "Address",
                                 style = TextStyle(
                                     fontSize = 15.sp,
-                                    //color = MaterialTheme.colorScheme.onBackground
-                                )
-                            )
-                        }
-                    )
-                    Button(
-                        shape = RoundedCornerShape(10.dp),
-                        elevation = ButtonDefaults.buttonElevation(4.dp),
-                        //colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.background),
-                        //border = BorderStroke(4.dp, MaterialTheme.colorScheme.secondaryContainer),
-                        onClick = {
-                            //listSorted.clear()
-                            //listSorted.addAll(RestaurantList.sortedBy { it.address })
-                        },
-                        content = {
-                            Text(
-                                text = "Sort by Address",
-                                style = TextStyle(
-                                    fontSize = 15.sp,
-                                    //color = MaterialTheme.colorScheme.onBackground
-                                )
-                            )
-                        }
-                    )
-                    Button(
-                        shape = RoundedCornerShape(10.dp),
-                        elevation = ButtonDefaults.buttonElevation(4.dp),
-                        //colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.background),
-                        //border = BorderStroke(4.dp, MaterialTheme.colorScheme.secondaryContainer),
-                        onClick = {
-                            //listSorted.clear()
-                            //listSorted.addAll(RestaurantList.sortedBy { it.addressNumber })
-                        },
-                        content = {
-                            Text(
-                                text = "Sort by AddressNumber",
-                                style = TextStyle(
-                                    fontSize = 15.sp,
-                                    //color = MaterialTheme.colorScheme.onBackground
                                 )
                             )
                         }
                     )
                 }
             )
-            load_restaurants()
+            // Data List
             LazyColumn(
                 modifier = Modifier
                     .fillMaxHeight()
                     .fillMaxWidth()
-                    .padding(start = 2.dp, end = 10.dp),
+                    .padding(start = 2.dp, end = 10.dp)
+                    .randomDebugBorder(),
                 verticalArrangement = Arrangement.spacedBy(0.dp),
-                content = {
-                    itemsIndexed(items = restaurants.restaurantlist,
-                        // key = { item : Restaurant -> item.id },
-                    ) { index : Int, data : Restaurant ->
-                        Card(
-                            modifier = Modifier
-                                //.background(color = MaterialTheme.colorScheme.background)
-                                .padding(2.dp)
-                                .clickable {
-
-                                },
-                            shape = RoundedCornerShape(8.dp),
-                            elevation = CardDefaults.cardElevation(4.dp),
-                            //colors = CardDefaults.cardColors(MaterialTheme.colorScheme.background),
-                            //border = BorderStroke(
-                            //    0.dp,
-                            //    MaterialTheme.colorScheme.secondaryContainer
-                            //),
-                        ) {
-                            Text(
-                                text = "Position: $index",
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(5.dp),
-                                style = TextStyle(
-                                    fontSize = 15.sp,
-                                    //color = MaterialTheme.colorScheme.onBackground
-                                )
-                            )
-                            Text(
-                                text = "Name: ${data.name}",
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(5.dp),
-                                style = TextStyle(
-                                    fontSize = 20.sp,
-                                    //color = MaterialTheme.colorScheme.onBackground
-                                )
-                            )
-                            Text(
-                                text = "City: ${data.address}",
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(5.dp),
-                                style = TextStyle(
-                                    fontSize = 17.sp,
-                                    //color = MaterialTheme.colorScheme.onBackground
-                                )
-                            )
-                        }
-                    }
+                ) {
+                itemsIndexed(items = restaurants.restaurantlist,
+                    key = { index, item -> item.id }
+                ) {index , data ->
+                    Text(text = data.name + " " + data.address)
                 }
-            )
+            }
         }
     )
 }
 
 fun load_restaurants() {
-    Log.i(TAG , "111111")
+    Log.i(TAG, "load_restaurants:start")
     orma.selectFromRestaurant().toList().forEach {
-        Log.i(TAG , "xx")
         try
         {
             val r = Restaurant()
+            r.id = it.id
             r.name = it.name
             r.address = it.address
             restaurantliststore.add(item = r)
+            Log.i(TAG, "load_restaurants: " + r)
         } catch (_: Exception)
         {
         }
     }
+    Log.i(TAG, "load_restaurants:end")
 }
+
+@SuppressLint("ModifierFactoryUnreferencedReceiver")
+fun Modifier.randomDebugBorder(): Modifier {
+    return if (DEBUG_COMPOSE_UI_UPDATES)
+    {
+        Modifier
+            .padding(3.dp)
+            .border(
+                width = 4.dp,
+                color = Color(
+                    Random().nextInt(255),
+                    Random().nextInt(255),
+                    Random().nextInt(255)
+                ),
+                shape = RectangleShape
+            )
+    }
+    else
+    {
+        Modifier
+    }
+}
+

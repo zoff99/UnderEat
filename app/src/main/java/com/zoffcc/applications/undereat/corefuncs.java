@@ -13,6 +13,7 @@ import java.util.List;
 import static android.content.Context.MODE_PRIVATE;
 import static com.zoffcc.applications.sorm.OrmaDatabase.run_multi_sql;
 import static com.zoffcc.applications.sorm.OrmaDatabase.set_schema_upgrade_callback;
+import static com.zoffcc.applications.undereat.MainActivityKt.load_restaurants;
 
 @SuppressWarnings("ALL")
 public class corefuncs
@@ -193,16 +194,53 @@ public class corefuncs
 
         try
         {
-            orma.selectFromRestaurant().toList();
             Restaurant r = new Restaurant();
             r.name = "Restaurant 001";
-            r.address = "Ring Street 243";
+            r.address = "BB Street 243";
             r.active = true;
             r.for_summer = false;
             r.category_id = Category.VIENNA_KITCHEN.value;
             orma.insertIntoRestaurant(r);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        try
+        {
+            Restaurant r = new Restaurant();
+            r.name = "Restaurant 002";
+            r.address = "xx gasse 23";
+            r.active = true;
+            r.for_summer = false;
+            r.category_id = Category.VIENNA_KITCHEN.value;
+            orma.insertIntoRestaurant(r);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        try
+        {
+            Restaurant r = new Restaurant();
+            r.name = "Restaurant 003";
+            r.address = "AA gasse 23";
+            r.active = true;
+            r.for_summer = false;
+            r.category_id = Category.VIENNA_KITCHEN.value;
+            orma.insertIntoRestaurant(r);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        try
+        {
             List<Restaurant> rl = orma.selectFromRestaurant().toList();
-            System.out.println(TAG + "size=" + rl.size());
+            System.out.println(TAG + "size=" + rl.size() + rl);
         }
         catch(Exception e)
         {
