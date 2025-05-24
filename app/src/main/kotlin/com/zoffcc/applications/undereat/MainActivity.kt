@@ -11,6 +11,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,7 +29,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
@@ -71,31 +76,151 @@ val restaurantliststore = createRestaurantListStore()
 
 @Composable
 fun MainScreen() {
+    var state_mainscreen by remember { mutableStateOf(MAINSCREEN.MAINLIST.value) }
     val restaurants by restaurantliststore.stateFlow.collectAsState()
     Log.i(TAG, "size_list=" + restaurants.restaurantlist.size)
-    Column(
-        content = {
-            // Header Row
-            Row() {
-                Text(
-                    text = "${restaurants.restaurantlist.size} Restaurants",
-                    modifier = Modifier
-                        .fillMaxWidth().weight(10F)
-                        .padding(1.dp),
-                    style = TextStyle(
-                        fontSize = 20.sp,
-                        textAlign = TextAlign.Start,
+
+    if (state_mainscreen == MAINSCREEN.MAINLIST.value) {
+        Column(
+            content = {
+                // Header Row
+                Row() {
+                    Text(
+                        text = "${restaurants.restaurantlist.size} Restaurants",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(10F)
+                            .align(CenterVertically)
+                            .padding(2.dp),
+                        style = TextStyle(
+                            fontSize = 20.sp,
+                            textAlign = TextAlign.Start,
+                        )
                     )
+                    Button(
+                        modifier = Modifier
+                            .height(50.dp)
+                            .padding(2.dp),
+                        shape = RoundedCornerShape(10.dp),
+                        elevation = ButtonDefaults.buttonElevation(4.dp),
+                        onClick = {
+                            state_mainscreen = MAINSCREEN.ADD.value
+                        },
+                        content = {
+                            Text(
+                                text = "add",
+                                style = TextStyle(
+                                    fontSize = 15.sp,
+                                )
+                            )
+                        }
+                    )
+                }
+                // Button Row
+                Row(
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.Top,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    content = {
+                        Button(
+                            modifier = Modifier.padding(2.dp),
+                            shape = RoundedCornerShape(10.dp),
+                            elevation = ButtonDefaults.buttonElevation(4.dp),
+                            onClick = {
+                                restaurantliststore.sortByName()
+                                Log.i(
+                                    TAG,
+                                    " s1:" + restaurants.restaurantlist.size + " " + restaurants.restaurantlist
+                                )
+                            },
+                            content = {
+                                Text(
+                                    text = "Name",
+                                    style = TextStyle(
+                                        fontSize = 15.sp,
+                                    )
+                                )
+                            }
+                        )
+                        Button(
+                            modifier = Modifier.padding(2.dp),
+                            shape = RoundedCornerShape(10.dp),
+                            elevation = ButtonDefaults.buttonElevation(4.dp),
+                            onClick = {
+                                restaurantliststore.sortByAddress()
+                                Log.i(
+                                    TAG,
+                                    " s2:" + restaurants.restaurantlist.size + " " + restaurants.restaurantlist
+                                )
+                            },
+                            content = {
+                                Text(
+                                    text = "Address",
+                                    style = TextStyle(
+                                        fontSize = 15.sp,
+                                    )
+                                )
+                            }
+                        )
+                    }
                 )
+                // Data List
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .fillMaxWidth()
+                        .padding(start = 2.dp, end = 10.dp)
+                        .randomDebugBorder(),
+                    verticalArrangement = Arrangement.spacedBy(0.dp),
+                ) {
+                    itemsIndexed(items = restaurants.restaurantlist,
+                        key = { index, item -> item.id }
+                    ) { index, data ->
+                        Text(text = data.name + " " + data.address)
+                    }
+                }
+            }
+        )
+    }
+    else if (state_mainscreen == MAINSCREEN.ADD.value)
+    {
+        Column(modifier = Modifier.fillMaxSize())
+        {
+            Text("Add new Restaurant")
+            Row() {
                 Button(
-                    modifier = Modifier.height(20.dp).width(20.dp),
+                    modifier = Modifier
+                        .height(50.dp)
+                        .padding(horizontal = 15.dp),
                     shape = RoundedCornerShape(10.dp),
                     elevation = ButtonDefaults.buttonElevation(4.dp),
                     onClick = {
+                        state_mainscreen = MAINSCREEN.MAINLIST.value
                     },
                     content = {
                         Text(
-                            text = "add",
+                            text = "Add",
+                            style = TextStyle(
+                                fontSize = 15.sp,
+                            )
+                        )
+                    }
+                )
+                Spacer(modifier = Modifier.width(50.dp).weight(10F))
+                Button(
+                    modifier = Modifier
+                        .height(50.dp)
+                        .padding(horizontal = 15.dp),
+                    shape = RoundedCornerShape(10.dp),
+                    elevation = ButtonDefaults.buttonElevation(4.dp),
+                    onClick = {
+                        state_mainscreen = MAINSCREEN.MAINLIST.value
+                    },
+                    content = {
+                        Text(
+                            text = "Cancel",
                             style = TextStyle(
                                 fontSize = 15.sp,
                             )
@@ -103,65 +228,8 @@ fun MainScreen() {
                     }
                 )
             }
-            // Button Row
-            Row(
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.Top,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(100.dp),
-                content = {
-                    Button(
-                        shape = RoundedCornerShape(10.dp),
-                        elevation = ButtonDefaults.buttonElevation(4.dp),
-                        onClick = {
-                            restaurantliststore.sortByName()
-                            Log.i(TAG, " s1:" + restaurants.restaurantlist.size + " " + restaurants.restaurantlist)
-                        },
-                        content = {
-                            Text(
-                                text = "Name",
-                                style = TextStyle(
-                                    fontSize = 15.sp,
-                                )
-                            )
-                        }
-                    )
-                    Button(
-                        shape = RoundedCornerShape(10.dp),
-                        elevation = ButtonDefaults.buttonElevation(4.dp),
-                        onClick = {
-                            restaurantliststore.sortByAddress()
-                            Log.i(TAG, " s2:" + restaurants.restaurantlist.size + " " + restaurants.restaurantlist)
-                        },
-                        content = {
-                            Text(
-                                text = "Address",
-                                style = TextStyle(
-                                    fontSize = 15.sp,
-                                )
-                            )
-                        }
-                    )
-                }
-            )
-            // Data List
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .fillMaxWidth()
-                    .padding(start = 2.dp, end = 10.dp)
-                    .randomDebugBorder(),
-                verticalArrangement = Arrangement.spacedBy(0.dp),
-                ) {
-                itemsIndexed(items = restaurants.restaurantlist,
-                    key = { index, item -> item.id }
-                ) {index , data ->
-                    Text(text = data.name + " " + data.address)
-                }
-            }
         }
-    )
+    }
 }
 
 fun load_restaurants() {
