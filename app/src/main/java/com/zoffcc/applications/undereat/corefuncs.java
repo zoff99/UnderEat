@@ -15,7 +15,7 @@ import static com.zoffcc.applications.sorm.OrmaDatabase.run_multi_sql;
 import static com.zoffcc.applications.sorm.OrmaDatabase.set_schema_upgrade_callback;
 
 @SuppressWarnings("ALL")
-public class sorma2example
+public class corefuncs
 {
     private String path;
     private static final String TAG = "UnderEat:";
@@ -104,7 +104,7 @@ public class sorma2example
         return orma;
     }
 
-    String testme(Context c)
+    String init_me(Context c)
     {
         long time_start = System.currentTimeMillis();
 
@@ -190,19 +190,24 @@ public class sorma2example
         ret = ret + "\n" + "sqlcipher p.ver.: " + debug__cipher_provider_version;
 
 
-        /*
-        orma.selectFromRestaurant().toList();
-        Restaurant r = new Restaurant();
-        r.name = "Restaurant 001";
-        r.address = "Ring Street 243";
-        r.active = true;
-        r.for_summer = false;
-        r.category_id = Category.VIENNA_KITCHEN.value;
-        orma.insertIntoRestaurant(r);
-        List<Restaurant> rl = orma.selectFromRestaurant().toList();
-        System.out.println(TAG + "size=" + rl.size());
-         */
 
+        try
+        {
+            orma.selectFromRestaurant().toList();
+            Restaurant r = new Restaurant();
+            r.name = "Restaurant 001";
+            r.address = "Ring Street 243";
+            r.active = true;
+            r.for_summer = false;
+            r.category_id = Category.VIENNA_KITCHEN.value;
+            orma.insertIntoRestaurant(r);
+            List<Restaurant> rl = orma.selectFromRestaurant().toList();
+            System.out.println(TAG + "size=" + rl.size());
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
 
         // all finished
         System.out.println(TAG + "finished.");

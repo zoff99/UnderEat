@@ -1,14 +1,9 @@
 package com.zoffcc.applications.undereat
 
-import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,9 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -35,39 +28,29 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
-import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.zoffcc.applications.sorm.Restaurant
+import com.zoffcc.applications.undereat.corefuncs.orma
 import com.zoffcc.applications.undereat.ui.theme.UnderEatAppTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
-import java.lang.Float.max
 
 val messages = MutableStateFlow("running tests ...")
+val TAG = "UnderEat"
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             UnderEatAppTheme() {
-                // A surface container using the 'background' color from the theme
-                //Surface(
-                //    modifier = Modifier.fillMaxSize(),
-                //    color = MaterialTheme.colorScheme.background
-                //) {
-                //    // Greeting()
-                    SortScreen()
-                //}
+                SortScreen()
             }
         }
-        val result = sorma2example().testme(this)
+        val result = corefuncs().init_me(this)
         messages.value = messages.value + result
     }
 }
@@ -82,41 +65,16 @@ fun Greeting(modifier: Modifier = Modifier) {
     )
 }
 
-private class Restaur(
-    val name: String,
-    val city: String,
-    val address: String,
-    val addressNumber: Int
-)
-
-private val RestaurantList = mutableStateListOf(
-    Restaur(name = "Michael", city = "New York", address = "x street", addressNumber = 1234),
-    Restaur("Jorge", "Los Angeles", "street A", 2743),
-    Restaur("Adam", "Chicago", "street B", 3045),
-    Restaur("Philip", "Houston", "street C", 4432),
-    Restaur("Amanda", "Phoenix", "street D", 567),
-    Restaur("Madonna", "Philadelphia", "street E", 6834),
-    Restaur("Jordan", "San Antonio", "street F", 792),
-    Restaur("Jackson", "Some City", "street G", 802),
-    Restaur("Potter", "Dallas", "street H", 99),
-    Restaur("Harry", "Austin", "street I", 161),
-    Restaur("Cruise", "San Francisco", "street J", 1732),
-    Restaur("Denzel", "Seattle", "street K", 1743),
-    Restaur("Hermione", "Denver", "street L", 134),
-    Restaur("Vin Diesel", "Dallas", "street M", 134)
-)
+val restaurantliststore = CoroutineScope(SupervisorJob()).createRestaurantListStore()
 
 @Composable
 fun SortScreen() {
-    val listSorted = remember {
-        mutableStateListOf<Restaur>()
-    }
-    listSorted.addAll(RestaurantList)
+    val restaurants by restaurantliststore.stateFlow.collectAsState()
     Column(
         //modifier = Modifier.background(MaterialTheme.colorScheme.background),
         content = {
             Text(
-                text = "${RestaurantList.size} Restaurants",
+                text = "${restaurants.restaurantlist.size} Restaurants",
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
@@ -139,8 +97,8 @@ fun SortScreen() {
                         //colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.background),
                         //border = BorderStroke(4.dp, MaterialTheme.colorScheme.secondaryContainer),
                         onClick = {
-                            listSorted.clear()
-                            listSorted.addAll(RestaurantList.sortedBy { it.name })
+                            // restaurantliststore.clear()
+                            // listSorted.addAll(RestaurantList.sortedBy { it.name })
                         },
                         content = {
                             Text(
@@ -158,8 +116,8 @@ fun SortScreen() {
                         //colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.background),
                         //border = BorderStroke(4.dp, MaterialTheme.colorScheme.secondaryContainer),
                         onClick = {
-                            listSorted.clear()
-                            listSorted.addAll(RestaurantList.sortedBy { it.city })
+                            //listSorted.clear()
+                            //listSorted.addAll(RestaurantList.sortedBy { it.city })
                         },
                         content = {
                             Text(
@@ -177,8 +135,8 @@ fun SortScreen() {
                         //colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.background),
                         //border = BorderStroke(4.dp, MaterialTheme.colorScheme.secondaryContainer),
                         onClick = {
-                            listSorted.clear()
-                            listSorted.addAll(RestaurantList.sortedBy { it.address })
+                            //listSorted.clear()
+                            //listSorted.addAll(RestaurantList.sortedBy { it.address })
                         },
                         content = {
                             Text(
@@ -196,8 +154,8 @@ fun SortScreen() {
                         //colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.background),
                         //border = BorderStroke(4.dp, MaterialTheme.colorScheme.secondaryContainer),
                         onClick = {
-                            listSorted.clear()
-                            listSorted.addAll(RestaurantList.sortedBy { it.addressNumber })
+                            //listSorted.clear()
+                            //listSorted.addAll(RestaurantList.sortedBy { it.addressNumber })
                         },
                         content = {
                             Text(
@@ -211,6 +169,7 @@ fun SortScreen() {
                     )
                 }
             )
+            load_restaurants()
             LazyColumn(
                 modifier = Modifier
                     .fillMaxHeight()
@@ -218,7 +177,9 @@ fun SortScreen() {
                     .padding(start = 2.dp, end = 10.dp),
                 verticalArrangement = Arrangement.spacedBy(0.dp),
                 content = {
-                    itemsIndexed(listSorted) { index, data ->
+                    itemsIndexed(items = restaurants.restaurantlist,
+                        // key = { item : Restaurant -> item.id },
+                    ) { index : Int, data : Restaurant ->
                         Card(
                             modifier = Modifier
                                 //.background(color = MaterialTheme.colorScheme.background)
@@ -255,7 +216,7 @@ fun SortScreen() {
                                 )
                             )
                             Text(
-                                text = "City: ${data.city}",
+                                text = "City: ${data.address}",
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(5.dp),
@@ -264,20 +225,26 @@ fun SortScreen() {
                                     //color = MaterialTheme.colorScheme.onBackground
                                 )
                             )
-                            Text(
-                                text = "Address: ${data.address}: ${data.addressNumber}",
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(5.dp),
-                                style = TextStyle(
-                                    fontSize = 15.sp,
-                                    //color = MaterialTheme.colorScheme.onSecondary
-                                )
-                            )
                         }
                     }
                 }
             )
         }
     )
+}
+
+fun load_restaurants() {
+    Log.i(TAG , "111111")
+    orma.selectFromRestaurant().toList().forEach {
+        Log.i(TAG , "xx")
+        try
+        {
+            val r = Restaurant()
+            r.name = it.name
+            r.address = it.address
+            restaurantliststore.add(item = r)
+        } catch (_: Exception)
+        {
+        }
+    }
 }
