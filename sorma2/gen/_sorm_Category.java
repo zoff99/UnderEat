@@ -3,11 +3,9 @@ package com.zoffcc.applications.sorm;
 @Table
 public class Category
 {
-
-    @PrimaryKey
+    @PrimaryKey(autoincrement = true, auto = true)
     public long id;
 
-    @Column(uniqueOnConflict = OnConflict.IGNORE)
+    @Column(indexed = true, helpers = Column.Helpers.ALL, defaultExpr = "")
     public String name;
-
 }
