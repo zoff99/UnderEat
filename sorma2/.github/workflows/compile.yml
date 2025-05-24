@@ -1,0 +1,133 @@
+name: test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+
+  update-nightly-tag:
+    name: Update nightly release tag
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    permissions:
+        contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Move nightly tag to head for nightly release
+        run: git tag -f nightly && git push origin nightly -f
+
+
+  test_linux:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    needs: [update-nightly-tag]
+    if: |
+      always() &&
+      (needs.update-nightly-tag.result == 'success' ||
+        needs.update-nightly-tag.result == 'skipped')
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: install deps
+        run: |
+          sudo apt-get update && \
+          sudo DEBIAN_FRONTEND=noninteractive \
+          apt-get install -y --no-install-recommends \
+          git \
+          fonts-freefont-otf \
+          ghostscript \
+          imagemagick
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: java-version
+        run: java -version
+
+      - name: compile
+        run: |
+          ./do_compile.sh
+
+      - name: test
+        run: |
+          ./do_run.sh
+
+      - name: make image of console output
+        run: |
+          date > out_with_date.txt
+          echo -n 'git hash: ' >> out_with_date.txt
+          git rev-parse --verify --short=8 HEAD 2>/dev/null|tr -dc '[A-Fa-f0-9]' 2>/dev/null >> out_with_date.txt
+          echo "" >> out_with_date.txt
+          ./do_run.sh |grep  'sorm.OrmaDatabase'|grep -v 'appending to orma' >> out_with_date.txt
+          cat out_with_date.txt | convert -trim -border 20 -bordercolor black +repage -background black -fill '#00cc00' -pointsize 13 TEXT:- ./console_screen.png
+
+      - name: Upload to nightly release
+        uses: ncipollo/release-action@v1
+        if: github.ref == 'refs/heads/master'
+        with:
+          allowUpdates: true
+          tag: nightly
+          omitBodyDuringUpdate: true
+          omitNameDuringUpdate: true
+          prerelease: true
+          replacesArtifacts: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts: "console_screen*.png"
+
+  test_macos:
+    runs-on: macos-13
+    needs: [update-nightly-tag]
+    if: |
+      always() &&
+      (needs.update-nightly-tag.result == 'success' ||
+        needs.update-nightly-tag.result == 'skipped')
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: java-version
+        run: java -version
+
+      - name: compile
+        run: |
+          ./do_compile.sh
+
+      - name: test
+        run: |
+          ./do_run.sh
+
+
+  test_macos14arm:
+    runs-on: macos-14
+    needs: [update-nightly-tag]
+    if: |
+      always() &&
+      (needs.update-nightly-tag.result == 'success' ||
+        needs.update-nightly-tag.result == 'skipped')
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: java-version
+        run: java -version
+
+      - name: compile
+        run: |
+          ./do_compile.sh
+
+      - name: test
+        run: |
+          ./do_run.sh
+
