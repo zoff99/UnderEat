@@ -5,8 +5,10 @@ import android.os.Build;
 import android.util.Log;
 
 import com.zoffcc.applications.sorm.OrmaDatabase;
+import com.zoffcc.applications.sorm.Restaurant;
 
 import java.io.File;
+import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.zoffcc.applications.sorm.OrmaDatabase.run_multi_sql;
@@ -23,30 +25,57 @@ public class sorma2example
     final static int ORMA_CURRENT_DB_SCHEMA_VERSION = 1; // increase for database schema changes // minimum is 1
     private final static String MAIN_DB_NAME = "main.db";
     private static boolean PREF__DB_wal_mode = true; // use WAL mode
-    private final String PREF__DB_secrect_key = "ken sent me !?%";
+    private final String PREF__DB_secrect_key = ""; // no encryption
 
+    public static enum Category {
+        VIENNA_KITCHEN(1),
+        CHINESE(2),
+        JAPANESE(3),
+        HEURIGEN(4);
+        public int value;
+        private Category(int value)
+        {
+            this.value = value;
+        }
+    }
 
     static final int N_ITEMS = 10;
     static final int N_OPS = 100;
     final String titlePrefix = "title ";
-    final String contentPrefix = "content content content\n"
-                                 + "content content content\n"
-                                 + "content content content\n"
-                                 + " ";
+    final String contentPrefix =
+            "content content content\n" + "content content content\n" + "content content content\n" + " ";
 
     void upgrade_db_schema_do(int old_version, int new_version)
     {
-        if (new_version == 1) {
-            run_multi_sql("CREATE TABLE IF NOT EXISTS \"Category\" (\n" + "  \"id\" INTEGER,\n" + "  \"name\" TEXT,\n" +
-                          "  PRIMARY KEY(\"id\" AUTOINCREMENT)\n" + ");\n");
-            run_multi_sql("CREATE TABLE IF NOT EXISTS \"Todo\" (\n" + "  \"id\" INTEGER,\n" + "  \"title\" TEXT,\n" +
-                          "  \"content\" TEXT,\n" + "  \"done\" BOOLEAN,\n" + "  \"createdTime\" INTEGER,\n" +
-                          "  PRIMARY KEY(\"id\" AUTOINCREMENT)\n" + ");\n");
-            run_multi_sql("CREATE TABLE IF NOT EXISTS \"Item\" (\n" + "  \"name\" TEXT,\n" + "  \"category\" TEXT,\n" +
-                          "  PRIMARY KEY(\"name\" )\n" + ");");
-            run_multi_sql("CREATE TABLE IF NOT EXISTS \"Item2\" (\n" + "  \"name\" TEXT,\n" +
-                          "  \"category1\" TEXT,\n" + "  \"category2\" TEXT,\n" + "  \"zonedTimestamp\" INTEGER,\n" +
-                          "  \"localDateTime\" INTEGER,\n" + "  PRIMARY KEY(\"name\" )\n" + ");");
+        if (new_version == 1)
+        {
+            // @formatter:off
+            run_multi_sql("CREATE TABLE IF NOT EXISTS \"Category\" (\n" +
+                          "  \"id\" INTEGER,\n" +
+                          "  \"name\" TEXT UNIQUE NOT NULL,\n" +
+                          "  PRIMARY KEY(\"id\" AUTOINCREMENT)\n"
+                          + ");\n");
+
+            run_multi_sql("CREATE TABLE IF NOT EXISTS \"Restaurant\" (\n" +
+                          "  \"id\" INTEGER,\n" +
+                          "  \"name\" TEXT UNIQUE NOT NULL,\n" +
+                          "  \"category_id\" INTEGER,\n" +
+                          "  \"address\" TEXT NOT NULL,\n" +
+                          "  \"area_code\" TEXT,\n" +
+                          "  \"lat\" INTEGER,\n" +
+                          "  \"lon\" INTEGER,\n" +
+                          "  \"rating\" INTEGER,\n" +
+                          "  \"comment\" TEXT,\n" +
+                          "  \"active\" BOOLEAN DEFAULT \"1\",\n" +
+                          "  \"for_summer\" BOOLEAN DEFAULT \"0\",\n" +
+                          "  PRIMARY KEY(\"id\" AUTOINCREMENT)\n"
+                          + ");");
+
+            run_multi_sql("insert into Category (id, name) values (1, 'Wiener Küche')");
+            run_multi_sql("insert into Category (id, name) values (2, 'Chineisch')");
+            run_multi_sql("insert into Category (id, name) values (3, 'Japanisch')");
+            run_multi_sql("insert into Category (id, name) values (4, 'Heurigen')");
+            // @formatter:on
         }
     }
 
@@ -90,13 +119,13 @@ public class sorma2example
             System.out.println(TAG + "Android API:" + Build.VERSION.SDK_INT);
             ret = ret + "\n" + "Android API:" + Build.VERSION.SDK_INT;
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             try
             {
                 ret = ret + "\n" + "git hash:" + BuildConfig.GIT_HASH;
             }
-            catch(Exception ignored)
+            catch (Exception ignored)
             {
             }
         }
@@ -159,6 +188,19 @@ public class sorma2example
         ret = ret + "\n" + "sqlcipher version: " + debug__cipher_version;
         ret = ret + "\n" + "sqlcipher provider: " + debug__cipher_provider;
         ret = ret + "\n" + "sqlcipher p.ver.: " + debug__cipher_provider_version;
+
+
+        orma.selectFromRestaurant().toList();
+        Restaurant r = new Restaurant();
+        r.name = "Restaurant 001";
+        r.address = "Ring Street 243";
+        r.active = true;
+        r.for_summer = false;
+        r.category_id = Category.VIENNA_KITCHEN.value;
+        orma.insertIntoRestaurant(r);
+        List<Restaurant> rl = orma.selectFromRestaurant().toList();
+        System.out.println(TAG + "size=" + rl.size());
+
 
         // all finished
         System.out.println(TAG + "finished.");
