@@ -1,4 +1,4 @@
-package com.example.sorma2exampleapp
+package com.zoffcc.applications.undereat
 
 import org.junit.Test
 

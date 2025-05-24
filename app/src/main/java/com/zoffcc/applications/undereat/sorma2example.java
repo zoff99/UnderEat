@@ -1,15 +1,12 @@
-package com.example.sorma2exampleapp;
+package com.zoffcc.applications.undereat;
 
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 
 import com.zoffcc.applications.sorm.OrmaDatabase;
-import com.zoffcc.applications.sorm.Todo;
 
 import java.io.File;
-import java.util.Date;
-import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.zoffcc.applications.sorm.OrmaDatabase.run_multi_sql;
@@ -19,14 +16,14 @@ import static com.zoffcc.applications.sorm.OrmaDatabase.set_schema_upgrade_callb
 public class sorma2example
 {
     private String path;
-    private static final String TAG = "Sorma2-Example:";
+    private static final String TAG = "UnderEat:";
     private static String ret = "";
 
     static OrmaDatabase orma = null;
     final static int ORMA_CURRENT_DB_SCHEMA_VERSION = 1; // increase for database schema changes // minimum is 1
     private final static String MAIN_DB_NAME = "main.db";
     private static boolean PREF__DB_wal_mode = true; // use WAL mode
-    private final String PREF__DB_secrect_key = "this is the password: ken sent me !?%";
+    private final String PREF__DB_secrect_key = "ken sent me !?%";
 
 
     static final int N_ITEMS = 10;
@@ -163,57 +160,10 @@ public class sorma2example
         ret = ret + "\n" + "sqlcipher provider: " + debug__cipher_provider;
         ret = ret + "\n" + "sqlcipher p.ver.: " + debug__cipher_provider_version;
 
-
-        run_multi_sql("DELETE FROM todo;");
-        System.out.println(TAG + "cleaned out table");
-        ret = ret + "\n" + "cleaned out table";
-
-        startInsertWithOrma();
-        startSelectAllWithOrma();
-
         // all finished
         System.out.println(TAG + "finished.");
         ret = ret + "\n" + "finished";
 
         return ret;
-    }
-
-    private void startSelectAllWithOrma()
-    {
-        long start = System.currentTimeMillis();
-        for (int j = 0; j < N_OPS; j++)
-        {
-            List<Todo> todos = orma.selectFromTodo().orderByCreatedTimeAsc().toList();
-            for (Todo todo : todos)
-            {
-                @SuppressWarnings("unused") String title = todo.title;
-                @SuppressWarnings("unused") String content = todo.content;
-                @SuppressWarnings("unused") String createdTime = todo.createdTime;
-                // System.out.println(TAG + "elem: " + todo);
-            }
-        }
-        long end = System.currentTimeMillis();
-        System.out.println(TAG + "Orma/forEachAll " + (end-start) + "ms");
-        ret = ret + "\n" + "Orma/forEachAll " + (end-start) + "ms";
-    }
-
-    private void startInsertWithOrma()
-    {
-        long start = System.currentTimeMillis();
-        for (int j = 0; j < N_OPS; j++)
-        {
-            final long now = System.currentTimeMillis();
-            for (int i = 0; i < N_ITEMS; i++)
-            {
-                Todo todo = new Todo();
-                todo.title = titlePrefix + i;
-                todo.content = contentPrefix + i;
-                todo.createdTime = new Date(now).toString();
-                orma.insertIntoTodo(todo);
-            }
-        }
-        long end = System.currentTimeMillis();
-        System.out.println(TAG + "Orma/insert " + (end-start) + "ms");
-        ret = ret + "\n" + "Orma/insert " + (end-start) + "ms";
     }
 }

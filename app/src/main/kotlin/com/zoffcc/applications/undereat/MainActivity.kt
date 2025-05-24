@@ -1,4 +1,4 @@
-package com.example.sorma2exampleapp
+package com.zoffcc.applications.undereat
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -13,7 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import com.example.sorma2exampleapp.ui.theme.Sorma2ExampleAppTheme
+import com.zoffcc.applications.undereat.ui.theme.UnderEatAppTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 
 val messages = MutableStateFlow("running tests ...")
@@ -22,7 +22,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            Sorma2ExampleAppTheme {
+            UnderEatAppTheme() {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -50,7 +50,7 @@ fun Greeting(modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    Sorma2ExampleAppTheme {
+    UnderEatAppTheme {
         Greeting()
     }
 }

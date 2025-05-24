@@ -1,4 +1,4 @@
-package com.example.sorma2exampleapp.ui.theme
+package com.zoffcc.applications.undereat.ui.theme
 
 import android.app.Activity
 import android.os.Build
@@ -38,7 +38,7 @@ private val LightColorScheme = lightColorScheme(
 )
 
 @Composable
-fun Sorma2ExampleAppTheme(
+fun UnderEatAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,

@@ -15,5 +15,5 @@ dependencyResolutionManagement {
         }
     }
 }
-rootProject.name = "Sorma2ExampleApp"
+rootProject.name = "UnderEatApp"
 include ':app'

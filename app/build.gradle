@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace 'com.example.sorma2exampleapp'
+    namespace 'com.zoffcc.applications.undereat'
     compileSdk 33
 
     def getGitHash = { ->
@@ -24,7 +24,7 @@ android {
     }
 
     defaultConfig {
-        applicationId 'com.example.sorma2exampleapp'
+        applicationId 'com.zoffcc.applications.undereat'
         minSdk 21
         targetSdk 33
         versionCode 1

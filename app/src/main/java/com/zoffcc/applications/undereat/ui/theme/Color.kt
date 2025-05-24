@@ -1,4 +1,4 @@
-package com.example.sorma2exampleapp.ui.theme
+package com.zoffcc.applications.undereat.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
