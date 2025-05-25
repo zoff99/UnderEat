@@ -14,6 +14,7 @@ interface RestaurantListStore
     fun clear()
     fun add(item: Restaurant)
     fun update(item: Restaurant)
+    fun get(itemId: Long): Restaurant
     fun sortByName()
     fun sortByAddress()
     val stateFlow: StateFlow<StateRestaurantList>
@@ -56,6 +57,16 @@ fun createRestaurantListStore(): RestaurantListStore
         override fun update(item: Restaurant)
         {
 
+        }
+
+        override fun get(itemId: Long): Restaurant {
+            state.restaurantlist.forEach {
+                if (itemId == it.id)
+                {
+                    return it
+                }
+            }
+            return Restaurant()
         }
 
         override fun clear()

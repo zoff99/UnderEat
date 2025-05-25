@@ -9,12 +9,10 @@ import com.zoffcc.applications.sorm.Restaurant;
 
 import java.io.File;
 import java.util.List;
-import java.util.Random;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.zoffcc.applications.sorm.OrmaDatabase.run_multi_sql;
 import static com.zoffcc.applications.sorm.OrmaDatabase.set_schema_upgrade_callback;
-import static com.zoffcc.applications.undereat.MainActivityKt.load_restaurants;
 
 @SuppressWarnings("ALL")
 public class corefuncs
@@ -191,8 +189,7 @@ public class corefuncs
         ret = ret + "\n" + "sqlcipher provider: " + debug__cipher_provider;
         ret = ret + "\n" + "sqlcipher p.ver.: " + debug__cipher_provider_version;
 
-
-
+        /*
         try
         {
             orma.deleteFromRestaurant().execute();
@@ -201,7 +198,6 @@ public class corefuncs
         {
             e.printStackTrace();
         }
-
         Random rnd = new Random();
         for(int i=0;i<2;i++) {
             try
@@ -219,6 +215,7 @@ public class corefuncs
                 e.printStackTrace();
             }
         }
+        */
 
         try
         {
