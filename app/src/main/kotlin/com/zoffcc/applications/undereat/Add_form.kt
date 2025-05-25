@@ -55,6 +55,10 @@ fun add_form() {
         val textFieldValue = TextFieldValue(text = "")
         mutableStateOf(textFieldValue)
     }
+    var input_phonenumber by remember {
+        val textFieldValue = TextFieldValue(text = "")
+        mutableStateOf(textFieldValue)
+    }
 
     val cat_list = corefuncs.orma.selectFromCategory().toList()
     val cat_isDropDownExpanded = remember { mutableStateOf(false) }
@@ -76,6 +80,11 @@ fun add_form() {
                 .padding(3.dp),
                 value = input_addr, placeholder = { Text(text = "Address", fontSize = 14.sp) },
                 onValueChange = { input_addr = it })
+            TextField(modifier = Modifier
+                .fillMaxWidth()
+                .padding(3.dp),
+                value = input_phonenumber, placeholder = { Text(text = "Phone Number", fontSize = 14.sp) },
+                onValueChange = { input_phonenumber = it })
             Box {
                 Row(
                     horizontalArrangement = Arrangement.Start,
@@ -117,8 +126,6 @@ fun add_form() {
                 .padding(3.dp),
                 value = input_comment, placeholder = { Text(text = "Comment", fontSize = 14.sp) },
                 onValueChange = { input_comment = it })
-
-
         }
         Spacer(modifier = Modifier.height(20.dp))
         Row {
@@ -142,6 +149,11 @@ fun add_form() {
                                 r.comment = ""
                             } else {
                                 r.comment = input_comment.text
+                            }
+                            if (input_phonenumber.text.isNullOrEmpty()) {
+                                r.phonenumber = ""
+                            } else {
+                                r.phonenumber = input_phonenumber.text
                             }
                             r.active = true
                             r.for_summer = false

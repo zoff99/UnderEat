@@ -67,6 +67,10 @@ fun edit_form() {
             TextFieldValue(text = if (rest_data.comment.isNullOrEmpty()) "" else rest_data.comment)
         mutableStateOf(textFieldValue)
     }
+    var input_phonenumber by remember {
+        val textFieldValue = TextFieldValue(text = if (rest_data.phonenumber.isNullOrEmpty()) "" else rest_data.phonenumber)
+        mutableStateOf(textFieldValue)
+    }
 
     val cat_list = corefuncs.orma.selectFromCategory().toList()
     val cat_isDropDownExpanded = remember { mutableStateOf(false) }
@@ -115,6 +119,11 @@ fun edit_form() {
                 .padding(3.dp),
                 value = input_addr, placeholder = { Text(text = "Address", fontSize = 14.sp) },
                 onValueChange = { input_addr = it })
+            TextField(modifier = Modifier
+                .fillMaxWidth()
+                .padding(3.dp),
+                value = input_phonenumber, placeholder = { Text(text = "Phone Number", fontSize = 14.sp) },
+                onValueChange = { input_phonenumber = it })
             Box {
                 Row(
                     horizontalArrangement = Arrangement.Start,
@@ -186,6 +195,11 @@ fun edit_form() {
                             } else {
                                 r.comment = input_comment.text
                             }
+                            if (input_phonenumber.text.isNullOrEmpty()) {
+                                r.phonenumber = ""
+                            } else {
+                                r.phonenumber = input_phonenumber.text
+                            }
                             r.active = true
                             r.for_summer = false
                             Log.i(
@@ -194,7 +208,7 @@ fun edit_form() {
                             )
                             r.category_id = cat_list[cat_itemPosition.value - 1].id
                             corefuncs.orma.updateRestaurant().name(r.name).address(r.address)
-                                .comment(r.comment).category_id(r.category_id).execute()
+                                .comment(r.comment).category_id(r.category_id).phonenumber(r.phonenumber).execute()
                             //
                             globalstore.setEditRestaurantId(-1)
                             load_restaurants()
