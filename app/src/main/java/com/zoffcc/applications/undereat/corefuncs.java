@@ -22,7 +22,7 @@ public class corefuncs
     private static String ret = "";
 
     static OrmaDatabase orma = null;
-    final static int ORMA_CURRENT_DB_SCHEMA_VERSION = 1; // increase for database schema changes // minimum is 1
+    final static int ORMA_CURRENT_DB_SCHEMA_VERSION = 2; // increase for database schema changes // minimum is 1
     private final static String MAIN_DB_NAME = "main.db";
     private static boolean PREF__DB_wal_mode = true; // use WAL mode
     private final String PREF__DB_secrect_key = ""; // no encryption
@@ -53,8 +53,8 @@ public class corefuncs
             run_multi_sql("CREATE TABLE IF NOT EXISTS \"Category\" (\n" +
                           "  \"id\" INTEGER,\n" +
                           "  \"name\" TEXT UNIQUE NOT NULL,\n" +
-                          "  PRIMARY KEY(\"id\" AUTOINCREMENT)\n"
-                          + ");\n");
+                          "  PRIMARY KEY(\"id\" AUTOINCREMENT)\n" +
+                          ");\n");
 
             run_multi_sql("CREATE TABLE IF NOT EXISTS \"Restaurant\" (\n" +
                           "  \"id\" INTEGER,\n" +
@@ -68,13 +68,21 @@ public class corefuncs
                           "  \"comment\" TEXT,\n" +
                           "  \"active\" BOOLEAN DEFAULT \"1\",\n" +
                           "  \"for_summer\" BOOLEAN DEFAULT \"0\",\n" +
-                          "  PRIMARY KEY(\"id\" AUTOINCREMENT)\n"
-                          + ");");
+                          "  PRIMARY KEY(\"id\" AUTOINCREMENT)\n" +
+                          ");");
 
             run_multi_sql("insert into Category (id, name) values (1, 'Wiener Küche')");
             run_multi_sql("insert into Category (id, name) values (2, 'Chineisch')");
             run_multi_sql("insert into Category (id, name) values (3, 'Japanisch')");
             run_multi_sql("insert into Category (id, name) values (4, 'Heurigen')");
+            // @formatter:on
+        }
+
+        if (new_version == 2)
+        {
+            // @formatter:off
+            run_multi_sql("ALTER TABLE \"Restaurant\" ADD COLUMN need_reservation BOOLEAN DEFAULT \"1\";\n");
+            run_multi_sql("ALTER TABLE \"Restaurant\" ADD COLUMN phonenumber TEXT DEFAULT NULL;\n");
             // @formatter:on
         }
     }

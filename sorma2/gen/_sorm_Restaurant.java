@@ -26,4 +26,8 @@ public class Restaurant
     public boolean active;
     @Column()
     public boolean for_summer;
+    @Column()
+    public String phonenumber;
+    @Column()
+    public boolean need_reservation;
 }
