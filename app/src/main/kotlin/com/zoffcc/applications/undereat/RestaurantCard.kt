@@ -7,6 +7,7 @@ package com.zoffcc.applications.undereat
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,7 +20,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -73,7 +76,7 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
                     modifier = Modifier
                         .randomDebugBorder()
                         .padding(3.dp),
-                    textAlign = TextAlign.Center,
+                    textAlign = TextAlign.Start,
                     style = TextStyle(
                         fontSize = 18.sp,
                     )
@@ -85,7 +88,7 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
                     modifier = Modifier
                         .randomDebugBorder()
                         .padding(3.dp),
-                    textAlign = TextAlign.Center,
+                    textAlign = TextAlign.Start,
                     style = TextStyle(
                         fontSize = 18.sp,
                     )
@@ -97,7 +100,7 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
                     modifier = Modifier
                         .randomDebugBorder()
                         .padding(3.dp),
-                    textAlign = TextAlign.Center,
+                    textAlign = TextAlign.Start,
                     style = TextStyle(
                         fontSize = 13.sp,
                     )
@@ -109,24 +112,51 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
                     .width(1.dp)
                     .weight(10F)
             )
-            IconButton(
-                onClick = {
-                    val mapuri = Uri.parse("geo:0,0?q=" + data.address)
-                    val mapIntent = Intent(Intent.ACTION_VIEW, mapuri)
-                    context.startActivity(mapIntent)
-                },
-                modifier = Modifier
-                    .randomDebugBorder()
-                    .size(60.dp)
-            ) {
-                Icon(
+            Column(modifier = Modifier.width(55.dp)) {
+                IconButton(
+                    onClick = {
+                        if (data.phonenumber.isNullOrEmpty())
+                        {
+                            Toast.makeText(context, "No Phonenumber for this Restaurant", Toast.LENGTH_SHORT).show()
+                        }
+                        else {
+                            val mapuri = Uri.parse("tel:" + data.phonenumber)
+                            val mapIntent = Intent(Intent.ACTION_DIAL, mapuri)
+                            context.startActivity(mapIntent)
+                        }
+                    },
                     modifier = Modifier
                         .randomDebugBorder()
-                        .fillMaxSize()
-                        .padding(4.dp),
-                    imageVector = Icons.Default.LocationOn,
-                    contentDescription = "Localized description"
-                )
+                        .size(50.dp)
+                ) {
+                    Icon(
+                        modifier = Modifier
+                            .randomDebugBorder()
+                            .fillMaxSize()
+                            .padding(4.dp),
+                        imageVector = Icons.Default.Call,
+                        contentDescription = "Localized description"
+                    )
+                }
+                IconButton(
+                    onClick = {
+                        val mapuri = Uri.parse("geo:0,0?q=" + data.address)
+                        val mapIntent = Intent(Intent.ACTION_VIEW, mapuri)
+                        context.startActivity(mapIntent)
+                    },
+                    modifier = Modifier
+                        .randomDebugBorder()
+                        .size(50.dp)
+                ) {
+                    Icon(
+                        modifier = Modifier
+                            .randomDebugBorder()
+                            .fillMaxSize()
+                            .padding(4.dp),
+                        imageVector = Icons.Default.LocationOn,
+                        contentDescription = "Localized description"
+                    )
+                }
             }
         }
     }

@@ -27,7 +27,7 @@ const val TAG = "UnderEat"
 
 val messages = MutableStateFlow("running tests ...")
 val globalstore = createGlobalStore()
-const val DEBUG_COMPOSE_UI_UPDATES = true // set "false" for release builds
+const val DEBUG_COMPOSE_UI_UPDATES = false // set "false" for release builds
 
 
 class MainActivity : ComponentActivity() {
