@@ -9,6 +9,7 @@ import com.zoffcc.applications.sorm.Restaurant;
 
 import java.io.File;
 import java.util.List;
+import java.util.Random;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.zoffcc.applications.sorm.OrmaDatabase.run_multi_sql;
@@ -194,47 +195,29 @@ public class corefuncs
 
         try
         {
-            Restaurant r = new Restaurant();
-            r.name = "Restaurant 001";
-            r.address = "BB Street 243";
-            r.active = true;
-            r.for_summer = false;
-            r.category_id = Category.VIENNA_KITCHEN.value;
-            orma.insertIntoRestaurant(r);
+            orma.deleteFromRestaurant().execute();
         }
         catch(Exception e)
         {
             e.printStackTrace();
         }
 
-        try
-        {
-            Restaurant r = new Restaurant();
-            r.name = "Restaurant 002";
-            r.address = "xx gasse 23";
-            r.active = true;
-            r.for_summer = false;
-            r.category_id = Category.VIENNA_KITCHEN.value;
-            orma.insertIntoRestaurant(r);
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
-
-        try
-        {
-            Restaurant r = new Restaurant();
-            r.name = "Restaurant 003";
-            r.address = "AA gasse 23";
-            r.active = true;
-            r.for_summer = false;
-            r.category_id = Category.VIENNA_KITCHEN.value;
-            orma.insertIntoRestaurant(r);
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
+        Random rnd = new Random();
+        for(int i=0;i<2;i++) {
+            try
+            {
+                Restaurant r = new Restaurant();
+                r.name = "Restaurant " + i;
+                r.address = "" + rnd.nextInt() + " gasse " + rnd.nextFloat() + " opjopiriejroije wiorjweior jiowejroijiorj ior ";
+                r.active = true;
+                r.for_summer = false;
+                r.category_id = Category.VIENNA_KITCHEN.value;
+                orma.insertIntoRestaurant(r);
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+            }
         }
 
         try

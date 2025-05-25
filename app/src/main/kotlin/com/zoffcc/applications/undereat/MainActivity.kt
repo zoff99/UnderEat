@@ -1,11 +1,10 @@
-@file:Suppress("FunctionName")
+@file:Suppress("FunctionName", "LocalVariableName")
 
 package com.zoffcc.applications.undereat
 
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
-import android.widget.ImageButton
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.border
@@ -26,15 +25,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -54,6 +48,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zoffcc.applications.sorm.Restaurant
@@ -65,6 +60,7 @@ import java.util.Random
 val TAG = "UnderEat"
 
 val messages = MutableStateFlow("running tests ...")
+val globalstore = createGlobalStore()
 const val DEBUG_COMPOSE_UI_UPDATES = true // set "false" for release builds
 
 
@@ -91,11 +87,11 @@ val restaurantliststore = createRestaurantListStore()
 
 @Composable
 fun MainScreen() {
-    var state_mainscreen by remember { mutableStateOf(MAINSCREEN.MAINLIST.value) }
     val restaurants by restaurantliststore.stateFlow.collectAsState()
+    val state_mainscreen by globalstore.stateFlow.collectAsState()
     Log.i(TAG, "size_list=" + restaurants.restaurantlist.size)
 
-    if (state_mainscreen == MAINSCREEN.MAINLIST.value) {
+    if (state_mainscreen.mainscreen_state == MAINSCREEN.MAINLIST) {
         Column(
             content = {
                 // Header Row
@@ -119,7 +115,7 @@ fun MainScreen() {
                         shape = RoundedCornerShape(10.dp),
                         elevation = ButtonDefaults.buttonElevation(4.dp),
                         onClick = {
-                            state_mainscreen = MAINSCREEN.ADD.value
+                            globalstore.updateMainscreenState(MAINSCREEN.ADD)
                         },
                         content = {
                             Text(
@@ -194,13 +190,12 @@ fun MainScreen() {
                         key = { index, item -> item.id }
                     ) { index, data ->
                         RestaurantCard(index, data)
-
                     }
                 }
             }
         )
     }
-    else if (state_mainscreen == MAINSCREEN.ADD.value)
+    else if (state_mainscreen.mainscreen_state == MAINSCREEN.ADD)
     {
         Column(modifier = Modifier.fillMaxSize())
         {
@@ -213,7 +208,7 @@ fun MainScreen() {
                     shape = RoundedCornerShape(10.dp),
                     elevation = ButtonDefaults.buttonElevation(4.dp),
                     onClick = {
-                        state_mainscreen = MAINSCREEN.MAINLIST.value
+                        globalstore.updateMainscreenState(MAINSCREEN.MAINLIST)
                     },
                     content = {
                         Text(
@@ -234,7 +229,7 @@ fun MainScreen() {
                     shape = RoundedCornerShape(10.dp),
                     elevation = ButtonDefaults.buttonElevation(4.dp),
                     onClick = {
-                        state_mainscreen = MAINSCREEN.MAINLIST.value
+                        globalstore.updateMainscreenState(MAINSCREEN.MAINLIST)
                     },
                     content = {
                         Text(
@@ -250,7 +245,6 @@ fun MainScreen() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RestaurantCard(index: Int, data: Restaurant) {
     OutlinedCard(
@@ -274,14 +268,24 @@ fun RestaurantCard(index: Int, data: Restaurant) {
         ) {
             Text(
                 text = data.name + " " + data.address,
+                softWrap = true,
+                maxLines = 4,
                 modifier = Modifier
-                    .padding(3.dp).randomDebugBorder(),
+                    .randomDebugBorder()
+                    .padding(3.dp)
+                    .weight(100000F)
+                ,
                 textAlign = TextAlign.Center,
             )
-            Spacer(modifier = Modifier.randomDebugBorder().width(1.dp).weight(10F))
+            Spacer(modifier = Modifier
+                .randomDebugBorder()
+                .width(1.dp)
+                .weight(10F))
             IconButton(
                 onClick = {},
-                modifier = Modifier.randomDebugBorder().size(50.dp)
+                modifier = Modifier
+                    .randomDebugBorder()
+                    .size(40.dp)
             ) {
                 Icon(Icons.Default.LocationOn, contentDescription = "Localized description")
             }
