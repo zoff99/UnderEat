@@ -1,6 +1,7 @@
 @file:Suppress("FunctionName", "LocalVariableName", "SpellCheckingInspection",
     "UselessCallOnNotNull",
-    "ConvertToStringTemplate", "UnusedReceiverParameter", "CascadeIf", "LiftReturnOrAssignment"
+    "ConvertToStringTemplate", "UnusedReceiverParameter", "CascadeIf", "LiftReturnOrAssignment",
+    "DeprecatedCallableAddReplaceWith"
 )
 
 package com.zoffcc.applications.undereat
@@ -45,6 +46,24 @@ class MainActivity : ComponentActivity() {
         val result = corefuncs().init_me(this)
         messages.value = messages.value + result
         load_restaurants()
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        if (globalstore.getMainscreenState() == MAINSCREEN.MAINLIST) {
+            super.onBackPressed()
+        }
+        else if (globalstore.getMainscreenState() == MAINSCREEN.ADD)
+        {
+            globalstore.updateMainscreenState(MAINSCREEN.MAINLIST)
+        }
+        else if (globalstore.getMainscreenState() == MAINSCREEN.EDIT)
+        {
+            globalstore.updateMainscreenState(MAINSCREEN.MAINLIST)
+        }
+        else {
+            super.onBackPressed()
+        }
     }
 }
 
