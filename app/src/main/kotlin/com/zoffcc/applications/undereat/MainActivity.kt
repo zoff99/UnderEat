@@ -94,14 +94,26 @@ fun MainScreen(context: Context) {
 fun load_restaurants() {
     Log.i(TAG, "load_restaurants:start")
     restaurantliststore.clear()
-    orma.selectFromRestaurant().toList().forEach {
-        try
-        {
-            val r = Restaurant.deep_copy(it)
-            restaurantliststore.add(item = r)
-            // Log.i(TAG, "load_restaurants: " + r)
-        } catch (_: Exception)
-        {
+    val filter_category_id = globalstore.getFilterCategoryId()
+    if (filter_category_id == -1L) {
+        orma.selectFromRestaurant().toList().forEach {
+            try {
+                val r = Restaurant.deep_copy(it)
+                restaurantliststore.add(item = r)
+                // Log.i(TAG, "load_restaurants: " + r)
+            } catch (_: Exception) {
+            }
+        }
+    }
+    else
+    {
+        orma.selectFromRestaurant().category_idEq(filter_category_id).toList().forEach {
+            try {
+                val r = Restaurant.deep_copy(it)
+                restaurantliststore.add(item = r)
+                // Log.i(TAG, "load_restaurants: " + r)
+            } catch (_: Exception) {
+            }
         }
     }
     Log.i(TAG, "load_restaurants:end")
