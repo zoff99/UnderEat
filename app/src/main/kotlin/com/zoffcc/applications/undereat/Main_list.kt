@@ -3,6 +3,7 @@
 package com.zoffcc.applications.undereat
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,7 +28,7 @@ import androidx.compose.ui.unit.sp
 
 @SuppressLint("ComposableNaming")
 @Composable
-fun main_list(restaurants: StateRestaurantList) {
+fun main_list(restaurants: StateRestaurantList, context: Context) {
     Column(
         content = {
             // Header Row
@@ -77,10 +78,6 @@ fun main_list(restaurants: StateRestaurantList) {
                         elevation = ButtonDefaults.buttonElevation(4.dp),
                         onClick = {
                             restaurantliststore.sortByName()
-                            Log.i(
-                                TAG,
-                                " s1:" + restaurants.restaurantlist.size + " " + restaurants.restaurantlist
-                            )
                         },
                         content = {
                             Text(
@@ -125,7 +122,7 @@ fun main_list(restaurants: StateRestaurantList) {
                 itemsIndexed(items = restaurants.restaurantlist,
                     key = { index, item -> item.id }
                 ) { index, data ->
-                    RestaurantCard(index, data)
+                    RestaurantCard(index, data, context)
                 }
             }
         }

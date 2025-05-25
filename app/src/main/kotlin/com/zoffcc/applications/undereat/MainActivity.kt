@@ -5,6 +5,7 @@
 
 package com.zoffcc.applications.undereat
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -37,7 +38,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MainScreen()
+                    MainScreen(this)
                 }
             }
         }
@@ -50,7 +51,7 @@ class MainActivity : ComponentActivity() {
 val restaurantliststore = createRestaurantListStore()
 
 @Composable
-fun MainScreen() {
+fun MainScreen(context: Context) {
     val restaurants by restaurantliststore.stateFlow.collectAsState()
     val state_mainscreen by globalstore.stateFlow.collectAsState()
 
@@ -58,7 +59,7 @@ fun MainScreen() {
 
     if (state_mainscreen.mainscreen_state == MAINSCREEN.MAINLIST) {
         globalstore.setEditRestaurantId(-1)
-        main_list(restaurants)
+        main_list(restaurants, context)
     }
     else if (state_mainscreen.mainscreen_state == MAINSCREEN.ADD)
     {
@@ -79,7 +80,7 @@ fun load_restaurants() {
         {
             val r = Restaurant.deep_copy(it)
             restaurantliststore.add(item = r)
-            Log.i(TAG, "load_restaurants: " + r)
+            // Log.i(TAG, "load_restaurants: " + r)
         } catch (_: Exception)
         {
         }

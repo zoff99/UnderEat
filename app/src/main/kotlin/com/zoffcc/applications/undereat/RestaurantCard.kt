@@ -1,7 +1,12 @@
-@file:Suppress("LiftReturnOrAssignment", "LocalVariableName", "UNUSED_PARAMETER")
+@file:Suppress("LiftReturnOrAssignment", "LocalVariableName", "UNUSED_PARAMETER",
+    "SpellCheckingInspection"
+)
 
 package com.zoffcc.applications.undereat
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,7 +35,7 @@ import androidx.compose.ui.unit.sp
 import com.zoffcc.applications.sorm.Restaurant
 
 @Composable
-fun RestaurantCard(index: Int, data: Restaurant) {
+fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
     OutlinedCard(
         modifier = Modifier
             .padding(1.dp)
@@ -105,7 +110,11 @@ fun RestaurantCard(index: Int, data: Restaurant) {
                     .weight(10F)
             )
             IconButton(
-                onClick = {},
+                onClick = {
+                    val mapuri = Uri.parse("geo:0,0?q=" + data.address)
+                    val mapIntent = Intent(Intent.ACTION_VIEW, mapuri)
+                    context.startActivity(mapIntent)
+                },
                 modifier = Modifier
                     .randomDebugBorder()
                     .size(60.dp)
