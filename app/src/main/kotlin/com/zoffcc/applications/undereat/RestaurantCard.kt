@@ -140,7 +140,7 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
                 }
                 IconButton(
                     onClick = {
-                        val mapuri = Uri.parse("geo:0,0?q=" + data.address)
+                        val mapuri = Uri.parse("geo:0,0?q=" + data.name + " " + data.address)
                         val mapIntent = Intent(Intent.ACTION_VIEW, mapuri)
                         context.startActivity(mapIntent)
                     },
