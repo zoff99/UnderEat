@@ -62,6 +62,10 @@ class MainActivity : ComponentActivity() {
         {
             globalstore.updateMainscreenState(MAINSCREEN.MAINLIST)
         }
+        else if (globalstore.getMainscreenState() == MAINSCREEN.SETTINGS)
+        {
+            globalstore.updateMainscreenState(MAINSCREEN.MAINLIST)
+        }
         else {
             super.onBackPressed()
         }
@@ -85,6 +89,11 @@ fun MainScreen(context: Context) {
     {
         globalstore.setEditRestaurantId(-1)
         add_form()
+    }
+    else if (state_mainscreen.mainscreen_state == MAINSCREEN.SETTINGS)
+    {
+        globalstore.setEditRestaurantId(-1)
+        settings_form(context)
     }
     else if (state_mainscreen.mainscreen_state == MAINSCREEN.EDIT)
     {

@@ -23,7 +23,7 @@ public class corefuncs
 
     static OrmaDatabase orma = null;
     final static int ORMA_CURRENT_DB_SCHEMA_VERSION = 2; // increase for database schema changes // minimum is 1
-    private final static String MAIN_DB_NAME = "main.db";
+    public final static String MAIN_DB_NAME = "main.db";
     private static boolean PREF__DB_wal_mode = true; // use WAL mode
     private final String PREF__DB_secrect_key = ""; // no encryption
 
@@ -85,6 +85,8 @@ public class corefuncs
             run_multi_sql("ALTER TABLE \"Restaurant\" ADD COLUMN phonenumber TEXT DEFAULT NULL;\n");
             // @formatter:on
         }
+
+        // HINT: always check Settings_form.kt to keep columns in sync with import!!
     }
 
     private OrmaDatabase OrmaDatabase_wrapper(String dbs_path, String pref__db_secrect_key, boolean pref__db_wal_mode)

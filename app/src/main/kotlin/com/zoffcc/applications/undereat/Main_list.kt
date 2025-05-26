@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -90,18 +89,28 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                         )
                     }
                 )
-                Text(
-                    text = "${restaurants.restaurantlist.size} Restaurants",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(10F)
-                        .align(Alignment.CenterVertically)
-                        .padding(2.dp),
-                    style = TextStyle(
-                        fontSize = 17.sp,
-                        textAlign = TextAlign.Start,
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(10F)
+                    .align(Alignment.CenterVertically)
+                    .padding(2.dp)
+                    .clickable {
+                        globalstore.updateMainscreenState(MAINSCREEN.SETTINGS)
+                    })
+                {
+                    Text(
+                        text = "${restaurants.restaurantlist.size} Restaurants",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(10F)
+                            .align(Alignment.CenterVertically)
+                            .padding(2.dp),
+                        style = TextStyle(
+                            fontSize = 17.sp,
+                            textAlign = TextAlign.Start,
+                        )
                     )
-                )
+                }
                 Button(
                     modifier = Modifier
                         .height(50.dp)
