@@ -1,24 +1,33 @@
-@file:Suppress("unused", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName")
+@file:Suppress("unused", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
+    "SpellCheckingInspection", "ConvertToStringTemplate", "UselessCallOnNotNull"
+)
 
 package com.zoffcc.applications.undereat
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Call
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
@@ -63,22 +72,10 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
         content = {
             // Header Row
             Row {
-                Text(
-                    text = "${restaurants.restaurantlist.size} Restaurants",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(10F)
-                        .align(Alignment.CenterVertically)
-                        .padding(2.dp),
-                    style = TextStyle(
-                        fontSize = 20.sp,
-                        textAlign = TextAlign.Start,
-                    )
-                )
                 Button(
                     modifier = Modifier
                         .height(50.dp)
-                        .padding(2.dp),
+                        .padding(4.dp),
                     shape = RoundedCornerShape(10.dp),
                     elevation = ButtonDefaults.buttonElevation(4.dp),
                     onClick = {
@@ -88,7 +85,54 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                         Text(
                             text = "add",
                             style = TextStyle(
-                                fontSize = 15.sp,
+                                fontSize = 12.sp,
+                            )
+                        )
+                    }
+                )
+                Text(
+                    text = "${restaurants.restaurantlist.size} Restaurants",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(10F)
+                        .align(Alignment.CenterVertically)
+                        .padding(2.dp),
+                    style = TextStyle(
+                        fontSize = 17.sp,
+                        textAlign = TextAlign.Start,
+                    )
+                )
+                Button(
+                    modifier = Modifier
+                        .height(50.dp)
+                        .padding(4.dp),
+                    shape = RoundedCornerShape(10.dp),
+                    elevation = ButtonDefaults.buttonElevation(4.dp),
+                    onClick = {
+                        if (TAXI_PHONE_NUMBER.isNullOrEmpty())
+                        {
+                            Toast.makeText(context, "No Taxi Phonenumber set", Toast.LENGTH_SHORT).show()
+                        }
+                        else {
+                            val mapuri = Uri.parse("tel:" + TAXI_PHONE_NUMBER)
+                            val mapIntent = Intent(Intent.ACTION_DIAL, mapuri)
+                            context.startActivity(mapIntent)
+                        }
+                    },
+                    content = {
+                        Icon(
+                            modifier = Modifier
+                                .randomDebugBorder()
+                                .padding(0.dp),
+                            imageVector = Icons.Default.Call,
+                            contentDescription = "Call Restaurant"
+                        )
+                        Spacer(modifier = Modifier.width(5.dp))
+                        Text(
+                            modifier = Modifier.padding(0.dp),
+                            text = "Taxi",
+                            style = TextStyle(
+                                fontSize = 13.sp,
                             )
                         )
                     }

@@ -28,6 +28,7 @@ const val TAG = "UnderEat"
 val messages = MutableStateFlow("running tests ...")
 val globalstore = createGlobalStore()
 const val DEBUG_COMPOSE_UI_UPDATES = false // set "false" for release builds
+const val TAXI_PHONE_NUMBER = "+43 1 31 300"
 
 
 class MainActivity : ComponentActivity() {

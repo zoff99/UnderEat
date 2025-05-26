@@ -41,7 +41,7 @@ import com.zoffcc.applications.sorm.Restaurant
 fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
     OutlinedCard(
         modifier = Modifier
-            .padding(1.dp)
+            .padding(2.dp)
             .fillMaxWidth()
             .wrapContentHeight()
             .clickable {
@@ -72,10 +72,10 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
                 Text(
                     text = data.name,
                     softWrap = true,
-                    maxLines = 1,
+                    maxLines = 2,
                     modifier = Modifier
                         .randomDebugBorder()
-                        .padding(3.dp),
+                        .padding(start = 4.dp),
                     textAlign = TextAlign.Start,
                     style = TextStyle(
                         fontSize = 18.sp,
@@ -84,13 +84,13 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
                 Text(
                     text = data.address,
                     softWrap = true,
-                    maxLines = 1,
+                    maxLines = 2,
                     modifier = Modifier
                         .randomDebugBorder()
-                        .padding(3.dp),
+                        .padding(start = 4.dp),
                     textAlign = TextAlign.Start,
                     style = TextStyle(
-                        fontSize = 18.sp,
+                        fontSize = 16.sp,
                     )
                 )
                 Text(
@@ -99,7 +99,7 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
                     maxLines = 1,
                     modifier = Modifier
                         .randomDebugBorder()
-                        .padding(3.dp),
+                        .padding(start = 4.dp),
                     textAlign = TextAlign.Start,
                     style = TextStyle(
                         fontSize = 13.sp,
@@ -135,7 +135,7 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
                             .fillMaxSize()
                             .padding(4.dp),
                         imageVector = Icons.Default.Call,
-                        contentDescription = "Localized description"
+                        contentDescription = "Call Restaurant"
                     )
                 }
                 IconButton(
@@ -154,7 +154,7 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
                             .fillMaxSize()
                             .padding(4.dp),
                         imageVector = Icons.Default.LocationOn,
-                        contentDescription = "Localized description"
+                        contentDescription = "Restaurant Location"
                     )
                 }
             }
