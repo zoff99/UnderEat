@@ -83,7 +83,7 @@ fun edit_form() {
             confirmButton = {
                 Button(onClick = {
                     try {
-                        corefuncs.orma.deleteFromRestaurant().idEq(rest_data.id).execute()
+                        corefuncs.orma.deleteFromRestaurant().idEq(restaurant_id).execute()
                         //
                         globalstore.setEditRestaurantId(-1)
                         load_restaurants()
@@ -207,8 +207,10 @@ fun edit_form() {
                                 "CCCCCCC444_save:" + cat_itemPosition.value + " ___ " + cat_list
                             )
                             r.category_id = cat_list[cat_itemPosition.value - 1].id
-                            corefuncs.orma.updateRestaurant().name(r.name).address(r.address)
-                                .comment(r.comment).category_id(r.category_id).phonenumber(r.phonenumber).execute()
+                            corefuncs.orma.updateRestaurant().idEq(restaurant_id)
+                                .name(r.name).address(r.address)
+                                .comment(r.comment).category_id(r.category_id)
+                                .phonenumber(r.phonenumber).execute()
                             //
                             globalstore.setEditRestaurantId(-1)
                             load_restaurants()
