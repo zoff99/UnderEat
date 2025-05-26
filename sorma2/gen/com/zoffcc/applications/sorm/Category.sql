@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS "Category" (
+  "id" INTEGER,
+  "name" TEXT,
+  PRIMARY KEY("id" AUTOINCREMENT)
+);

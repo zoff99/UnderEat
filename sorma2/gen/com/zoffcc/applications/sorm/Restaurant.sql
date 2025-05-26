@@ -1,0 +1,16 @@
+CREATE TABLE IF NOT EXISTS "Restaurant" (
+  "id" INTEGER,
+  "name" TEXT,
+  "category_id" INTEGER,
+  "address" TEXT,
+  "area_code" TEXT,
+  "lat" INTEGER,
+  "lon" INTEGER,
+  "rating" INTEGER,
+  "comment" TEXT,
+  "active" BOOLEAN,
+  "for_summer" BOOLEAN,
+  "phonenumber" TEXT,
+  "need_reservation" BOOLEAN,
+  PRIMARY KEY("id" AUTOINCREMENT)
+);
