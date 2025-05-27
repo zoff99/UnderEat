@@ -1,7 +1,7 @@
 @file:Suppress("FunctionName", "LocalVariableName", "SpellCheckingInspection",
     "UselessCallOnNotNull",
     "ConvertToStringTemplate", "UnusedReceiverParameter", "CascadeIf", "LiftReturnOrAssignment",
-    "DeprecatedCallableAddReplaceWith"
+    "DeprecatedCallableAddReplaceWith", "UseExpressionBody", "DEPRECATION"
 )
 
 package com.zoffcc.applications.undereat
@@ -21,15 +21,14 @@ import androidx.compose.ui.Modifier
 import com.zoffcc.applications.sorm.Restaurant
 import com.zoffcc.applications.undereat.corefuncs.orma
 import com.zoffcc.applications.undereat.ui.theme.UnderEatAppTheme
-import kotlinx.coroutines.flow.MutableStateFlow
 
 const val TAG = "UnderEat"
 
-val messages = MutableStateFlow("running tests ...")
-val globalstore = createGlobalStore()
 const val DEBUG_COMPOSE_UI_UPDATES = false // set "false" for release builds
+const val HTTP_MAPS_URL = "https://www.google.com/maps/search/?api=1&query="
 const val TAXI_PHONE_NUMBER = "+43 1 31 300"
 
+val globalstore = createGlobalStore()
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,8 +43,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-        val result = corefuncs().init_me(this)
-        messages.value = messages.value + result
+        corefuncs().init_me(this)
         load_restaurants()
     }
 

@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
@@ -63,8 +65,9 @@ fun add_form() {
     val cat_list = corefuncs.orma.selectFromCategory().toList()
     val cat_isDropDownExpanded = remember { mutableStateOf(false) }
     val cat_itemPosition = remember { mutableStateOf(0) }
+    val scrollState = rememberScrollState()
 
-    Column(modifier = Modifier.fillMaxSize())
+    Column(modifier = Modifier.fillMaxSize().verticalScroll(scrollState))
     {
         Spacer(modifier = Modifier.height(20.dp))
         Text("Add new Restaurant", fontSize = 14.sp)

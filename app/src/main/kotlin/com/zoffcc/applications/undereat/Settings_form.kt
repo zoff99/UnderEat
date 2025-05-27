@@ -7,9 +7,7 @@
 package com.zoffcc.applications.undereat
 
 import android.annotation.SuppressLint
-import android.content.ActivityNotFoundException
 import android.content.Context
-import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.util.Log
 import android.webkit.MimeTypeMap
@@ -149,7 +147,7 @@ fun settings_form(context: Context) {
                     mimeType = "application/octet-stream"
                 }
 
-                Log.i(TAG, "share_local_file:mime type: " + mimeType);
+                Log.i(TAG, "share_local_file:mime type: " + mimeType)
                 intent.setDataAndType(file_uri, mimeType)
                 try {
                     context.startActivity(Intent.createChooser(intent, "Share"))

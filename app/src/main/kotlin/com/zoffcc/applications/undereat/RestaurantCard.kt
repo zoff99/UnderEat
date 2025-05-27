@@ -1,5 +1,5 @@
 @file:Suppress("LiftReturnOrAssignment", "LocalVariableName", "UNUSED_PARAMETER",
-    "SpellCheckingInspection"
+    "SpellCheckingInspection", "ConvertToStringTemplate"
 )
 
 package com.zoffcc.applications.undereat
@@ -23,6 +23,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,11 +39,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zoffcc.applications.sorm.Restaurant
 
+
 @Composable
 fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
     OutlinedCard(
         modifier = Modifier
-            .padding(2.dp)
+            .padding(start = 2.dp, end = 6.dp)
             .fillMaxWidth()
             .wrapContentHeight()
             .clickable {
@@ -59,7 +62,7 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .padding(1.dp)
+                .padding(0.dp)
         ) {
             Column(modifier = Modifier.weight(100000F)) {
                 var cat_name: String
@@ -78,7 +81,7 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
                         .padding(start = 4.dp),
                     textAlign = TextAlign.Start,
                     style = TextStyle(
-                        fontSize = 18.sp,
+                        fontSize = 20.sp,
                     )
                 )
                 Text(
@@ -87,24 +90,54 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
                     maxLines = 2,
                     modifier = Modifier
                         .randomDebugBorder()
-                        .padding(start = 4.dp),
+                        .padding(start = 6.dp),
                     textAlign = TextAlign.Start,
                     style = TextStyle(
-                        fontSize = 16.sp,
+                        fontSize = 14.sp,
                     )
                 )
-                Text(
-                    text = cat_name,
-                    softWrap = true,
-                    maxLines = 1,
-                    modifier = Modifier
-                        .randomDebugBorder()
-                        .padding(start = 4.dp),
-                    textAlign = TextAlign.Start,
-                    style = TextStyle(
-                        fontSize = 13.sp,
+                Row(modifier = Modifier
+                    .randomDebugBorder()
+                    .padding(start = 6.dp)) {
+                    IconButton(
+                        onClick = {
+                            val intent = Intent(Intent.ACTION_SEND)
+                            val link_url_encoded = HTTP_MAPS_URL +
+                                    Uri.encode(data.name + " " + data.address)
+                            // Log.i(TAG, "share_url=" + link_url_encoded)
+                            val text = "" + data.name + "\n" + data.address
+                            intent.type = "text/plain"
+                            intent.putExtra(Intent.EXTRA_SUBJECT, text)
+                            intent.putExtra(Intent.EXTRA_TEXT, link_url_encoded)
+                            context.startActivity(Intent.createChooser(intent,"Share via"))
+                        },
+                        modifier = Modifier
+                            .randomDebugBorder()
+                            .size(25.dp)
+                    ) {
+                        Icon(
+                            modifier = Modifier
+                                .randomDebugBorder()
+                                .fillMaxSize()
+                                .padding(0.dp),
+                            imageVector = Icons.Default.Share,
+                            contentDescription = "Share Restaurant Information"
+                        )
+                    }
+                    Text(
+                        text = cat_name,
+                        softWrap = true,
+                        maxLines = 1,
+                        modifier = Modifier
+                            .randomDebugBorder()
+                            .padding(start = 6.dp)
+                            .align(Alignment.CenterVertically),
+                        textAlign = TextAlign.Start,
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                        )
                     )
-                )
+                }
             }
             Spacer(
                 modifier = Modifier
@@ -113,30 +146,52 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
                     .weight(10F)
             )
             Column(modifier = Modifier.width(55.dp)) {
-                IconButton(
-                    onClick = {
-                        if (data.phonenumber.isNullOrEmpty())
-                        {
-                            Toast.makeText(context, "No Phonenumber for this Restaurant", Toast.LENGTH_SHORT).show()
-                        }
-                        else {
-                            val mapuri = Uri.parse("tel:" + data.phonenumber)
-                            val mapIntent = Intent(Intent.ACTION_DIAL, mapuri)
-                            context.startActivity(mapIntent)
-                        }
-                    },
-                    modifier = Modifier
-                        .randomDebugBorder()
-                        .size(50.dp)
-                ) {
-                    Icon(
+                if (data.phonenumber.isNullOrEmpty())
+                {
+                    IconButton(onClick = {},
                         modifier = Modifier
                             .randomDebugBorder()
-                            .fillMaxSize()
-                            .padding(4.dp),
-                        imageVector = Icons.Default.Call,
-                        contentDescription = "Call Restaurant"
-                    )
+                            .size(50.dp)
+                    ) {
+                        Icon(
+                            modifier = Modifier
+                                .randomDebugBorder()
+                                .fillMaxSize()
+                                .padding(4000.dp), // TODO: make an empty image. this is just a quick hack
+                            imageVector = Icons.Default.Phone,
+                            contentDescription = "No Phonenumber available"
+                        )
+                    }
+                }
+                else
+                {
+                    IconButton(
+                        onClick = {
+                            if (data.phonenumber.isNullOrEmpty()) {
+                                Toast.makeText(
+                                    context,
+                                    "No Phonenumber for this Restaurant",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                val mapuri = Uri.parse("tel:" + data.phonenumber)
+                                val mapIntent = Intent(Intent.ACTION_DIAL, mapuri)
+                                context.startActivity(mapIntent)
+                            }
+                        },
+                        modifier = Modifier
+                            .randomDebugBorder()
+                            .size(50.dp)
+                    ) {
+                        Icon(
+                            modifier = Modifier
+                                .randomDebugBorder()
+                                .fillMaxSize()
+                                .padding(4.dp),
+                            imageVector = Icons.Default.Call,
+                            contentDescription = "Call Restaurant"
+                        )
+                    }
                 }
                 IconButton(
                     onClick = {

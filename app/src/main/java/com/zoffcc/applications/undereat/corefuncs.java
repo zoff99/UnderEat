@@ -250,6 +250,7 @@ public class corefuncs
         }
         */
 
+        /*
         try
         {
             List<Restaurant> rl = orma.selectFromRestaurant().toList();
@@ -259,6 +260,7 @@ public class corefuncs
         {
             e.printStackTrace();
         }
+        */
 
         // all finished
         System.out.println(TAG + "finished.");
