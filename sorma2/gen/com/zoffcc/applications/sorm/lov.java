@@ -16,20 +16,20 @@ import static com.zoffcc.applications.sorm.OrmaDatabase.*;
 
 
 @Table
-public class Category
+public class lov
 {
-    private static final String TAG = "DB.Category";
-    @PrimaryKey(autoincrement = true, auto = true)
-    public long id;
+    private static final String TAG = "DB.lov";
+    @PrimaryKey
+    public String key;
 
     @Column(indexed = true, helpers = Column.Helpers.ALL)
-    public String name;
+    public String value;
 
-    public static Category deep_copy(Category in)
+    public static lov deep_copy(lov in)
     {
-        Category out = new Category();
-        out.id = in.id;
-        out.name = in.name;
+        lov out = new lov();
+        out.key = in.key;
+        out.value = in.value;
 
         return out;
     }
@@ -37,7 +37,7 @@ public class Category
     @Override
     public String toString()
     {
-        return "id=" + id + ", name=" + name;
+        return "key=" + key + ", value=" + value;
     }
 
 
@@ -52,9 +52,9 @@ public class Category
     List<OrmaBindvar> bind_set_vars = new ArrayList<>();
     int bind_set_count = 0;
 
-    public List<Category> toList()
+    public List<lov> toList()
     {
-        List<Category> list = new ArrayList<>();
+        List<lov> list = new ArrayList<>();
         orma_global_sqltolist_lock.lock();
         PreparedStatement statement = null;
         try
@@ -86,9 +86,9 @@ public class Category
             final long t3 = System.currentTimeMillis();
             while (rs.next())
             {
-                Category out = new Category();
-                out.id = rs.getLong("id");
-                out.name = rs.getString("name");
+                lov out = new lov();
+                out.key = rs.getString("key");
+                out.value = rs.getString("value");
 
                 list.add(out);
             }
@@ -150,17 +150,20 @@ public class Category
             // @formatter:off
             insert_pstmt_sql ="insert into \"" + this.getClass().getSimpleName() + "\"" +
                     "("
-                    + "\"name\""
+                    + "\"key\""
+                    + ",\"value\""
                     + ")" +
                     "values" +
                     "("
                     + "?1"
+                    + ",?2"
                     + ")";
 
             insert_pstmt = sqldb.prepareStatement(insert_pstmt_sql);
             insert_pstmt.clearParameters();
 
-            insert_pstmt.setString(1, this.name);
+            insert_pstmt.setString(1, this.key);
+            insert_pstmt.setString(2, this.value);
             // @formatter:on
 
             if (ORMA_TRACE)
@@ -235,7 +238,7 @@ public class Category
         return ret;
     }
 
-    public Category get(int i)
+    public lov get(int i)
     {
         this.sql_limit = " limit " + i + ",1 ";
         return this.toList().get(0);
@@ -354,13 +357,13 @@ public class Category
         return ret;
     }
 
-    public Category limit(int rowcount)
+    public lov limit(int rowcount)
     {
         this.sql_limit = " limit " + rowcount + " ";
         return this;
     }
 
-    public Category limit(int rowcount, int offset)
+    public lov limit(int rowcount, int offset)
     {
         this.sql_limit = " limit " + offset + " , " + rowcount;
         return this;
@@ -372,7 +375,7 @@ public class Category
 
 
     // ----------------- Set funcs ---------------------- //
-    public Category id(long id)
+    public lov key(String key)
     {
         if (this.sql_set.equals(""))
         {
@@ -382,13 +385,13 @@ public class Category
         {
             this.sql_set = this.sql_set + " , ";
         }
-        this.sql_set = this.sql_set + " \"id\"=?" + (BINDVAR_OFFSET_SET + bind_set_count) + " ";
-        bind_set_vars.add(new OrmaBindvar(BINDVAR_TYPE_Long, id));
+        this.sql_set = this.sql_set + " \"key\"=?" + (BINDVAR_OFFSET_SET + bind_set_count) + " ";
+        bind_set_vars.add(new OrmaBindvar(BINDVAR_TYPE_String, key));
         bind_set_count++;
         return this;
     }
 
-    public Category name(String name)
+    public lov value(String value)
     {
         if (this.sql_set.equals(""))
         {
@@ -398,131 +401,105 @@ public class Category
         {
             this.sql_set = this.sql_set + " , ";
         }
-        this.sql_set = this.sql_set + " \"name\"=?" + (BINDVAR_OFFSET_SET + bind_set_count) + " ";
-        bind_set_vars.add(new OrmaBindvar(BINDVAR_TYPE_String, name));
+        this.sql_set = this.sql_set + " \"value\"=?" + (BINDVAR_OFFSET_SET + bind_set_count) + " ";
+        bind_set_vars.add(new OrmaBindvar(BINDVAR_TYPE_String, value));
         bind_set_count++;
         return this;
     }
 
 
     // ----------------- Eq/Gt/Lt funcs ----------------- //
-    public Category idEq(long id)
+    public lov keyEq(String key)
     {
-        this.sql_where = this.sql_where + " and \"id\"=?" + (BINDVAR_OFFSET_WHERE + bind_where_count) + " ";
-        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_Long, id));
+        this.sql_where = this.sql_where + " and \"key\"=?" + (BINDVAR_OFFSET_WHERE + bind_where_count) + " ";
+        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_String, key));
         bind_where_count++;
         return this;
     }
 
-    public Category idNotEq(long id)
+    public lov keyNotEq(String key)
     {
-        this.sql_where = this.sql_where + " and \"id\"<>?" + (BINDVAR_OFFSET_WHERE + bind_where_count) + " ";
-        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_Long, id));
+        this.sql_where = this.sql_where + " and \"key\"<>?" + (BINDVAR_OFFSET_WHERE + bind_where_count) + " ";
+        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_String, key));
         bind_where_count++;
         return this;
     }
 
-    public Category idLt(long id)
+    public lov keyIsNull()
     {
-        this.sql_where = this.sql_where + " and \"id\"<?" + (BINDVAR_OFFSET_WHERE + bind_where_count) + " ";
-        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_Long, id));
+        this.sql_where = this.sql_where + " and \"key\" IS NULL ";
+        return this;
+    }
+
+    public lov keyIsNotNull()
+    {
+        this.sql_where = this.sql_where + " and \"key\" IS NOT NULL ";
+        return this;
+    }
+
+    public lov keyLike(String key)
+    {
+        this.sql_where = this.sql_where + " and \"key\" LIKE ?" + (BINDVAR_OFFSET_WHERE + bind_where_count) + " ESCAPE '\\' ";
+        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_String, key));
         bind_where_count++;
         return this;
     }
 
-    public Category idLe(long id)
+    public lov keyNotLike(String key)
     {
-        this.sql_where = this.sql_where + " and \"id\"<=?" + (BINDVAR_OFFSET_WHERE + bind_where_count) + " ";
-        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_Long, id));
+        this.sql_where = this.sql_where + " and \"key\" NOT LIKE ?" + (BINDVAR_OFFSET_WHERE + bind_where_count) + " ESCAPE '\\' ";
+        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_String, key));
         bind_where_count++;
         return this;
     }
 
-    public Category idGt(long id)
+    public lov valueEq(String value)
     {
-        this.sql_where = this.sql_where + " and \"id\">?" + (BINDVAR_OFFSET_WHERE + bind_where_count) + " ";
-        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_Long, id));
+        this.sql_where = this.sql_where + " and \"value\"=?" + (BINDVAR_OFFSET_WHERE + bind_where_count) + " ";
+        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_String, value));
         bind_where_count++;
         return this;
     }
 
-    public Category idGe(long id)
+    public lov valueNotEq(String value)
     {
-        this.sql_where = this.sql_where + " and \"id\">=?" + (BINDVAR_OFFSET_WHERE + bind_where_count) + " ";
-        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_Long, id));
+        this.sql_where = this.sql_where + " and \"value\"<>?" + (BINDVAR_OFFSET_WHERE + bind_where_count) + " ";
+        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_String, value));
         bind_where_count++;
         return this;
     }
 
-    public Category idBetween(long id1, long id2)
+    public lov valueIsNull()
     {
-        this.sql_where = this.sql_where + " and \"id\">?" + (BINDVAR_OFFSET_WHERE + bind_where_count) + " and id<?" + (BINDVAR_OFFSET_WHERE + 1 + bind_where_count) + " ";
-        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_Long, id1));
-        bind_where_count++;
-        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_Long, id2));
-        bind_where_count++;
+        this.sql_where = this.sql_where + " and \"value\" IS NULL ";
         return this;
     }
 
-    public Category idIsNull()
+    public lov valueIsNotNull()
     {
-        this.sql_where = this.sql_where + " and \"id\" IS NULL ";
+        this.sql_where = this.sql_where + " and \"value\" IS NOT NULL ";
         return this;
     }
 
-    public Category idIsNotNull()
+    public lov valueLike(String value)
     {
-        this.sql_where = this.sql_where + " and \"id\" IS NOT NULL ";
-        return this;
-    }
-
-    public Category nameEq(String name)
-    {
-        this.sql_where = this.sql_where + " and \"name\"=?" + (BINDVAR_OFFSET_WHERE + bind_where_count) + " ";
-        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_String, name));
+        this.sql_where = this.sql_where + " and \"value\" LIKE ?" + (BINDVAR_OFFSET_WHERE + bind_where_count) + " ESCAPE '\\' ";
+        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_String, value));
         bind_where_count++;
         return this;
     }
 
-    public Category nameNotEq(String name)
+    public lov valueNotLike(String value)
     {
-        this.sql_where = this.sql_where + " and \"name\"<>?" + (BINDVAR_OFFSET_WHERE + bind_where_count) + " ";
-        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_String, name));
-        bind_where_count++;
-        return this;
-    }
-
-    public Category nameIsNull()
-    {
-        this.sql_where = this.sql_where + " and \"name\" IS NULL ";
-        return this;
-    }
-
-    public Category nameIsNotNull()
-    {
-        this.sql_where = this.sql_where + " and \"name\" IS NOT NULL ";
-        return this;
-    }
-
-    public Category nameLike(String name)
-    {
-        this.sql_where = this.sql_where + " and \"name\" LIKE ?" + (BINDVAR_OFFSET_WHERE + bind_where_count) + " ESCAPE '\\' ";
-        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_String, name));
-        bind_where_count++;
-        return this;
-    }
-
-    public Category nameNotLike(String name)
-    {
-        this.sql_where = this.sql_where + " and \"name\" NOT LIKE ?" + (BINDVAR_OFFSET_WHERE + bind_where_count) + " ESCAPE '\\' ";
-        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_String, name));
+        this.sql_where = this.sql_where + " and \"value\" NOT LIKE ?" + (BINDVAR_OFFSET_WHERE + bind_where_count) + " ESCAPE '\\' ";
+        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_String, value));
         bind_where_count++;
         return this;
     }
 
 
     // ----------------- OrderBy funcs ------------------ //
-    public Category orderByIdAsc()
+    public lov orderByKeyAsc()
     {
         if (this.sql_orderby.equals(""))
         {
@@ -532,11 +509,11 @@ public class Category
         {
             this.sql_orderby = this.sql_orderby + " , ";
         }
-        this.sql_orderby = this.sql_orderby + " \"id\" ASC ";
+        this.sql_orderby = this.sql_orderby + " \"key\" ASC ";
         return this;
     }
 
-    public Category orderByIdDesc()
+    public lov orderByKeyDesc()
     {
         if (this.sql_orderby.equals(""))
         {
@@ -546,11 +523,11 @@ public class Category
         {
             this.sql_orderby = this.sql_orderby + " , ";
         }
-        this.sql_orderby = this.sql_orderby + " \"id\" DESC ";
+        this.sql_orderby = this.sql_orderby + " \"key\" DESC ";
         return this;
     }
 
-    public Category orderByNameAsc()
+    public lov orderByValueAsc()
     {
         if (this.sql_orderby.equals(""))
         {
@@ -560,11 +537,11 @@ public class Category
         {
             this.sql_orderby = this.sql_orderby + " , ";
         }
-        this.sql_orderby = this.sql_orderby + " \"name\" ASC ";
+        this.sql_orderby = this.sql_orderby + " \"value\" ASC ";
         return this;
     }
 
-    public Category orderByNameDesc()
+    public lov orderByValueDesc()
     {
         if (this.sql_orderby.equals(""))
         {
@@ -574,7 +551,7 @@ public class Category
         {
             this.sql_orderby = this.sql_orderby + " , ";
         }
-        this.sql_orderby = this.sql_orderby + " \"name\" DESC ";
+        this.sql_orderby = this.sql_orderby + " \"value\" DESC ";
         return this;
     }
 

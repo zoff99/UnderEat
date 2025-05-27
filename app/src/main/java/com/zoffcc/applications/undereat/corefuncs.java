@@ -22,7 +22,7 @@ public class corefuncs
     private static String ret = "";
 
     static OrmaDatabase orma = null;
-    final static int ORMA_CURRENT_DB_SCHEMA_VERSION = 2; // increase for database schema changes // minimum is 1
+    final static int ORMA_CURRENT_DB_SCHEMA_VERSION = 3; // increase for database schema changes // minimum is 1
     public final static String MAIN_DB_NAME = "main.db";
     private static boolean PREF__DB_wal_mode = true; // use WAL mode
     private final String PREF__DB_secrect_key = ""; // no encryption
@@ -83,6 +83,18 @@ public class corefuncs
             // @formatter:off
             run_multi_sql("ALTER TABLE \"Restaurant\" ADD COLUMN need_reservation BOOLEAN DEFAULT \"1\";\n");
             run_multi_sql("ALTER TABLE \"Restaurant\" ADD COLUMN phonenumber TEXT DEFAULT NULL;\n");
+            // @formatter:on
+        }
+
+        if (new_version == 3)
+        {
+            // @formatter:off
+            run_multi_sql("CREATE TABLE IF NOT EXISTS \"lov\" (\n" +
+                          "  \"key\" TEXT,\n" +
+                          "  \"value\" TEXT,\n" +
+                          "  PRIMARY KEY(\"key\")\n" +
+                          ");\n");
+
             // @formatter:on
         }
 
