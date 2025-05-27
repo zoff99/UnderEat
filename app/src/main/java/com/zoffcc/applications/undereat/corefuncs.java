@@ -22,7 +22,7 @@ public class corefuncs
     private static String ret = "";
 
     static OrmaDatabase orma = null;
-    final static int ORMA_CURRENT_DB_SCHEMA_VERSION = 3; // increase for database schema changes // minimum is 1
+    final static int ORMA_CURRENT_DB_SCHEMA_VERSION = 4; // increase for database schema changes // minimum is 1
     public final static String MAIN_DB_NAME = "main.db"; // DO NOT CHANGE
     private static boolean PREF__DB_wal_mode = true; // use WAL mode
     private final String PREF__DB_secrect_key = ""; // no encryption
@@ -31,7 +31,10 @@ public class corefuncs
         VIENNA_KITCHEN(1),
         CHINESE(2),
         JAPANESE(3),
-        HEURIGEN(4);
+        HEURIGEN(4),
+        EIS(5),
+        COCKTAILS(6),
+        POOL(7);
         public int value;
         private Category(int value)
         {
@@ -98,6 +101,14 @@ public class corefuncs
             // @formatter:on
         }
 
+        if (new_version == 4)
+        {
+            // @formatter:off
+            run_multi_sql("insert into Category (id, name) values (5, 'Eis')");
+            run_multi_sql("insert into Category (id, name) values (6, 'Cocktails')");
+            run_multi_sql("insert into Category (id, name) values (7, 'Pool')");
+            // @formatter:on
+        }
         // HINT: always check Settings_form.kt to keep columns in sync with import!!
     }
 

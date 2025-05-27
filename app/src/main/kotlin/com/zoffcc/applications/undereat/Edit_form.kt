@@ -137,7 +137,7 @@ fun edit_form() {
                             cat_isDropDownExpanded.value = true
                         }
                 ) {
-                    Log.i(TAG, "CCCCCCC22:" + cat_itemPosition.value + " ___ " + cat_list)
+                    // Log.i(TAG, "CCCCCCC22:" + cat_itemPosition.value + " ___ " + cat_list)
                     Text(text = cat_list[cat_itemPosition.value - 1].name, fontSize = 16.sp)
                     Icon(Icons.Default.ArrowDropDown, contentDescription = "select Category")
                 }
@@ -156,7 +156,7 @@ fun edit_form() {
                             },
                             onClick = {
                                 cat_isDropDownExpanded.value = false
-                                Log.i(TAG, "CCCCCCC333:" + cat_itemPosition.value + " ___ " + index)
+                                // Log.i(TAG, "CCCCCCC333:" + cat_itemPosition.value + " ___ " + index)
                                 cat_itemPosition.value = index + 1
                             })
                     }
@@ -202,10 +202,10 @@ fun edit_form() {
                             }
                             r.active = true
                             r.for_summer = false
-                            Log.i(
-                                TAG,
-                                "CCCCCCC444_save:" + cat_itemPosition.value + " ___ " + cat_list
-                            )
+                            //Log.i(
+                            //    TAG,
+                            //    "CCCCCCC444_save:" + cat_itemPosition.value + " ___ " + cat_list
+                            //)
                             r.category_id = cat_list[cat_itemPosition.value - 1].id
                             corefuncs.orma.updateRestaurant().idEq(restaurant_id)
                                 .name(r.name).address(r.address)

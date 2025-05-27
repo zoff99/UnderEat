@@ -177,10 +177,10 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                         elevation = ButtonDefaults.buttonElevation(4.dp),
                         onClick = {
                             restaurantliststore.sortByAddress()
-                            Log.i(
-                                TAG,
-                                " s2:" + restaurants.restaurantlist.size + " " + restaurants.restaurantlist
-                            )
+                            //Log.i(
+                            //    TAG,
+                            //    " s2:" + restaurants.restaurantlist.size + " " + restaurants.restaurantlist
+                            //)
                         },
                         content = {
                             Text(
@@ -225,8 +225,8 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                                     onClick = {
                                         cat_isDropDownExpanded.value = false
                                         cat_itemPosition.value = index
-                                        Log.i(TAG, "CTT1:" + cat_isDropDownExpanded.value + " " + cat_itemPosition.value)
-                                        Log.i(TAG, "CTT2:" + cat_list[cat_itemPosition.value].id + " " + cat_list[cat_itemPosition.value].name)
+                                        //Log.i(TAG, "CTT1:" + cat_isDropDownExpanded.value + " " + cat_itemPosition.value)
+                                        //Log.i(TAG, "CTT2:" + cat_list[cat_itemPosition.value].id + " " + cat_list[cat_itemPosition.value].name)
                                         globalstore.setFilterCategoryId(cat_list[cat_itemPosition.value].id)
                                         load_restaurants()
                                     })
