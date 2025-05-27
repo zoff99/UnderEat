@@ -39,7 +39,7 @@ import java.io.File
 const val export_sql_filename = "export.uedb"
 private const val sql_dump_prefix = "import_5907edf"
 
-private const val sql_export_dir = "export"
+// private const val sql_export_dir = "export"
 private const val sql_export_db_name = "dbexp"
 
 @SuppressLint("ComposableNaming")
@@ -56,7 +56,8 @@ fun settings_form(context: Context) {
                     try {
                         // now import the db from sqlite file -------------
                         // val dbs_path: String = context.getDir(sql_export_dir, MODE_PRIVATE).absolutePath
-                        val dbs_path: String = context.getExternalFilesDir(null)!!.absolutePath
+                        val dbs_path: String = context.filesDir.absolutePath
+                        // val dbs_path: String = context.getExternalFilesDir(null)!!.absolutePath
                         val sql_export_filename: String = dbs_path + "/" + export_sql_filename
                         Log.i(TAG, "import filename: " + sql_export_filename)
                         val sql_01 = "ATTACH DATABASE '$sql_export_filename' AS $sql_dump_prefix KEY '';"
@@ -115,7 +116,8 @@ fun settings_form(context: Context) {
             onClick = {
                 // now dump the DB to file in SQL format -------------
                 // val dbs_path: String = context.getDir(sql_export_dir, MODE_PRIVATE).absolutePath
-                val dbs_path: String = context.getExternalFilesDir(null)!!.absolutePath
+                val dbs_path: String = context.filesDir.absolutePath
+                // val dbs_path: String = context.getExternalFilesDir(null)!!.absolutePath
                 val sql_export_filename: String = dbs_path + "/" + export_sql_filename
                 try {
                     File(sql_export_filename).delete()
