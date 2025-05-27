@@ -9,8 +9,21 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.DocumentsContract;
 import android.util.Log;
+import android.widget.Toast;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.util.Objects;
 
 import androidx.annotation.Nullable;
+
+import static com.zoffcc.applications.undereat.Settings_formKt.export_sql_filename;
 
 public class ShareActivity extends Activity
 {
@@ -103,6 +116,32 @@ public class ShareActivity extends Activity
                         metaCursor.close();
                     }
                 }
+                if (fileName != null)
+                {
+                    // read the file data here and write it to the import file location
+                    try
+                    {
+                        InputStream inputStream = getContentResolver().openInputStream(data_uri);
+                        String dbs_path = getFilesDir().getAbsolutePath();
+                        String sql_export_filename = dbs_path + "/" + export_sql_filename;
+                        File targetFile = new File(sql_export_filename);
+                        OutputStream outStream = new FileOutputStream(targetFile);
+
+                        byte[] buffer = new byte[8 * 1024];
+                        int bytesRead;
+                        while ((bytesRead = inputStream.read(buffer)) != -1)
+                        {
+                            outStream.write(buffer, 0, bytesRead);
+                        }
+                        inputStream.close();
+                        outStream.close();
+                        Toast.makeText(this, "Import File saved successfully", Toast.LENGTH_LONG).show();
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
             }
             catch(Exception e)
             {
@@ -110,6 +149,7 @@ public class ShareActivity extends Activity
             }
 
         }
+        this.finish();
     }
 
     @Override
