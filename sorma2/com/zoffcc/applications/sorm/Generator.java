@@ -166,7 +166,7 @@ public class Generator {
     static void begin_table(final String workdir, final String tablename)
     {
         System.out.println("starting: " + workdir + File.separator + out_classdir + tablename + tbl_f_ext);
-        tbl_deepcopy = "    static "+tablename+" deep_copy("+tablename+" in)" + "\n";
+        tbl_deepcopy = "    public static "+tablename+" deep_copy("+tablename+" in)" + "\n";
         tbl_deepcopy += "    {" + "\n";
         tbl_deepcopy += "        "+tablename+" out = new "+tablename+"();" + "\n";
 
