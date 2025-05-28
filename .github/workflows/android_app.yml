@@ -13,6 +13,17 @@ on:
         default: dummy
 
 jobs:
+  update-nightly-tag:
+    name: Update nightly release tag
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    permissions:
+        contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Move nightly tag to head for nightly release
+        run: git tag -f nightly && git push origin nightly -f
+
   android-app:
     runs-on: ubuntu-latest
     strategy:
@@ -111,6 +122,33 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: "/home/runner/android_screen01_${{ matrix.api-level }}.png"
 
+  android-apk:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    if: ${{ true }}
+    steps:
+      - uses: actions/checkout@v4
 
+      - name: build artifact for nightly upload
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        run: |
+         pwd
+         ./gradlew build
+         find . -name '*.apk'
+         cp -av ./app/build/outputs/apk/debug/app-debug.apk UnderEat-nightly.apk
+
+     - name: Upload to nightly release
+       uses: ncipollo/release-action@v1
+       if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+       with:
+         allowUpdates: true
+         tag: nightly
+         omitBodyDuringUpdate: true
+         omitNameDuringUpdate: true
+         prerelease: true
+         replacesArtifacts: true
+         token: ${{ secrets.GITHUB_TOKEN }}
+         artifacts: "UnderEat-nightly.apk"
 
 
