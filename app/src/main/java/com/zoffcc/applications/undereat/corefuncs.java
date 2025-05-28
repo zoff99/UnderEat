@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.zoffcc.applications.sorm.OrmaDatabase;
 import com.zoffcc.applications.sorm.Restaurant;
+import com.zoffcc.applications.sorm.lov;
 
 import java.io.File;
 import java.util.List;
@@ -267,5 +268,77 @@ public class corefuncs
         ret = ret + "\n" + "finished";
 
         return ret;
+    }
+
+    static String get_g_opts(String key)
+    {
+        try
+        {
+            if (orma.selectFromlov().keyEq(key).count() == 1)
+            {
+                lov g_opts = (lov) orma.selectFromlov().keyEq(key).get(0);
+                // Log.i(TAG, "get_g_opts:(SELECT):key=" + key);
+                return g_opts.value;
+            }
+            else
+            {
+                return null;
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            Log.i(TAG, "get_g_opts:EE1:" + e.getMessage());
+            return null;
+        }
+    }
+
+    static void set_g_opts(String key, String value)
+    {
+        try
+        {
+            lov g_opts = new lov();
+            g_opts.key = key;
+            g_opts.value = value;
+
+            try
+            {
+                orma.insertIntolov(g_opts);
+                Log.i(TAG, "set_g_opts:(INSERT):key=" + key + " value=" + "xxxxxxxxxxxxx");
+            }
+            catch (Exception e)
+            {
+                // e.printStackTrace();
+                try
+                {
+                    orma.updatelov().keyEq(key).value(value).execute();
+                    Log.i(TAG, "set_g_opts:(UPDATE):key=" + key + " value=" + "xxxxxxxxxxxxxxx");
+                }
+                catch (Exception e2)
+                {
+                    e2.printStackTrace();
+                    Log.i(TAG, "set_g_opts:EE1:" + e2.getMessage());
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            Log.i(TAG, "set_g_opts:EE2:" + e.getMessage());
+        }
+    }
+
+    static void del_g_opts(String key)
+    {
+        try
+        {
+            orma.deleteFromlov().keyEq(key).execute();
+            Log.i(TAG, "del_g_opts:(DELETE):key=" + key);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            Log.i(TAG, "del_g_opts:EE2:" + e.getMessage());
+        }
     }
 }

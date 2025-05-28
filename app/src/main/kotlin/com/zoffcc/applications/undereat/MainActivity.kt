@@ -19,14 +19,17 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.zoffcc.applications.sorm.Restaurant
+import com.zoffcc.applications.undereat.corefuncs.del_g_opts
+import com.zoffcc.applications.undereat.corefuncs.get_g_opts
 import com.zoffcc.applications.undereat.corefuncs.orma
+import com.zoffcc.applications.undereat.corefuncs.set_g_opts
 import com.zoffcc.applications.undereat.ui.theme.UnderEatAppTheme
 
 const val TAG = "UnderEat"
 
 const val DEBUG_COMPOSE_UI_UPDATES = false // set "false" for release builds
 const val HTTP_MAPS_URL = "https://www.google.com/maps/search/?api=1&query="
-const val TAXI_PHONE_NUMBER = "+43 1 31 300"
+var TAXI_PHONE_NUMBER: String? = null
 
 val globalstore = createGlobalStore()
 
@@ -44,7 +47,12 @@ class MainActivity : ComponentActivity() {
             }
         }
         corefuncs().init_me(this)
+        load_taxi_number()
         load_restaurants()
+    }
+
+    private fun load_taxi_number() {
+        TAXI_PHONE_NUMBER = get_g_opts("TAXI_PHONE_NUMBER")
     }
 
     @Deprecated("Deprecated in Java")
@@ -125,4 +133,17 @@ fun load_restaurants() {
         }
     }
     Log.i(TAG, "load_restaurants:end")
+}
+
+fun set_taxi_number(taxi_num: String?) {
+    if (taxi_num.isNullOrEmpty())
+    {
+        del_g_opts("TAXI_PHONE_NUMBER")
+        TAXI_PHONE_NUMBER = null
+    }
+    else
+    {
+        set_g_opts("TAXI_PHONE_NUMBER", taxi_num)
+        TAXI_PHONE_NUMBER = taxi_num
+    }
 }
