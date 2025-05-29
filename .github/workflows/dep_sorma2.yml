@@ -1,4 +1,4 @@
-name: Auto update sorma2 JNI
+name: Auto update sorma2
 
 on:
   schedule:
