@@ -5,7 +5,7 @@ export _HOME2_
 _HOME_=$(cd $_HOME2_;pwd)
 export _HOME_
 
-basedir="$_HOME_""/../android-refimpl-app/"
+basedir="$_HOME_""/../"
 cd "$basedir"
 
 r1='https://github.com/zoff99/sqlite-jdbc'
@@ -38,11 +38,3 @@ echo "__VERSIONUPDATE__:""$ver"
 
 sed -i -e 's#implementation '"'"'com.github.zoff99:pkgs_zoffccAndroidJDBC:.*#implementation '"'"'com.github.zoff99:pkgs_zoffccAndroidJDBC:'"$ver"''"'"'#' "$f1"
 
-./gradlew -q calculateChecksums >/dev/null 2>/dev/null # first run add some checking for license text. silly crap!
-
-./gradlew -q calculateChecksums | \
-grep -v 'and:sdk:platforms:android.jar' | \
-grep -v 'android:sdk:platforms:android.jar' | \
-grep -v 'android:sdk:platforms:core-for-system-modules.jar' | \
-grep -v '^\(Skipping\|Verifying\|Welcome to Gradle\)' \
-> ./app/witness.gradle
