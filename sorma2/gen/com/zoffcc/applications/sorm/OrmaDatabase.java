@@ -906,33 +906,6 @@ public class OrmaDatabase
     }
 
 
-    public Category selectFromCategory()
-    {
-        Category ret = new Category();
-        ret.sql_start = "SELECT * FROM \"Category\"";
-        return ret;
-    }
-
-    public long insertIntoCategory(Category obj)
-    {
-        return obj.insert();
-    }
-
-    public Category updateCategory()
-    {
-        Category ret = new Category();
-        ret.sql_start = "UPDATE \"Category\"";
-        return ret;
-    }
-
-    public Category deleteFromCategory()
-    {
-        Category ret = new Category();
-        ret.sql_start = "DELETE FROM \"Category\"";
-        return ret;
-    }
-
-
     public lov selectFromlov()
     {
         lov ret = new lov();
@@ -956,6 +929,33 @@ public class OrmaDatabase
     {
         lov ret = new lov();
         ret.sql_start = "DELETE FROM \"lov\"";
+        return ret;
+    }
+
+
+    public Category selectFromCategory()
+    {
+        Category ret = new Category();
+        ret.sql_start = "SELECT * FROM \"Category\"";
+        return ret;
+    }
+
+    public long insertIntoCategory(Category obj)
+    {
+        return obj.insert();
+    }
+
+    public Category updateCategory()
+    {
+        Category ret = new Category();
+        ret.sql_start = "UPDATE \"Category\"";
+        return ret;
+    }
+
+    public Category deleteFromCategory()
+    {
+        Category ret = new Category();
+        ret.sql_start = "DELETE FROM \"Category\"";
         return ret;
     }
 
