@@ -86,6 +86,7 @@ jobs:
           disable-animations: true
           disable-spellchecker: true
           script: |
+            sed -i -e 's#DEMO_SHOWCASE_DEBUG_ONLY = false#DEMO_SHOWCASE_DEBUG_ONLY = true#' ./app/src/main/java/com/zoffcc/applications/undereat/corefuncs.java
             ./gradlew build ; ./gradlew installDebug
             adb shell am start -n com.zoffcc.applications.undereat/com.zoffcc.applications.undereat.MainActivity  &
             sleep 60
