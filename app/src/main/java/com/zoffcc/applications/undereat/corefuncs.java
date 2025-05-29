@@ -9,7 +9,7 @@ import com.zoffcc.applications.sorm.Restaurant;
 import com.zoffcc.applications.sorm.lov;
 
 import java.io.File;
-import java.util.List;
+import java.util.Random;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.zoffcc.applications.sorm.OrmaDatabase.run_multi_sql;
@@ -27,6 +27,7 @@ public class corefuncs
     public final static String MAIN_DB_NAME = "main.db"; // DO NOT CHANGE
     private static boolean PREF__DB_wal_mode = true; // use WAL mode
     private final String PREF__DB_secrect_key = ""; // no encryption
+    private final boolean DEMO_SHOWCASE_DEBUG_ONLY = false; // set "false" for release builds
 
     public static enum Category {
         VIENNA_KITCHEN(1),
@@ -232,24 +233,28 @@ public class corefuncs
         {
             e.printStackTrace();
         }
-        Random rnd = new Random();
-        for(int i=0;i<2;i++) {
-            try
+        */
+        if (DEMO_SHOWCASE_DEBUG_ONLY)
+        {
+            Random rnd = new Random();
+            for (int i = 0; i < 200; i++)
             {
-                Restaurant r = new Restaurant();
-                r.name = "Restaurant " + i;
-                r.address = "" + rnd.nextInt() + " gasse " + rnd.nextFloat() + " opjopiriejroije wiorjweior jiowejroijiorj ior ";
-                r.active = true;
-                r.for_summer = false;
-                r.category_id = Category.VIENNA_KITCHEN.value;
-                orma.insertIntoRestaurant(r);
-            }
-            catch(Exception e)
-            {
-                e.printStackTrace();
+                try
+                {
+                    Restaurant r = new Restaurant();
+                    r.name = (rnd.nextInt(9998) + 1) + " Restaurant " + i;
+                    r.address = "" + rnd.nextInt() + " street " + rnd.nextFloat() + " longer text here öäüß %&! _;#+*<>";
+                    r.active = true;
+                    r.for_summer = false;
+                    r.category_id = Category.CHINESE.value;
+                    orma.insertIntoRestaurant(r);
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
             }
         }
-        */
 
         /*
         try

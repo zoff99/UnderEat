@@ -85,7 +85,7 @@ fun MainScreen(context: Context) {
     val restaurants by restaurantliststore.stateFlow.collectAsState()
     val state_mainscreen by globalstore.stateFlow.collectAsState()
 
-    Log.i(TAG, "size_list=" + restaurants.restaurantlist.size)
+    // Log.i(TAG, "size_list=" + restaurants.restaurantlist.size)
 
     if (state_mainscreen.mainscreen_state == MAINSCREEN.MAINLIST) {
         globalstore.setEditRestaurantId(-1)

@@ -13,7 +13,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -86,7 +85,7 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
     val cat_itemPosition = remember { mutableStateOf(current_filter_cat_id_pos) }
     val listState = rememberLazyListState()
 
-    Column() {
+    Column {
             // Header Row
             Row {
                 Button(
@@ -254,7 +253,7 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
 
                 }
             )
-            Row() {
+            Row {
                 // Data List
                 LazyColumn(
                     state = listState,
@@ -276,6 +275,7 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
         }
 }
 
+@Suppress("UNUSED_PARAMETER", "SimpleRedundantLet")
 @Composable
 fun ScrollBar(
     lazyListState: LazyListState,

@@ -1,5 +1,8 @@
+@file:Suppress("unused")
+
 package com.zoffcc.applications.undereat
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.ScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -11,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+    @SuppressLint("ComposableModifierFactory")
     @Composable
     fun Modifier.verticalColumnScrollbar(
         scrollState: ScrollState,
