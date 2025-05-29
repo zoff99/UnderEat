@@ -39,7 +39,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zoffcc.applications.sorm.Restaurant
-import java.lang.Exception
+import com.zoffcc.applications.undereat.corefuncs.orma
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("ComposableNaming")
@@ -62,7 +62,7 @@ fun add_form() {
         mutableStateOf(textFieldValue)
     }
 
-    val cat_list = corefuncs.orma.selectFromCategory().toList()
+    val cat_list = orma.selectFromCategory().toList()
     val cat_isDropDownExpanded = remember { mutableStateOf(false) }
     val cat_itemPosition = remember { mutableStateOf(0) }
     val scrollState = rememberScrollState()
@@ -161,8 +161,9 @@ fun add_form() {
                             r.active = true
                             r.for_summer = false
                             r.category_id = cat_list[cat_itemPosition.value].id
-                            corefuncs.orma.insertIntoRestaurant(r)
+                            val r_id_new: Long = orma.insertIntoRestaurant(r)
                             load_restaurants()
+                            get_lat_lon(r.name, r.address, r_id_new)
                             globalstore.updateMainscreenState(MAINSCREEN.MAINLIST)
                         }
                     } catch (e: Exception) {

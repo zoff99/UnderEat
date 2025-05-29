@@ -7,6 +7,8 @@
 package com.zoffcc.applications.undereat
 
 import android.annotation.SuppressLint
+import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -44,7 +46,11 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zoffcc.applications.sorm.Restaurant
-import java.lang.Exception
+import com.zoffcc.applications.undereat.corefuncs.orma
+import org.json.JSONArray
+import java.net.HttpURLConnection
+import java.net.URL
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("ComposableNaming")
@@ -72,8 +78,18 @@ fun edit_form() {
         val textFieldValue = TextFieldValue(text = if (rest_data.phonenumber.isNullOrEmpty()) "" else rest_data.phonenumber)
         mutableStateOf(textFieldValue)
     }
+    Log.i(TAG, "RRRRR:lat:" + rest_data.lat)
+    var input_lat by remember {
+        val textFieldValue = TextFieldValue(text = geo_coord_longdb_to_string(rest_data.lat))
+        mutableStateOf(textFieldValue)
+    }
+    Log.i(TAG, "RRRRR:lon:" + rest_data.lon)
+    var input_lon by remember {
+        val textFieldValue = TextFieldValue(text = geo_coord_longdb_to_string(rest_data.lon))
+        mutableStateOf(textFieldValue)
+    }
 
-    val cat_list = corefuncs.orma.selectFromCategory().toList()
+    val cat_list = orma.selectFromCategory().toList()
     val cat_isDropDownExpanded = remember { mutableStateOf(false) }
     val cat_itemPosition = remember { mutableStateOf(rest_data.category_id.toInt()) }
     val scrollState = rememberScrollState()
@@ -85,7 +101,7 @@ fun edit_form() {
             confirmButton = {
                 Button(onClick = {
                     try {
-                        corefuncs.orma.deleteFromRestaurant().idEq(restaurant_id).execute()
+                        orma.deleteFromRestaurant().idEq(restaurant_id).execute()
                         //
                         globalstore.setEditRestaurantId(-1)
                         load_restaurants()
@@ -105,7 +121,9 @@ fun edit_form() {
             text = { "Really delete this Restaurant ?" })
     }
 
-    Column(modifier = Modifier.fillMaxSize().verticalScroll(scrollState))
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .verticalScroll(scrollState))
     {
         Spacer(modifier = Modifier.height(20.dp))
         Text("Edit Restaurant", fontSize = 14.sp)
@@ -169,6 +187,16 @@ fun edit_form() {
                 .padding(3.dp),
                 value = input_comment, placeholder = { Text(text = "Comment", fontSize = 14.sp) },
                 onValueChange = { input_comment = it })
+            TextField(modifier = Modifier
+                .fillMaxWidth()
+                .padding(3.dp),
+                value = input_lat, placeholder = { Text(text = "Latitude", fontSize = 14.sp) },
+                onValueChange = { input_lat = it })
+            TextField(modifier = Modifier
+                .fillMaxWidth()
+                .padding(3.dp),
+                value = input_lon, placeholder = { Text(text = "Longitude", fontSize = 14.sp) },
+                onValueChange = { input_lon = it })
 
 
         }
@@ -202,20 +230,29 @@ fun edit_form() {
                             } else {
                                 r.phonenumber = input_phonenumber.text
                             }
+                            r.lat = geo_coord_string_to_longdb(input_lat.text)
+                            r.lon = geo_coord_string_to_longdb(input_lon.text)
+                            r.address = input_addr.text
                             r.active = true
                             r.for_summer = false
-                            //Log.i(
-                            //    TAG,
-                            //    "CCCCCCC444_save:" + cat_itemPosition.value + " ___ " + cat_list
-                            //)
                             r.category_id = cat_list[cat_itemPosition.value - 1].id
-                            corefuncs.orma.updateRestaurant().idEq(restaurant_id)
+
+                            orma.updateRestaurant().idEq(restaurant_id)
                                 .name(r.name).address(r.address)
+                                .lat(r.lat).lon(r.lon)
                                 .comment(r.comment).category_id(r.category_id)
                                 .phonenumber(r.phonenumber).execute()
+
+                            load_restaurants()
+
+                            @Suppress("CanBeVal")
+                            var restaurant_id_copy = restaurant_id
+                            if ((input_lat.text.isNullOrEmpty()) || (input_lon.text.isNullOrEmpty()))
+                            {
+                                get_lat_lon(r.name, r.address, restaurant_id_copy)
+                            }
                             //
                             globalstore.setEditRestaurantId(-1)
-                            load_restaurants()
                             globalstore.updateMainscreenState(MAINSCREEN.MAINLIST)
                         }
                     } catch (e: Exception) {
@@ -285,4 +322,70 @@ fun edit_form() {
             )
         }
     }
+}
+
+@Suppress("UNUSED_PARAMETER")
+fun get_lat_lon(r_name: String, r_address: String, r_id: Long)
+{
+    Thread {
+        val url = HTTP_NOMINATIM_GET_LAT_LON +
+                Uri.encode(r_name)
+        Log.i(TAG, "XXXXX:url:" + url)
+        val connection = URL(url).openConnection() as HttpURLConnection
+        try {
+            val data_json = connection.inputStream.bufferedReader().use { it.readText() }
+            if (!data_json.isNullOrEmpty()) {
+                // Log.i(TAG, data_json)
+                val json_array = JSONArray(data_json)
+                // Log.i(TAG, "XXXXXXXX1:" + json_array.toString())
+                val json = json_array.getJSONObject(0)
+                // Log.i(TAG, "XXXXXXXX2:" + json.toString())
+                val lat = json.getDouble("lat")
+                Log.i(TAG, "XXXXXXXX4:" + lat.toString() + " -> " + geo_coord_double_to_longdb(lat))
+                val lon = json.getDouble("lon")
+                Log.i(TAG, "XXXXXXXX4:" + lon.toString() + " -> " + geo_coord_double_to_longdb(lon))
+                Log.i(TAG, "XXXXXXXX5:" + r_id)
+                orma.updateRestaurant().idEq(r_id)
+                    .lat(geo_coord_double_to_longdb(lat))
+                    .lon(geo_coord_double_to_longdb(lon)).execute()
+                load_restaurants()
+            }
+        }
+        catch(e: Exception)
+        {
+            e.printStackTrace()
+        }
+        finally {
+            connection.disconnect()
+        }
+    }.start()
+}
+
+fun geo_coord_string_to_longdb(coord: String): Long
+{
+    if (coord.isNullOrEmpty())
+    {
+        return 0
+    }
+    return ((coord.toDouble()) * 10_000_000).toLong()
+}
+
+fun geo_coord_longdb_to_string(coord: Long): String
+{
+    if (coord == 0L)
+    {
+        return ""
+    }
+    return (coord.toDouble() / 10_000_000.toDouble()).toString()
+}
+
+fun geo_coord_double_to_longdb(coord: Double): Long
+{
+    return (coord * 10_000_000).toLong()
+}
+
+@Suppress("unused")
+fun geo_coord_longdb_to_double(coord: Long): Double
+{
+    return coord.toDouble() / 10_000_000.toDouble()
 }

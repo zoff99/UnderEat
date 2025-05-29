@@ -32,11 +32,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zoffcc.applications.sorm.Restaurant
+import com.zoffcc.applications.undereat.corefuncs.orma
 
 
 @Composable
@@ -67,7 +71,7 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
                 var cat_name: String
                 try {
                     cat_name =
-                        corefuncs.orma.selectFromCategory().idEq(data.category_id).get(0).name
+                        orma.selectFromCategory().idEq(data.category_id).get(0).name
                 } catch (_: Exception) {
                     cat_name = "unknown"
                 }
@@ -202,12 +206,18 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
                         .randomDebugBorder()
                         .size(50.dp)
                 ) {
+                    var icon_green = false
+                    if ((data.lat != 0L) && (data.lon != 0L))
+                    {
+                        icon_green = true
+                    }
                     Icon(
                         modifier = Modifier
                             .randomDebugBorder()
                             .fillMaxSize()
                             .padding(4.dp),
                         imageVector = Icons.Default.LocationOn,
+                        tint = if (icon_green) Color(1,130,5) else Color.LightGray,
                         contentDescription = "Restaurant Location"
                     )
                 }

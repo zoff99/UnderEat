@@ -29,6 +29,7 @@ const val TAG = "UnderEat"
 
 const val DEBUG_COMPOSE_UI_UPDATES = false // set "false" for release builds
 const val HTTP_MAPS_URL = "https://www.google.com/maps/search/?api=1&query="
+const val HTTP_NOMINATIM_GET_LAT_LON = "https://nominatim.openstreetmap.org/search.php?limit=1&format=json&q="
 var TAXI_PHONE_NUMBER: String? = null
 
 val globalstore = createGlobalStore()

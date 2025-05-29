@@ -18,7 +18,6 @@ import static com.zoffcc.applications.sorm.OrmaDatabase.set_schema_upgrade_callb
 @SuppressWarnings("ALL")
 public class corefuncs
 {
-    private String path;
     private static final String TAG = "UnderEat:";
     private static String ret = "";
 

@@ -57,6 +57,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zoffcc.applications.sorm.Category
+import com.zoffcc.applications.undereat.corefuncs.orma
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -71,7 +72,7 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
     //
     val cat_list = ArrayList<Category>()
     cat_list.add(all_cat)
-    cat_list.addAll(corefuncs.orma.selectFromCategory().toList())
+    cat_list.addAll(orma.selectFromCategory().toList())
     //
     val filter_category_id = globalstore.getFilterCategoryId()
     var current_filter_cat_id_pos = 0
