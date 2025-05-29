@@ -7,6 +7,7 @@ package com.zoffcc.applications.undereat
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -30,6 +31,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,7 +45,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zoffcc.applications.sorm.Restaurant
+import com.zoffcc.applications.undereat.GPSTracker.calculateDistance
 import com.zoffcc.applications.undereat.corefuncs.orma
+import kotlin.math.pow
+import kotlin.math.roundToInt
 
 
 @Composable
@@ -140,6 +148,33 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
                             fontSize = 14.sp,
                         )
                     )
+                    var distance by remember {mutableStateOf("")}
+                    if ((gps != null) && (data.lat != 0L) && (data.lon != 0L))
+                    {
+                        val lat = gps!!.getLatitude()
+                        val lon = gps!!.getLongitude()
+                        // Log.i(TAG, "dis11=" + lat + " " + lon + " " +
+                        //        geo_coord_longdb_to_double(data.lat) + " " + geo_coord_longdb_to_double(data.lon))
+                        val distance_in_meters = calculateDistance(lat, lon, 0.0,
+                            geo_coord_longdb_to_double(data.lat),
+                            geo_coord_longdb_to_double(data.lon),
+                            0.0)
+                        distance = "" + distance_in_meters.roundTo(1) + " m"
+                        // Log.i(TAG, "dis=" + distance + " " + data.name)
+                    }
+                    Text(
+                        text = distance,
+                        softWrap = true,
+                        maxLines = 1,
+                        modifier = Modifier
+                            .randomDebugBorder()
+                            .padding(start = 6.dp)
+                            .align(Alignment.CenterVertically),
+                        textAlign = TextAlign.Start,
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                        )
+                    )
                 }
             }
             Spacer(
@@ -224,4 +259,9 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
             }
         }
     }
+}
+
+fun Double.roundTo(numFractionDigits: Int): Double {
+    val factor = 10.0.pow(numFractionDigits.toDouble())
+    return (this * factor).roundToInt() / factor
 }

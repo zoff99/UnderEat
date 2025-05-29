@@ -1,14 +1,20 @@
 @file:Suppress("FunctionName", "LocalVariableName", "SpellCheckingInspection",
     "UselessCallOnNotNull",
     "ConvertToStringTemplate", "UnusedReceiverParameter", "CascadeIf", "LiftReturnOrAssignment",
-    "DeprecatedCallableAddReplaceWith", "UseExpressionBody", "DEPRECATION"
+    "DeprecatedCallableAddReplaceWith", "UseExpressionBody", "DEPRECATION", "PrivatePropertyName"
 )
 
 package com.zoffcc.applications.undereat
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.pm.PackageManager
+import android.location.LocationRequest
 import android.os.Bundle
+import android.os.Looper
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +24,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.zoffcc.applications.sorm.Restaurant
 import com.zoffcc.applications.undereat.corefuncs.del_g_opts
 import com.zoffcc.applications.undereat.corefuncs.get_g_opts
@@ -32,11 +40,31 @@ const val HTTP_MAPS_URL = "https://www.google.com/maps/search/?api=1&query="
 const val HTTP_NOMINATIM_GET_LAT_LON = "https://nominatim.openstreetmap.org/search.php?limit=1&format=json&q="
 var TAXI_PHONE_NUMBER: String? = null
 
+var gps: GPSTracker? = null
+
 val globalstore = createGlobalStore()
 
 class MainActivity : ComponentActivity() {
+
+    private val ACCESS_FINE_LOCATION_PERMISSION_CODE = 101
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Check if the permission is already granted
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+        } else {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                ACCESS_FINE_LOCATION_PERMISSION_CODE
+            )
+        }
+
         setContent {
             UnderEatAppTheme {
                 Surface(
@@ -75,6 +103,38 @@ class MainActivity : ComponentActivity() {
         }
         else {
             super.onBackPressed()
+        }
+    }
+
+    override fun onResume()
+    {
+        super.onResume()
+        try {
+            gps = GPSTracker(this)
+        } catch(_: java.lang.Exception) {
+        }
+    }
+
+    override fun onPause()
+    {
+        super.onPause()
+        try {
+            gps?.stopUsingGPS()
+        } catch(_: java.lang.Exception) {
+        }
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == ACCESS_FINE_LOCATION_PERMISSION_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            } else {
+            }
         }
     }
 }
