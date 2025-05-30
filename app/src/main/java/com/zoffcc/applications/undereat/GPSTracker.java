@@ -1,17 +1,13 @@
 package com.zoffcc.applications.undereat;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
-import android.hardware.SensorListener;
 import android.hardware.SensorManager;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -19,9 +15,7 @@ import android.app.Service;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.provider.Settings;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 
@@ -188,14 +182,17 @@ public class GPSTracker extends Service implements LocationListener, SensorEvent
         return longitude;
     }
 
+    @SuppressWarnings("unused")
     public float getAccuracy() {
         return accuracy;
     }
 
+    @SuppressWarnings("unused")
     public double getAltitude() {
         return altitude;
     }
 
+    @SuppressWarnings("unused")
     public float getBearing() {
         return bearing;
     }
@@ -218,10 +215,8 @@ public class GPSTracker extends Service implements LocationListener, SensorEvent
         double a = 6378137.0; // WGS84 major axis
         double b = 6356752.3142; // WGS84 semi-major axis
         double f = (a - b) / a;
-        double aSqMinusBSqOverBSq = (a * a - b * b) / (b * b);
 
         double l = lon2 - lon1;
-        double aA = 0.0;
         double u1 = Math.atan((1.0 - f) * Math.tan(lat1));
         double u2 = Math.atan((1.0 - f) * Math.tan(lat2));
 
@@ -232,8 +227,7 @@ public class GPSTracker extends Service implements LocationListener, SensorEvent
         double cosU1cosU2 = cosU1 * cosU2;
         double sinU1sinU2 = sinU1 * sinU2;
 
-        double sigma = 0.0;
-        double deltaSigma = 0.0;
+        double sigma;
         double cosSqAlpha;
         double cos2SM;
         double cosSigma;
@@ -257,16 +251,7 @@ public class GPSTracker extends Service implements LocationListener, SensorEvent
             cosSqAlpha = 1.0 - sinAlpha * sinAlpha;
             cos2SM = (cosSqAlpha == 0) ? 0.0 : cosSigma - 2.0 * sinU1sinU2 / cosSqAlpha;
 
-            double uSquared = cosSqAlpha * aSqMinusBSqOverBSq;
-            //aA = 1 + (uSquared / 16384.0) * (4096.0 + uSquared * (-768 + uSquared * (320.0
-            //                                                                         - 175.0 * uSquared)));
-            double bB = (uSquared / 1024.0) * (256.0 + uSquared * (-128.0 + uSquared * (74.0
-                                                                                        - 47.0 * uSquared)));
             double cC = (f / 16.0) * cosSqAlpha * (4.0 + f * (4.0 - 3.0 * cosSqAlpha));
-            double cos2SMSq = cos2SM * cos2SM;
-            //deltaSigma = bB * sinSigma * (cos2SM + (bB / 4.0) * (cosSigma * (-1.0 + 2.0 * cos2SMSq)
-            //                                                     - (bB / 6.0) * cos2SM * (-3.0 + 4.0 * sinSigma * sinSigma) * (-3.0
-            //                                                                                                                   + 4.0 * cos2SMSq)));
 
             lambda = l + (1.0 - cC) * f * sinAlpha * (sigma + cC * sinSigma * (cos2SM
                                                                                + cC * cosSigma * (-1.0 + 2.0 * cos2SM * cos2SM)));
@@ -277,10 +262,6 @@ public class GPSTracker extends Service implements LocationListener, SensorEvent
             }
         }
 
-        // results.mDistance = (float) (b * aA * (sigma - deltaSigma));
-        float initialBearing = (float) Math.atan2(cosU2 * sinLambda,
-                                                  cosU1 * sinU2 - sinU1 * cosU2 * cosLambda);
-        // initialBearing = (float) (initialBearing * (180.0 / Math.PI));
         float finalBearing = (float) Math.atan2(cosU1 * sinLambda,
                                                 -sinU1 * cosU2 + cosU1 * sinU2 * cosLambda);
         // convert to degrees (from radians)
@@ -333,10 +314,9 @@ public class GPSTracker extends Service implements LocationListener, SensorEvent
      * Calculate distance between two points in latitude and longitude taking
      * into account height difference. If you are not interested in height
      * difference pass 0.0. Uses Haversine method as its base.
-     *
      * lat1, lon1 Start point lat2, lon2 End point el1 Start altitude in meters
      * el2 End altitude in meters
-     * @returns Distance in Meters
+     * returns Distance in Meters
      */
     public static double calculateDistance(double lat1, double lon1, double el1,
                                            double lat2, double lon2, double el2) {

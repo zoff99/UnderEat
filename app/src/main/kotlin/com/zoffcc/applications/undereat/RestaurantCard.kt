@@ -1,5 +1,6 @@
 @file:Suppress("LiftReturnOrAssignment", "LocalVariableName", "UNUSED_PARAMETER",
-    "SpellCheckingInspection", "ConvertToStringTemplate", "UsePropertyAccessSyntax"
+    "SpellCheckingInspection", "ConvertToStringTemplate", "UsePropertyAccessSyntax",
+    "ReplaceWithOperatorAssignment", "unused"
 )
 
 package com.zoffcc.applications.undereat
