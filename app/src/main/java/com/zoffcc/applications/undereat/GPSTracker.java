@@ -20,6 +20,8 @@ import android.util.Log;
 import androidx.core.app.ActivityCompat;
 
 import static com.zoffcc.applications.undereat.MainActivityKt.TAG;
+import static com.zoffcc.applications.undereat.MainActivityKt.getLocationstore;
+import static java.lang.Math.abs;
 
 public class GPSTracker extends Service implements LocationListener, SensorEventListener
 {
@@ -174,10 +176,12 @@ public class GPSTracker extends Service implements LocationListener, SensorEvent
         }
     }
 
+    @SuppressWarnings("unused")
     public double getLatitude() {
         return latitude;
     }
 
+    @SuppressWarnings("unused")
     public double getLongitude() {
         return longitude;
     }
@@ -197,10 +201,38 @@ public class GPSTracker extends Service implements LocationListener, SensorEvent
         return bearing;
     }
 
+    @SuppressWarnings("unused")
     public double getHeading() {
         return mAzimuth;
     }
 
+    /*
+     * this function is a simpler version of "computeDistanceAndBearing"
+     * WARNING the result is counter clockwise. W = 90°, N = 0°, E = 275°, S = 180°
+     */
+    public static double getBearing(double startLat, double startLng, double endLat, double endLng) {
+
+        double latitude1 = Math.toRadians(startLat);
+        double longitude1 = Math.toRadians(-startLng);
+        double latitude2 = Math.toRadians(endLat);
+        double longitude2 = Math.toRadians(-endLng);
+
+        double dLong = longitude2 - longitude1;
+
+        double dPhi = Math.log(Math.tan(latitude2 / 2.0 + Math.PI / 4.0) / Math.tan(latitude1 / 2.0 + Math.PI / 4.0));
+        if (abs(dLong) > Math.PI)
+            if (dLong > 0.0)
+                dLong = -(2.0 * Math.PI - dLong);
+            else
+                dLong = (2.0 * Math.PI + dLong);
+
+        return (Math.toDegrees(Math.atan2(dLong, dPhi)) + 360.0) % 360.0;
+    }
+
+    /*
+     * this function is more accurate but uses lots more calculations
+     */
+    @SuppressWarnings("unused")
     static float computeDistanceAndBearing(double lat1, double lon1, double lat2, double lon2)
     {
         // Based on http://www.ngs.noaa.gov/PUBS_LIB/inverse.pdf
@@ -257,7 +289,7 @@ public class GPSTracker extends Service implements LocationListener, SensorEvent
                                                                                + cC * cosSigma * (-1.0 + 2.0 * cos2SM * cos2SM)));
 
             double delta = (lambda - lambdaOrig) / lambda;
-            if (Math.abs(delta) < 1.0e-12) {
+            if (abs(delta) < 1.0e-12) {
                 break;
             }
         }
@@ -267,7 +299,7 @@ public class GPSTracker extends Service implements LocationListener, SensorEvent
         // convert to degrees (from radians)
         finalBearing = (float) (finalBearing * (180.0 / Math.PI));
 
-        Log.i(TAG, "BBBBBB=" + finalBearing);
+        // Log.i(TAG, "BBBBBB=" + finalBearing);
 
         return finalBearing;
     }
@@ -279,7 +311,9 @@ public class GPSTracker extends Service implements LocationListener, SensorEvent
         accuracy = location.getAccuracy();
         altitude = location.getAltitude();
         bearing = location.getBearing();
-        Log.i(TAG, "onLocationChanged: " + location);
+        // Log.i(TAG, "onLocationChanged: " + location);
+
+        getLocationstore().setLocation(latitude, longitude);
     }
 
     @Override
@@ -378,7 +412,9 @@ public class GPSTracker extends Service implements LocationListener, SensorEvent
         if (mAzimuth <= 80 && mAzimuth > 10)
             where = "NE";
 
-        Log.i(TAG, "" + mAzimuth + "° " + where);
+        // the result is clockwise. E = 90°, N = 0°, W = 275°, S = 180°
+        // Log.i(TAG, "azz: " + mAzimuth + "° " + where);
+        getLocationstore().setHeading(mAzimuth);
     }
 
     @Override

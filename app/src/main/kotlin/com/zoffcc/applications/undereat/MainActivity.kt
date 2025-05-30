@@ -10,11 +10,8 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
-import android.location.LocationRequest
 import android.os.Bundle
-import android.os.Looper
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -39,10 +36,13 @@ const val DEBUG_COMPOSE_UI_UPDATES = false // set "false" for release builds
 const val HTTP_MAPS_URL = "https://www.google.com/maps/search/?api=1&query="
 const val HTTP_NOMINATIM_GET_LAT_LON = "https://nominatim.openstreetmap.org/search.php?limit=1&format=json&q="
 var TAXI_PHONE_NUMBER: String? = null
+const val MAX_DISTANCE = 30_000 // max distance in meters when location will not be used anymore on mainlist
 
+@SuppressLint("StaticFieldLeak")
 var gps: GPSTracker? = null
 
 val globalstore = createGlobalStore()
+val locationstore = createLocationStore()
 
 class MainActivity : ComponentActivity() {
 
@@ -52,6 +52,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         // Check if the permission is already granted
+        @Suppress("ControlFlowWithEmptyBody")
         if (ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.READ_EXTERNAL_STORAGE
@@ -132,6 +133,7 @@ class MainActivity : ComponentActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == ACCESS_FINE_LOCATION_PERMISSION_CODE) {
+            @Suppress("ControlFlowWithEmptyBody")
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             } else {
             }

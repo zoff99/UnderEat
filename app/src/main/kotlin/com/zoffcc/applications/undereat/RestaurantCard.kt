@@ -9,6 +9,9 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,6 +24,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Phone
@@ -31,12 +35,17 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -44,8 +53,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zoffcc.applications.sorm.Restaurant
 import com.zoffcc.applications.undereat.GPSTracker.calculateDistance
-import com.zoffcc.applications.undereat.GPSTracker.computeDistanceAndBearing
+import com.zoffcc.applications.undereat.GPSTracker.getBearing
 import com.zoffcc.applications.undereat.corefuncs.orma
+import kotlinx.coroutines.flow.collectLatest
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
@@ -148,44 +158,73 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
                         )
                     )
                     var distance by remember {mutableStateOf("")}
+                    val state_location by locationstore.stateFlow.collectAsState()
+                    var relativeBearing by remember {mutableStateOf(0F)}
                     if ((gps != null) && (data.lat != 0L) && (data.lon != 0L))
                     {
-                        val lat = gps!!.getLatitude()
-                        val lon = gps!!.getLongitude()
+                        val lat = state_location.lat
+                        val lon = state_location.lon
 
-                        val bearing: Float = computeDistanceAndBearing(lat, lon,
+                        val bearing: Float = (360.0 - getBearing(lat, lon,
                             geo_coord_longdb_to_double(data.lat),
-                            geo_coord_longdb_to_double(data.lon))
+                            geo_coord_longdb_to_double(data.lon))).toFloat()
                         @Suppress("ReplaceWithOperatorAssignment")
-                        val heading: Float = gps!!.getHeading().toFloat()
+                        val heading: Float = state_location.heading.toFloat()
 
-                        var relativeBearing: Float = bearing - heading
-                        if (relativeBearing < 0) {
-                            relativeBearing = 360 + relativeBearing
-                        }
+                        relativeBearing = bearing - heading
+                        //if (relativeBearing < 0) {
+                        //    relativeBearing = 360 + relativeBearing
+                        //}
 
-                        // Log.i(TAG, "dis11=" + lat + " " + lon + " " +
-                        //        geo_coord_longdb_to_double(data.lat) + " " + geo_coord_longdb_to_double(data.lon))
+                        //Log.i(TAG, "dis11=" + lat + " " + lon + " " +
+                        //        geo_coord_longdb_to_double(data.lat) + " " + geo_coord_longdb_to_double(data.lon)+
+                        //" " + data.name)
                         val distance_in_meters = calculateDistance(lat, lon, 0.0,
                             geo_coord_longdb_to_double(data.lat),
                             geo_coord_longdb_to_double(data.lon),
                             0.0)
-                        distance = "" + distance_in_meters.roundToInt() + " m" + " " + relativeBearing
-                        // Log.i(TAG, "dis=" + distance + " " + data.name)
+                        if (distance_in_meters.roundToInt() > MAX_DISTANCE)
+                        {
+                            distance = ""
+                        }
+                        else
+                        {
+                            // distance = "" + distance_in_meters.roundToInt() +
+                            //        " m" + " " + relativeBearing.roundToInt()
+                            distance = "" + distance_in_meters.roundToInt() + " m"
+                            // distance = "" + bearing.roundToInt() + " " + heading.roundToInt()
+                            // Log.i(TAG, "dis=" + distance + " " + data.name + " " + bearing + " " + heading)
+                        }
                     }
-                    Text(
-                        text = distance,
-                        softWrap = true,
-                        maxLines = 1,
-                        modifier = Modifier
-                            .randomDebugBorder()
-                            .padding(start = 6.dp)
-                            .align(Alignment.CenterVertically),
-                        textAlign = TextAlign.Start,
-                        style = TextStyle(
-                            fontSize = 14.sp,
+                    // HINT: +90° because "ArrowBack" points to the left!!
+                    val rotation = smoothRotation(relativeBearing + 90)
+                    val animatedRotation by animateFloatAsState(
+                        targetValue = rotation.value,
+                        animationSpec = tween(
+                            durationMillis = 400,
+                            easing = LinearOutSlowInEasing
                         )
                     )
+                    if (distance.isNotEmpty()) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Navigation Arrow to Target",
+                            modifier = Modifier.size(30.dp).rotate(animatedRotation)
+                        )
+                        Text(
+                            text = distance,
+                            softWrap = true,
+                            maxLines = 1,
+                            modifier = Modifier
+                                .randomDebugBorder()
+                                .padding(start = 6.dp)
+                                .align(Alignment.CenterVertically),
+                            textAlign = TextAlign.Start,
+                            style = TextStyle(
+                                fontSize = 14.sp,
+                            )
+                        )
+                    }
                 }
             }
             Spacer(
@@ -270,6 +309,32 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
             }
         }
     }
+}
+
+@Composable
+private fun smoothRotation(rotation: Float): MutableState<Float> {
+    val storedRotation = remember { mutableStateOf(rotation) }
+
+    // Sample data
+    // current angle 340 -> new angle 10 -> diff -330 -> +30
+    // current angle 20 -> new angle 350 -> diff 330 -> -30
+    // current angle 60 -> new angle 270 -> diff 210 -> -150
+    // current angle 260 -> new angle 10 -> diff -250 -> +110
+
+    LaunchedEffect(rotation){
+        snapshotFlow { rotation  }
+            .collectLatest { newRotation ->
+                val diff = newRotation - storedRotation.value
+                val shortestDiff = when{
+                    diff > 180 -> diff - 360
+                    diff < -180 -> diff + 360
+                    else -> diff
+                }
+                storedRotation.value = storedRotation.value + shortestDiff
+            }
+    }
+
+    return storedRotation
 }
 
 fun Double.roundTo(numFractionDigits: Int): Double {
