@@ -24,7 +24,7 @@ public class corefuncs
     static OrmaDatabase orma = null;
     final static int ORMA_CURRENT_DB_SCHEMA_VERSION = 5; // increase for database schema changes // minimum is 1
     public final static String MAIN_DB_NAME = "main.db"; // DO NOT CHANGE
-    private static boolean PREF__DB_wal_mode = true; // use WAL mode
+    private static boolean PREF__DB_wal_mode = true; // use WAL mode, set "true" for release builds
     private final String PREF__DB_secrect_key = ""; // no encryption
     private final boolean DEMO_SHOWCASE_DEBUG_ONLY = false; // set "false" for release builds
 
