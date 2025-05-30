@@ -22,7 +22,7 @@ public class corefuncs
     private static String ret = "";
 
     static OrmaDatabase orma = null;
-    final static int ORMA_CURRENT_DB_SCHEMA_VERSION = 4; // increase for database schema changes // minimum is 1
+    final static int ORMA_CURRENT_DB_SCHEMA_VERSION = 5; // increase for database schema changes // minimum is 1
     public final static String MAIN_DB_NAME = "main.db"; // DO NOT CHANGE
     private static boolean PREF__DB_wal_mode = true; // use WAL mode
     private final String PREF__DB_secrect_key = ""; // no encryption
@@ -110,6 +110,14 @@ public class corefuncs
             run_multi_sql("insert into Category (id, name) values (7, 'Pool')");
             // @formatter:on
         }
+
+        if (new_version == 5)
+        {
+            // @formatter:off
+            run_multi_sql("update Category set name='Chinesisch' where id='2'");
+            // @formatter:on
+        }
+
         // HINT: always check Settings_form.kt to keep columns in sync with import!!
     }
 
