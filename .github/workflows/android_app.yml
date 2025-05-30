@@ -89,6 +89,7 @@ jobs:
             sed -i -e 's#DEMO_SHOWCASE_DEBUG_ONLY = false#DEMO_SHOWCASE_DEBUG_ONLY = true#' ./app/src/main/java/com/zoffcc/applications/undereat/corefuncs.java
             ./gradlew build ; ./gradlew installDebug
             adb shell 'pm grant com.zoffcc.applications.undereat android.permission.ACCESS_COARSE_LOCATION'
+            adb shell 'pm grant com.zoffcc.applications.undereat android.permission.ACCESS_FINE_LOCATION'
             adb shell am start -n com.zoffcc.applications.undereat/com.zoffcc.applications.undereat.MainActivity  &
             sleep 60
             adb exec-out screencap -p > ~/android_screen01_${{ matrix.api-level }}.png
