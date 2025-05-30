@@ -81,13 +81,33 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
             current_filter_cat_id_pos = index
         }
     }
-    //
     val cat_isDropDownExpanded = remember { mutableStateOf(false) }
     val cat_itemPosition = remember { mutableStateOf(current_filter_cat_id_pos) }
+    //
+    val sort_list = ArrayList<Sorter>()
+    val name_sorter = Sorter(id = 0, name = "Name")
+    val adress_sorter = Sorter(id = 1, name = "Adresse")
+    val distance_sorter = Sorter(id = 2, name = "Distanz")
+    sort_list.add(name_sorter)
+    sort_list.add(adress_sorter)
+    sort_list.add(distance_sorter)
+    //
+    val sorter_id = globalstore.getSorterId()
+    var current_sort_id_pos = 0
+    cat_list.forEachIndexed { index, sorter ->
+        if (sorter.id == sorter_id) {
+            current_sort_id_pos = index
+        }
+    }
+    val sort_isDropDownExpanded = remember { mutableStateOf(false) }
+    val sort_itemPosition = remember { mutableStateOf(current_sort_id_pos) }
+
     val listState = rememberLazyListState()
 
     Column {
-            // Header Row
+
+
+            // Header Row ---------------------
             Row {
                 Button(
                     modifier = Modifier
@@ -165,7 +185,10 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                     }
                 )
             }
-            // Button Row
+            // Header Row ---------------------
+
+
+            // Button Row ---------------------
             Row(
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.Top,
@@ -173,51 +196,69 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                     .fillMaxWidth()
                     .height(50.dp),
                 content = {
-                    Button(
-                        modifier = Modifier.padding(2.dp),
-                        shape = RoundedCornerShape(10.dp),
-                        elevation = ButtonDefaults.buttonElevation(4.dp),
-                        onClick = {
-                            restaurantliststore.sortByName()
-                        },
-                        content = {
-                            Text(
-                                text = "Name",
-                                style = TextStyle(
-                                    fontSize = 15.sp,
-                                )
-                            )
-                        }
-                    )
-                    Button(
-                        modifier = Modifier.padding(2.dp),
-                        shape = RoundedCornerShape(10.dp),
-                        elevation = ButtonDefaults.buttonElevation(4.dp),
-                        onClick = {
-                            restaurantliststore.sortByAddress()
-                            //Log.i(
-                            //    TAG,
-                            //    " s2:" + restaurants.restaurantlist.size + " " + restaurants.restaurantlist
-                            //)
-                        },
-                        content = {
-                            Text(
-                                text = "Address",
-                                style = TextStyle(
-                                    fontSize = 15.sp,
-                                )
-                            )
-                        }
-                    )
 
-
+                    // dropdown: sort --------------------------
                     Box {
                         Row(
                             horizontalArrangement = Arrangement.Start,
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
                                 .randomDebugBorder()
-                                .fillMaxWidth()
+                                .height(60.dp)
+                                .width(150.dp)
+                                .padding(10.dp)
+                                .clickable {
+                                    sort_isDropDownExpanded.value = true
+                                }
+                        ) {
+                            Text(text = sort_list[sort_itemPosition.value].name, fontSize = 16.sp)
+                            Icon(Icons.Default.ArrowDropDown, contentDescription = "select Sort Order")
+                        }
+                        DropdownMenu(
+                            expanded = sort_isDropDownExpanded.value,
+                            onDismissRequest = {
+                                sort_isDropDownExpanded.value = false
+                            }) {
+                            sort_list.forEachIndexed { index, sorter_ ->
+                                DropdownMenuItem(
+                                    modifier = Modifier
+                                        .height(60.dp)
+                                        .padding(1.dp),
+                                    text = {
+                                        Text(text = sorter_.name, fontSize = 16.sp)
+                                    },
+                                    onClick = {
+                                        sort_isDropDownExpanded.value = false
+                                        sort_itemPosition.value = index
+                                        // Log.i(TAG, "SSO1:" + sort_isDropDownExpanded.value + " " + sort_itemPosition.value)
+                                        // Log.i(TAG, "SSO2:" + sort_list[sort_itemPosition.value].id + " " + sort_list[sort_itemPosition.value].name)
+                                        globalstore.setSorterId(sort_list[sort_itemPosition.value].id)
+
+                                        if (sort_list[sort_itemPosition.value].id == 0L)
+                                        {
+                                            restaurantliststore.sortByName()
+                                        }
+                                        else if (sort_list[sort_itemPosition.value].id == 1L)
+                                        {
+                                            restaurantliststore.sortByAddress()
+                                        }
+
+                                    })
+                            }
+                        }
+                    }
+                    // dropdown: sort --------------------------
+
+
+
+                    // dropdown: filter --------------------------
+                    Box {
+                        Row(
+                            horizontalArrangement = Arrangement.Start,
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .randomDebugBorder()
+                                .width(150.dp)
                                 .height(60.dp)
                                 .padding(10.dp)
                                 .clickable {
@@ -251,9 +292,13 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                             }
                         }
                     }
+                    // dropdown: filter --------------------------
 
                 }
             )
+            // Button Row ---------------------
+
+
             Row {
                 // Data List
                 LazyColumn(
