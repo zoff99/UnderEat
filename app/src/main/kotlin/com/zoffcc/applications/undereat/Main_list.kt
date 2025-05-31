@@ -104,8 +104,8 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
     val sort_isDropDownExpanded = remember { mutableStateOf(false) }
     val sort_itemPosition = remember { mutableStateOf(current_sort_id_pos) }
 
-    // val listState = rememberLazyListState()
-    // remeber lazylist state even if components get disposed
+    // --> this works only as long as the component ist shwoing // val listState = rememberLazyListState()
+    // remember lazylist state even if components get disposed
     val listState = rememberForeverLazyListState(key = "mainlist")
 
     Column {
