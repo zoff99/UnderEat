@@ -20,9 +20,11 @@ import android.util.Log;
 import androidx.core.app.ActivityCompat;
 
 import static com.zoffcc.applications.undereat.MainActivityKt.TAG;
+import static com.zoffcc.applications.undereat.MainActivityKt.getGlobalstore;
 import static com.zoffcc.applications.undereat.MainActivityKt.getLocationstore;
 import static java.lang.Math.abs;
 
+@SuppressWarnings("StatementWithEmptyBody")
 public class GPSTracker extends Service implements LocationListener, SensorEventListener
 {
     private final Context mContext;
@@ -59,6 +61,7 @@ public class GPSTracker extends Service implements LocationListener, SensorEvent
 
     public void startUsingGPS()
     {
+        Log.i(TAG, "== startUsingGPS ==");
         try
         {
             sensorManager = (SensorManager) mContext.getSystemService(SENSOR_SERVICE);
@@ -113,6 +116,8 @@ public class GPSTracker extends Service implements LocationListener, SensorEvent
     }
 
     public void stopUsingGPS() {
+        Log.i(TAG, "## stopUsingGPS ##");
+
         try
         {
             if (locationManager != null)
@@ -321,7 +326,6 @@ public class GPSTracker extends Service implements LocationListener, SensorEvent
         Log.i(TAG, "onProviderDisabled: " + provider);
         if (provider.equals(LocationManager.GPS_PROVIDER))
         {
-            stopUsingGPS();
         }
     }
 
@@ -330,7 +334,6 @@ public class GPSTracker extends Service implements LocationListener, SensorEvent
         Log.i(TAG, "onProviderEnabled: " + provider);
         if (provider.equals(LocationManager.GPS_PROVIDER))
         {
-            startUsingGPS();
         }
     }
 

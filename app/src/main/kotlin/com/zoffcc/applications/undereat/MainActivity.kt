@@ -109,7 +109,9 @@ class MainActivity : ComponentActivity() {
     {
         super.onResume()
         try {
-            gps = GPSTracker(this)
+            if (globalstore.getSorterId() == 2L) {
+                gps = GPSTracker(this)
+            }
         } catch(_: java.lang.Exception) {
         }
     }

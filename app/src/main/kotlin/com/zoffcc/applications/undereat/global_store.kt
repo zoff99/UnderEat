@@ -1,7 +1,8 @@
-@file:Suppress("ClassName", "SpellCheckingInspection")
+@file:Suppress("ClassName", "SpellCheckingInspection", "ConvertToStringTemplate")
 
 package com.zoffcc.applications.undereat
 
+import android.util.Log
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -43,6 +44,21 @@ fun createGlobalStore(): GlobalStore {
         }
 
         override fun setSorterId(value: Long) {
+            Log.i(TAG, "setSorterId:value=" + value)
+            if (value == 2L) {
+                Log.i(TAG, "setSorterId:2")
+                try {
+                    gps?.startUsingGPS()
+                } catch(e: java.lang.Exception) {
+                    e.printStackTrace()
+                }
+            } else {
+                try {
+                    gps?.stopUsingGPS()
+                } catch(e: java.lang.Exception) {
+                    e.printStackTrace()
+                }
+            }
             mutableStateFlow.value = state.copy(sorterId = value)
         }
 
