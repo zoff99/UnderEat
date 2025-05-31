@@ -13,6 +13,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -46,6 +47,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -102,7 +104,9 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
     val sort_isDropDownExpanded = remember { mutableStateOf(false) }
     val sort_itemPosition = remember { mutableStateOf(current_sort_id_pos) }
 
-    val listState = rememberLazyListState()
+    // val listState = rememberLazyListState()
+    // remeber lazylist state even if components get disposed
+    val listState = rememberForeverLazyListState(key = "mainlist")
 
     Column {
 
@@ -392,3 +396,54 @@ fun ScrollBar(
     }
 
 }
+
+
+
+
+
+/**
+ * Static field, contains all scroll values
+ */
+private val SaveMap = mutableMapOf<String, KeyParams>()
+
+private data class KeyParams(
+    val params: String = "",
+    val index: Int,
+    val scrollOffset: Int
+)
+
+/**
+ * Save scroll state on all time.
+ * @param key value for comparing screen
+ * @param params arguments for find different between equals screen
+ * @param initialFirstVisibleItemIndex see [LazyListState.firstVisibleItemIndex]
+ * @param initialFirstVisibleItemScrollOffset see [LazyListState.firstVisibleItemScrollOffset]
+ */
+@Composable
+fun rememberForeverLazyListState(
+    key: String,
+    params: String = "",
+    initialFirstVisibleItemIndex: Int = 0,
+    initialFirstVisibleItemScrollOffset: Int = 0
+): LazyListState {
+    val scrollState = rememberSaveable(saver = LazyListState.Saver) {
+        var savedValue = SaveMap[key]
+        if (savedValue?.params != params) savedValue = null
+        val savedIndex = savedValue?.index ?: initialFirstVisibleItemIndex
+        val savedOffset = savedValue?.scrollOffset ?: initialFirstVisibleItemScrollOffset
+        LazyListState(
+            savedIndex,
+            savedOffset
+        )
+    }
+    DisposableEffect(Unit) {
+        onDispose {
+            val lastIndex = scrollState.firstVisibleItemIndex
+            val lastOffset = scrollState.firstVisibleItemScrollOffset
+            SaveMap[key] = KeyParams(params, lastIndex, lastOffset)
+        }
+    }
+    return scrollState
+}
+
+
