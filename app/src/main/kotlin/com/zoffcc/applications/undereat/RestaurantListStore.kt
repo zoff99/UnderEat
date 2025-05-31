@@ -167,7 +167,8 @@ fun createRestaurantListStore(): RestaurantListStore
         }
 
         override fun sortByRating() {
-            mutableStateFlow.value = state.copy(restaurantlist = state.restaurantlist.sortedByDescending { it.rating })
+            mutableStateFlow.value = state.copy(restaurantlist = state.restaurantlist
+                .sortedWith(compareByDescending<Restaurant> { it.rating }.thenBy { it.name }))
         }
 
         private fun getRestDist(a: Restaurant, restaurantDistance: ArrayList<RestDistance>): Long {
