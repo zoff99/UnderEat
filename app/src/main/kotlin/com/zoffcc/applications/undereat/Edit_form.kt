@@ -7,6 +7,8 @@
 package com.zoffcc.applications.undereat
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.clickable
@@ -19,12 +21,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -32,6 +36,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -41,6 +46,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -55,7 +61,7 @@ import java.net.URL
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("ComposableNaming")
 @Composable
-fun edit_form() {
+fun edit_form(context: Context) {
     var show_delete_alert by remember { mutableStateOf(false) }
     val restaurant_id = globalstore.getRestaurantId()
     val rest_data = restaurantliststore.get(restaurant_id)
@@ -78,12 +84,12 @@ fun edit_form() {
         val textFieldValue = TextFieldValue(text = if (rest_data.phonenumber.isNullOrEmpty()) "" else rest_data.phonenumber)
         mutableStateOf(textFieldValue)
     }
-    Log.i(TAG, "RRRRR:lat:" + rest_data.lat)
+    // Log.i(TAG, "RRRRR:lat:" + rest_data.lat)
     var input_lat by remember {
         val textFieldValue = TextFieldValue(text = geo_coord_longdb_to_string(rest_data.lat))
         mutableStateOf(textFieldValue)
     }
-    Log.i(TAG, "RRRRR:lon:" + rest_data.lon)
+    // Log.i(TAG, "RRRRR:lon:" + rest_data.lon)
     var input_lon by remember {
         val textFieldValue = TextFieldValue(text = geo_coord_longdb_to_string(rest_data.lon))
         mutableStateOf(textFieldValue)
@@ -197,7 +203,36 @@ fun edit_form() {
                 .padding(3.dp),
                 value = input_lon, placeholder = { Text(text = "Longitude", fontSize = 14.sp) },
                 onValueChange = { input_lon = it })
-
+            IconButton(
+                onClick = {
+                    try {
+                        // Log.i(TAG, "GPS:"+ input_lat.text + " " + input_lon.text)
+                        if ((!input_lat.text.isNullOrEmpty()) && (!input_lon.text.isNullOrEmpty())) {
+                            val mapuri =
+                                Uri.parse("geo:0,0?q=" + input_lat.text + " " + input_lon.text)
+                            val mapIntent = Intent(Intent.ACTION_VIEW, mapuri)
+                            context.startActivity(mapIntent)
+                        }
+                    }
+                    catch(e: Exception) {
+                        e.printStackTrace()
+                    }
+                },
+                modifier = Modifier
+                    .randomDebugBorder()
+                    .padding(top = 10.dp)
+                    .size(60.dp)
+            ) {
+                Icon(
+                    modifier = Modifier
+                        .randomDebugBorder()
+                        .fillMaxSize()
+                        .padding(4.dp),
+                    imageVector = Icons.Default.LocationOn,
+                    tint = Color.LightGray,
+                    contentDescription = "Restaurant GPS Location"
+                )
+            }
 
         }
         Spacer(modifier = Modifier.height(20.dp))

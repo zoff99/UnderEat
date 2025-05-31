@@ -164,7 +164,7 @@ fun MainScreen(context: Context) {
     }
     else if (state_mainscreen.mainscreen_state == MAINSCREEN.EDIT)
     {
-        edit_form()
+        edit_form(context)
     }
 }
 
