@@ -135,9 +135,12 @@ fun settings_form(context: Context) {
                 Log.i(TAG, "export filename: " + sql_export_filename)
                 val sql_01 = "ATTACH DATABASE '$sql_export_filename' AS $sql_export_db_name KEY '';"
                 val sql_02 = "SELECT sqlcipher_export('$sql_export_db_name');"
+                // remove values from "lov" table, since those are kind of private settings
+                val sql_02b = "DELETE FROM '$sql_export_db_name'.lov;"
                 val sql_03 = "DETACH DATABASE $sql_export_db_name;"
                 run_query_for_single_result(sql_01)
                 run_query_for_single_result(sql_02)
+                run_query_for_single_result(sql_02b)
                 run_query_for_single_result(sql_03)
 
                 val file_uri = FileProvider.getUriForFile(
