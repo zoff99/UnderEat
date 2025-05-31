@@ -109,7 +109,7 @@ class MainActivity : ComponentActivity() {
     {
         super.onResume()
         try {
-            if (globalstore.getSorterId() == 2L) {
+            if (globalstore.getSorterId() == SORTER.DISTANCE.value) {
                 gps = GPSTracker(this)
             }
         } catch(_: java.lang.Exception) {
@@ -202,11 +202,11 @@ fun load_restaurants() {
 fun sort_restaurants()
 {
     val id = globalstore.getSorterId()
-    if (id == 0L)
+    if (id == SORTER.NAME.value)
     {
         restaurantliststore.sortByName()
     }
-    else if (id == 1L)
+    else if (id == SORTER.ADDRESS.value)
     {
         restaurantliststore.sortByAddress()
     }
@@ -263,7 +263,7 @@ private fun load_sorter() {
     val id = get_g_opts("SorterId")
     if (id.isNullOrEmpty())
     {
-        globalstore.setSorterId(0)
+        globalstore.setSorterId(SORTER.NAME.value)
     }
     else
     {

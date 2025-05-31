@@ -13,7 +13,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,7 +28,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -87,15 +85,15 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
     val cat_itemPosition = remember { mutableStateOf(current_filter_cat_id_pos) }
     //
     val sort_list = ArrayList<Sorter>()
-    val name_sorter = Sorter(id = 0, name = "Name")
-    val adress_sorter = Sorter(id = 1, name = "Adresse")
-    val distance_sorter = Sorter(id = 2, name = "Distanz")
+    val name_sorter = Sorter(id = SORTER.NAME.value, name = "Name")
+    val adress_sorter = Sorter(id = SORTER.ADDRESS.value, name = "Adresse")
+    val distance_sorter = Sorter(id = SORTER.DISTANCE.value, name = "Distanz")
     sort_list.add(name_sorter)
     sort_list.add(adress_sorter)
     sort_list.add(distance_sorter)
     //
     val sorter_id = globalstore.getSorterId()
-    var current_sort_id_pos = 0
+    var current_sort_id_pos = SORTER.NAME.value.toInt()
     cat_list.forEachIndexed { index, sorter ->
         if (sorter.id == sorter_id) {
             current_sort_id_pos = index

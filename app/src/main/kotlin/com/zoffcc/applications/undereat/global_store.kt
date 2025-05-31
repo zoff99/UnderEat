@@ -45,7 +45,7 @@ fun createGlobalStore(): GlobalStore {
 
         override fun setSorterId(value: Long) {
             Log.i(TAG, "setSorterId:value=" + value)
-            if (value == 2L) {
+            if (value == SORTER.DISTANCE.value) {
                 Log.i(TAG, "setSorterId:2")
                 try {
                     gps?.startUsingGPS()

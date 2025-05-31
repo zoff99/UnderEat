@@ -35,7 +35,7 @@ fun createLocationStore(): LocationStore {
             {
                 try
                 {
-                    if (globalstore.getSorterId() == 2L) {
+                    if (globalstore.getSorterId() == SORTER.DISTANCE.value) {
                         // HINT: location has changed
                         if ((last_location_sort + LOCATION_SORT_INTERAL_MILLISECS) < System.currentTimeMillis()) {
                             // Log.i(TAG, "sort by distance -------------")
