@@ -233,16 +233,8 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                                         // Log.i(TAG, "SSO1:" + sort_isDropDownExpanded.value + " " + sort_itemPosition.value)
                                         // Log.i(TAG, "SSO2:" + sort_list[sort_itemPosition.value].id + " " + sort_list[sort_itemPosition.value].name)
                                         globalstore.setSorterId(sort_list[sort_itemPosition.value].id)
-
-                                        if (sort_list[sort_itemPosition.value].id == 0L)
-                                        {
-                                            restaurantliststore.sortByName()
-                                        }
-                                        else if (sort_list[sort_itemPosition.value].id == 1L)
-                                        {
-                                            restaurantliststore.sortByAddress()
-                                        }
-
+                                        save_sorter()
+                                        sort_restaurants()
                                     })
                             }
                         }
@@ -287,6 +279,7 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                                         //Log.i(TAG, "CTT1:" + cat_isDropDownExpanded.value + " " + cat_itemPosition.value)
                                         //Log.i(TAG, "CTT2:" + cat_list[cat_itemPosition.value].id + " " + cat_list[cat_itemPosition.value].name)
                                         globalstore.setFilterCategoryId(cat_list[cat_itemPosition.value].id)
+                                        save_filters()
                                         load_restaurants()
                                     })
                             }

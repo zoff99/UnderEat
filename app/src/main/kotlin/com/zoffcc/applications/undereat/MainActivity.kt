@@ -78,11 +78,9 @@ class MainActivity : ComponentActivity() {
         }
         corefuncs().init_me(this)
         load_taxi_number()
+        load_filters()
+        load_sorter()
         load_restaurants()
-    }
-
-    private fun load_taxi_number() {
-        TAXI_PHONE_NUMBER = get_g_opts("TAXI_PHONE_NUMBER")
     }
 
     @Deprecated("Deprecated in Java")
@@ -195,7 +193,21 @@ fun load_restaurants() {
             }
         }
     }
+    sort_restaurants()
     Log.i(TAG, "load_restaurants:end")
+}
+
+fun sort_restaurants()
+{
+    val id = globalstore.getSorterId()
+    if (id == 0L)
+    {
+        restaurantliststore.sortByName()
+    }
+    else if (id == 1L)
+    {
+        restaurantliststore.sortByAddress()
+    }
 }
 
 fun set_taxi_number(taxi_num: String?) {
@@ -208,5 +220,59 @@ fun set_taxi_number(taxi_num: String?) {
     {
         set_g_opts("TAXI_PHONE_NUMBER", taxi_num)
         TAXI_PHONE_NUMBER = taxi_num
+    }
+}
+
+private fun load_taxi_number() {
+    TAXI_PHONE_NUMBER = get_g_opts("TAXI_PHONE_NUMBER")
+}
+
+fun save_filters() {
+    val fid = globalstore.getFilterCategoryId()
+    set_g_opts("FilterCategoryId", fid.toString())
+}
+
+private fun load_filters() {
+    val fid = get_g_opts("FilterCategoryId")
+    if (fid.isNullOrEmpty())
+    {
+        globalstore.setFilterCategoryId(-1)
+    }
+    else
+    {
+        try
+        {
+            globalstore.setFilterCategoryId(fid.toLong())
+        }
+        catch(e: Exception)
+        {
+            e.printStackTrace()
+        }
+
+    }
+}
+
+fun save_sorter() {
+    val id = globalstore.getSorterId()
+    set_g_opts("SorterId", id.toString())
+}
+
+private fun load_sorter() {
+    val id = get_g_opts("SorterId")
+    if (id.isNullOrEmpty())
+    {
+        globalstore.setSorterId(0)
+    }
+    else
+    {
+        try
+        {
+            globalstore.setSorterId(id.toLong())
+        }
+        catch(e: Exception)
+        {
+            e.printStackTrace()
+        }
+
     }
 }
