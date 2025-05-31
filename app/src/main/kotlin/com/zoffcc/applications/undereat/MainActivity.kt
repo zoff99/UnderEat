@@ -78,6 +78,7 @@ class MainActivity : ComponentActivity() {
         }
         corefuncs().init_me(this)
         load_taxi_number()
+        load_compact_flag()
         load_filters()
         load_sorter()
         load_restaurants()
@@ -231,6 +232,31 @@ fun set_taxi_number(taxi_num: String?) {
 
 private fun load_taxi_number() {
     TAXI_PHONE_NUMBER = get_g_opts("TAXI_PHONE_NUMBER")
+}
+
+fun save_compact_flag() {
+    val flag = globalstore.getCompactMainList()
+    set_g_opts("CompactMainList", flag.toString())
+}
+
+private fun load_compact_flag() {
+    val flag = get_g_opts("CompactMainList")
+    if (flag.isNullOrEmpty())
+    {
+        globalstore.setCompactMainList(false)
+    }
+    else
+    {
+        try
+        {
+            globalstore.setCompactMainList(flag.toBoolean())
+        }
+        catch(e: Exception)
+        {
+            e.printStackTrace()
+        }
+
+    }
 }
 
 fun save_filters() {

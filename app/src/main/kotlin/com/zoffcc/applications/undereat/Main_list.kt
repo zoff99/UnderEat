@@ -32,14 +32,19 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Call
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,6 +54,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -63,6 +69,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("ComposableNaming")
 @Composable
 fun main_list(restaurants: StateRestaurantList, context: Context) {
@@ -290,12 +297,32 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                         }
                     }
                     // dropdown: filter --------------------------
+                    val state_compactMainlist by globalstore.stateFlow.collectAsState()
+                    Switch(
+                        modifier = Modifier.scale(0.6f),
+                        checked = state_compactMainlist.compactMainList,
+                        onCheckedChange = {
+                            globalstore.setCompactMainList(it)
+                            save_compact_flag()
+                        },
+                        thumbContent = if (state_compactMainlist.compactMainList) {
+                            {
+                                Icon(
+                                    imageVector = Icons.Filled.Check,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(SwitchDefaults.IconSize),
+                                )
+                            }
+                        } else {
+                            null
+                        }
 
+                    )
                 }
             )
             // Button Row ---------------------
 
-
+            // Data list ----------------------
             Row {
                 // Data List
                 LazyColumn(
@@ -315,6 +342,7 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                 }
                 ScrollBar(lazyListState = listState, hidable = false)
             }
+            // Data list ----------------------
         }
 }
 

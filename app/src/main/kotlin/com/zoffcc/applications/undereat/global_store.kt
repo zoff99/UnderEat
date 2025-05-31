@@ -10,6 +10,7 @@ data class globalstore_state(
     val mainscreen_state: MAINSCREEN = MAINSCREEN.MAINLIST,
     val restaurantId: Long = -1,
     val filterCategoryId: Long = -1,
+    val compactMainList: Boolean = false,
     val sorterId: Long = 0
 )
 
@@ -17,11 +18,13 @@ interface GlobalStore {
     fun setEditRestaurantId(value: Long)
     fun setFilterCategoryId(value: Long)
     fun setSorterId(value: Long)
+    fun setCompactMainList(value: Boolean)
     fun updateMainscreenState(value: MAINSCREEN)
     fun getMainscreenState(): MAINSCREEN
     fun getRestaurantId(): Long
     fun getFilterCategoryId(): Long
     fun getSorterId(): Long
+    fun getCompactMainList(): Boolean
     val stateFlow: StateFlow<globalstore_state>
     val state get() = stateFlow.value
 }
@@ -62,6 +65,10 @@ fun createGlobalStore(): GlobalStore {
             mutableStateFlow.value = state.copy(sorterId = value)
         }
 
+        override fun setCompactMainList(value: Boolean) {
+            mutableStateFlow.value = state.copy(compactMainList = value)
+        }
+
         override fun getMainscreenState(): MAINSCREEN
         {
             return state.mainscreen_state
@@ -79,6 +86,10 @@ fun createGlobalStore(): GlobalStore {
 
         override fun getSorterId(): Long {
             return state.sorterId
+        }
+
+        override fun getCompactMainList(): Boolean {
+            return state.compactMainList
         }
     }
 }
