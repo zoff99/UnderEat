@@ -164,6 +164,9 @@ fun add_form() {
                             val r_id_new: Long = orma.insertIntoRestaurant(r)
                             load_restaurants()
                             get_lat_lon(r.name, r.address, r_id_new)
+                            if ((input_phonenumber.text.isNullOrEmpty()) || (input_phonenumber.text.isNullOrEmpty())) {
+                                get_phone(r.name, r.address, r_id_new)
+                            }
                             globalstore.updateMainscreenState(MAINSCREEN.MAINLIST)
                         }
                     } catch (e: Exception) {

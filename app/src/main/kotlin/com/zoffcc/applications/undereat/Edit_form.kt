@@ -411,6 +411,50 @@ fun get_lat_lon(r_name: String, r_address: String, r_id: Long)
     }.start()
 }
 
+@Suppress("UNUSED_PARAMETER")
+fun get_phone(r_name: String, r_address: String, r_id: Long)
+{
+    Thread {
+        val url = HTTP_NOMINATIM_GET_LAT_LON +
+                Uri.encode(r_name)
+        Log.i(TAG, "XXXXX:url:" + url)
+        val connection = URL(url).openConnection() as HttpURLConnection
+        try {
+            val data_json = connection.inputStream.bufferedReader().use { it.readText() }
+            if (!data_json.isNullOrEmpty()) {
+                // Log.i(TAG, data_json)
+                val json_array = JSONArray(data_json)
+                // Log.i(TAG, "XXXXXXXX1:" + json_array.toString())
+                val json = json_array.getJSONObject(0)
+                // Log.i(TAG, "XXXXXXXX2:" + json.toString())
+                Log.i(TAG, "XXXXXXXX5:" + r_id)
+                var tel: String
+                try {
+                    tel = json.getString("phone")
+                } catch (_: java.lang.Exception)
+                {
+                    tel = json.getString("contact:phone")
+                }
+                Log.i(
+                    TAG,
+                    "XXXXXXXX6:" + tel
+                )
+                orma.updateRestaurant().idEq(r_id)
+                    .phonenumber(tel).execute()
+                load_restaurants()
+            }
+        }
+        catch(e: Exception)
+        {
+            e.printStackTrace()
+        }
+        finally {
+            connection.disconnect()
+        }
+    }.start()
+}
+
+
 fun geo_coord_string_to_longdb(coord: String): Long
 {
     if (coord.isNullOrEmpty())
