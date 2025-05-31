@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -47,6 +48,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -209,7 +211,9 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = "Navigation Arrow to Target",
-                            modifier = Modifier.size(30.dp).rotate(animatedRotation)
+                            modifier = Modifier
+                                .size(30.dp)
+                                .rotate(animatedRotation)
                         )
                         Text(
                             text = distance,
@@ -226,6 +230,23 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
                         )
                     }
                 }
+
+                var rating by remember { mutableStateOf(data.rating) }
+                StarRatingBar(
+                    maxStars = 5,
+                    starSizeDp = 22.dp,
+                    starSpacingDp = 2.dp,
+                    isEnabled = false,
+                    rating = rating.toFloat(),
+                    onRatingChanged = {
+                        rating = it.roundToInt()
+                    }
+                )
+                Spacer(
+                    modifier = Modifier
+                        .width(1.dp)
+                        .height(2.dp)
+                )
             }
             Spacer(
                 modifier = Modifier

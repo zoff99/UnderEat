@@ -56,6 +56,7 @@ import com.zoffcc.applications.undereat.corefuncs.orma
 import org.json.JSONArray
 import java.net.HttpURLConnection
 import java.net.URL
+import kotlin.math.roundToInt
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -94,6 +95,7 @@ fun edit_form(context: Context) {
         val textFieldValue = TextFieldValue(text = geo_coord_longdb_to_string(rest_data.lon))
         mutableStateOf(textFieldValue)
     }
+    var rating by remember { mutableStateOf(rest_data.rating) }
 
     val cat_list = orma.selectFromCategory().toList()
     val cat_isDropDownExpanded = remember { mutableStateOf(false) }
@@ -193,6 +195,18 @@ fun edit_form(context: Context) {
                 .padding(3.dp),
                 value = input_comment, placeholder = { Text(text = "Comment", fontSize = 14.sp) },
                 onValueChange = { input_comment = it })
+            Spacer(modifier = Modifier.width(1.dp).height(10.dp))
+            StarRatingBar(
+                maxStars = 5,
+                starSizeDp = 45.dp,
+                starSpacingDp = 2.dp,
+                isEnabled = true,
+                rating = rating.toFloat(),
+                onRatingChanged = {
+                    rating = it.roundToInt()
+                }
+            )
+            Spacer(modifier = Modifier.width(1.dp).height(10.dp))
             TextField(modifier = Modifier
                 .fillMaxWidth()
                 .padding(3.dp),
@@ -270,11 +284,12 @@ fun edit_form(context: Context) {
                             r.address = input_addr.text
                             r.active = true
                             r.for_summer = false
+                            r.rating = rating
                             r.category_id = cat_list[cat_itemPosition.value - 1].id
 
                             orma.updateRestaurant().idEq(restaurant_id)
                                 .name(r.name).address(r.address)
-                                .lat(r.lat).lon(r.lon)
+                                .lat(r.lat).lon(r.lon).rating(rating)
                                 .comment(r.comment).category_id(r.category_id)
                                 .phonenumber(r.phonenumber).execute()
 
