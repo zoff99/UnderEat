@@ -313,7 +313,7 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                         RestaurantCard(index, data, context)
                     }
                 }
-                ScrollBar(lazyListState = listState)
+                ScrollBar(lazyListState = listState, hidable = false)
             }
         }
 }
