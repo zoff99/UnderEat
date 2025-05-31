@@ -48,7 +48,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -345,8 +344,9 @@ private fun smoothRotation(rotation: Float): MutableState<Float> {
     LaunchedEffect(rotation){
         snapshotFlow { rotation  }
             .collectLatest { newRotation ->
-                val diff = newRotation - storedRotation.value
-                val shortestDiff = when{
+                var diff = newRotation - storedRotation.value
+                if (diff > 360) { diff = diff - 360 } // just in case
+                val shortestDiff = when {
                     diff > 180 -> diff - 360
                     diff < -180 -> diff + 360
                     else -> diff

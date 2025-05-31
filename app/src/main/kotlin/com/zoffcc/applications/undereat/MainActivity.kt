@@ -210,6 +210,10 @@ fun sort_restaurants()
     {
         restaurantliststore.sortByAddress()
     }
+    else if (id == SORTER.RATING.value)
+    {
+        restaurantliststore.sortByRating()
+    }
 }
 
 fun set_taxi_number(taxi_num: String?) {

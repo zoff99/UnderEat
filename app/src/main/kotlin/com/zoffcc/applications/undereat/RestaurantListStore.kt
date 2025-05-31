@@ -2,7 +2,6 @@
 
 package com.zoffcc.applications.undereat
 
-import android.util.Log
 import com.zoffcc.applications.sorm.Restaurant
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -30,6 +29,7 @@ interface RestaurantListStore
     fun sortByName()
     fun sortByAddress()
     fun sortByDistance(restaurantDistance: ArrayList<RestDistance>)
+    fun sortByRating()
     val stateFlow: StateFlow<StateRestaurantList>
     val state get() = stateFlow.value
 }
@@ -146,7 +146,6 @@ fun createRestaurantListStore(): RestaurantListStore
         }
 
         override fun sortByDistance(restaurantDistance: ArrayList<RestDistance>) {
-
             val distanceComp = Comparator<Restaurant> { a, b ->
                 val adist = getRestDist(a, restaurantDistance)
                 val bdist = getRestDist(b, restaurantDistance)
@@ -165,6 +164,10 @@ fun createRestaurantListStore(): RestaurantListStore
             val l = state.restaurantlist.sortedWith(distanceComp)
             // Log.i(TAG, "lbefore=" + state.restaurantlist + "\nlafter:" + l)
             mutableStateFlow.value = state.copy(restaurantlist = l)
+        }
+
+        override fun sortByRating() {
+            mutableStateFlow.value = state.copy(restaurantlist = state.restaurantlist.sortedByDescending { it.rating })
         }
 
         private fun getRestDist(a: Restaurant, restaurantDistance: ArrayList<RestDistance>): Long {

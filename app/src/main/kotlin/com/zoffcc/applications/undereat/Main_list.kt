@@ -88,9 +88,11 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
     val name_sorter = Sorter(id = SORTER.NAME.value, name = "Name")
     val adress_sorter = Sorter(id = SORTER.ADDRESS.value, name = "Adresse")
     val distance_sorter = Sorter(id = SORTER.DISTANCE.value, name = "Distanz")
+    val rating_sorter = Sorter(id = SORTER.RATING.value, name = "Bewertung")
     sort_list.add(name_sorter)
     sort_list.add(adress_sorter)
     sort_list.add(distance_sorter)
+    sort_list.add(rating_sorter)
     //
     val sorter_id = globalstore.getSorterId()
     var current_sort_id_pos = SORTER.NAME.value.toInt()
