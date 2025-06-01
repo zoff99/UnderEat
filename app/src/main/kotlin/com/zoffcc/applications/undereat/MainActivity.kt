@@ -34,7 +34,7 @@ const val TAG = "UnderEat"
 
 const val DEBUG_COMPOSE_UI_UPDATES = false // set "false" for release builds
 const val HTTP_MAPS_URL = "https://www.google.com/maps/search/?api=1&query="
-const val HTTP_NOMINATIM_GET_LAT_LON = "https://nominatim.openstreetmap.org/search.php?limit=1&format=json&q="
+const val HTTP_NOMINATIM_SEARCH_URL = "https://nominatim.openstreetmap.org/search?limit=1&addressdetails=1&format=json&q="
 var TAXI_PHONE_NUMBER: String? = null
 const val MAX_DISTANCE = 30_000 // max distance in meters when location will not be used anymore on mainlist
 
@@ -158,7 +158,7 @@ fun MainScreen(context: Context) {
     else if (state_mainscreen.mainscreen_state == MAINSCREEN.ADD)
     {
         globalstore.setEditRestaurantId(-1)
-        add_form()
+        add_form(context)
     }
     else if (state_mainscreen.mainscreen_state == MAINSCREEN.SETTINGS)
     {

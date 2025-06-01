@@ -10,7 +10,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,9 +37,11 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalMinimumTouchTargetEnforcement
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,9 +55,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zoffcc.applications.sorm.Restaurant
 import com.zoffcc.applications.undereat.corefuncs.orma
-import org.json.JSONArray
-import java.net.HttpURLConnection
-import java.net.URL
 import kotlin.math.roundToInt
 
 
@@ -137,21 +136,110 @@ fun edit_form(context: Context) {
         Text("Edit Restaurant", fontSize = 14.sp)
         Spacer(modifier = Modifier.height(20.dp))
         Column {
+            //
+            //
+            // ----------- name -----------
             TextField(modifier = Modifier
                 .fillMaxWidth()
                 .padding(3.dp),
                 value = input_name, placeholder = { Text(text = "Name", fontSize = 14.sp) },
                 onValueChange = { input_name = it })
+            // ----------- name -----------
+            //
+            //
+            // ----------- address -----------
+            Spacer(
+                modifier = Modifier
+                    .width(5.dp)
+                    .height(6.dp)
+            )
+            CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+                Button(
+                    modifier = Modifier
+                        .height(40.dp)
+                        .padding(horizontal = 5.dp),
+                    shape = RoundedCornerShape(10.dp),
+                    elevation = ButtonDefaults.buttonElevation(4.dp),
+                    onClick = {
+                        if ((!input_name.text.isNullOrEmpty()) && (input_addr.text.isNullOrEmpty())) {
+                            get_address(search_item = input_name.text,
+                                onResult = {
+                                    if (it.isNullOrEmpty()) {
+                                        Toast.makeText(context, "No Address Found", Toast.LENGTH_SHORT).show()
+                                    } else {
+                                        input_addr = TextFieldValue(text = it)
+                                    }
+                                })
+                        } else {
+                            Toast.makeText(context, "No Name entered or Address Field is already filled out", Toast.LENGTH_SHORT).show()
+                        }
+                    },
+                    content = {
+                        Text(
+                            modifier = Modifier.padding(0.dp),
+                            text = "fill address with Nominatim",
+                            style = TextStyle(
+                                fontSize = 12.sp,
+                            )
+                        )
+                    }
+                )
+            }
             TextField(modifier = Modifier
                 .fillMaxWidth()
                 .padding(3.dp),
                 value = input_addr, placeholder = { Text(text = "Address", fontSize = 14.sp) },
                 onValueChange = { input_addr = it })
+            // ----------- address -----------
+            //
+            //
+            // ----------- phone number -----------
+            Spacer(
+                modifier = Modifier
+                    .width(5.dp)
+                    .height(6.dp)
+            )
+            CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+                Button(
+                    modifier = Modifier
+                        .height(40.dp)
+                        .padding(horizontal = 5.dp),
+                    shape = RoundedCornerShape(10.dp),
+                    elevation = ButtonDefaults.buttonElevation(4.dp),
+                    onClick = {
+                        if ((!input_name.text.isNullOrEmpty()) && (input_phonenumber.text.isNullOrEmpty())) {
+                            get_phonenumber(search_item = input_name.text,
+                                onResult = {
+                                    if (it.isNullOrEmpty()) {
+                                        Toast.makeText(context, "No Phonenumber Found", Toast.LENGTH_SHORT).show()
+                                    } else {
+                                        input_phonenumber = TextFieldValue(text = it)
+                                    }
+                                })
+                        } else {
+                            Toast.makeText(context, "No Name entered or Phonenumber is already filled out", Toast.LENGTH_SHORT).show()
+                        }
+                    },
+                    content = {
+                        Text(
+                            modifier = Modifier.padding(0.dp),
+                            text = "fill phonenumber with Nominatim",
+                            style = TextStyle(
+                                fontSize = 12.sp,
+                            )
+                        )
+                    }
+                )
+            }
             TextField(modifier = Modifier
                 .fillMaxWidth()
                 .padding(3.dp),
                 value = input_phonenumber, placeholder = { Text(text = "Phone Number", fontSize = 14.sp) },
                 onValueChange = { input_phonenumber = it })
+            // ----------- phone number -----------
+            //
+            //
+            // ----------- category -----------
             Box {
                 Row(
                     horizontalArrangement = Arrangement.Start,
@@ -190,11 +278,19 @@ fun edit_form(context: Context) {
                     }
                 }
             }
+            // ----------- category -----------
+            //
+            //
+            // ----------- comment -----------
             TextField(modifier = Modifier
                 .fillMaxWidth()
                 .padding(3.dp),
                 value = input_comment, placeholder = { Text(text = "Comment", fontSize = 14.sp) },
                 onValueChange = { input_comment = it })
+            // ----------- comment -----------
+            //
+            //
+            // ----------- rating -----------
             Spacer(modifier = Modifier.width(1.dp).height(10.dp))
             StarRatingBar(
                 maxStars = 5,
@@ -206,7 +302,44 @@ fun edit_form(context: Context) {
                     rating = it.roundToInt()
                 }
             )
+            // ----------- rating -----------
+            //
+            //
+            // --------- lat lon ---------
             Spacer(modifier = Modifier.width(1.dp).height(10.dp))
+            CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+                Button(
+                    modifier = Modifier
+                        .height(40.dp)
+                        .padding(horizontal = 5.dp),
+                    shape = RoundedCornerShape(10.dp),
+                    elevation = ButtonDefaults.buttonElevation(4.dp),
+                    onClick = {
+                        if ((!input_name.text.isNullOrEmpty()) && (input_lat.text.isNullOrEmpty()) && (input_lon.text.isNullOrEmpty())) {
+                            get_lat_lon(search_item = input_name.text,
+                                onResult = {
+                                    if ((it == null) || (it.lat.isNullOrEmpty()) || (it.lon.isNullOrEmpty())) {
+                                        Toast.makeText(context, "No GPS Coordinates Found", Toast.LENGTH_SHORT).show()
+                                    } else {
+                                        input_lat = TextFieldValue(text = it.lat)
+                                        input_lon = TextFieldValue(text = it.lon)
+                                    }
+                                })
+                        } else {
+                            Toast.makeText(context, "No Name entered or GPS Coordinates are already filled out", Toast.LENGTH_SHORT).show()
+                        }
+                    },
+                    content = {
+                        Text(
+                            modifier = Modifier.padding(0.dp),
+                            text = "fill location with Nominatim",
+                            style = TextStyle(
+                                fontSize = 12.sp,
+                            )
+                        )
+                    }
+                )
+            }
             TextField(modifier = Modifier
                 .fillMaxWidth()
                 .padding(3.dp),
@@ -247,7 +380,9 @@ fun edit_form(context: Context) {
                     contentDescription = "Restaurant GPS Location"
                 )
             }
-
+            // --------- lat lon ---------
+            //
+            //
         }
         Spacer(modifier = Modifier.height(20.dp))
         Row {
@@ -294,13 +429,6 @@ fun edit_form(context: Context) {
                                 .phonenumber(r.phonenumber).execute()
 
                             load_restaurants()
-
-                            @Suppress("CanBeVal")
-                            var restaurant_id_copy = restaurant_id
-                            if ((input_lat.text.isNullOrEmpty()) || (input_lon.text.isNullOrEmpty()))
-                            {
-                                get_lat_lon(r.name, r.address, restaurant_id_copy)
-                            }
                             //
                             globalstore.setEditRestaurantId(-1)
                             globalstore.updateMainscreenState(MAINSCREEN.MAINLIST)
@@ -373,87 +501,6 @@ fun edit_form(context: Context) {
         }
     }
 }
-
-@Suppress("UNUSED_PARAMETER")
-fun get_lat_lon(r_name: String, r_address: String, r_id: Long)
-{
-    Thread {
-        val url = HTTP_NOMINATIM_GET_LAT_LON +
-                Uri.encode(r_name)
-        Log.i(TAG, "XXXXX:url:" + url)
-        val connection = URL(url).openConnection() as HttpURLConnection
-        try {
-            val data_json = connection.inputStream.bufferedReader().use { it.readText() }
-            if (!data_json.isNullOrEmpty()) {
-                // Log.i(TAG, data_json)
-                val json_array = JSONArray(data_json)
-                // Log.i(TAG, "XXXXXXXX1:" + json_array.toString())
-                val json = json_array.getJSONObject(0)
-                // Log.i(TAG, "XXXXXXXX2:" + json.toString())
-                val lat = json.getDouble("lat")
-                Log.i(TAG, "XXXXXXXX4:" + lat.toString() + " -> " + geo_coord_double_to_longdb(lat))
-                val lon = json.getDouble("lon")
-                Log.i(TAG, "XXXXXXXX4:" + lon.toString() + " -> " + geo_coord_double_to_longdb(lon))
-                Log.i(TAG, "XXXXXXXX5:" + r_id)
-                orma.updateRestaurant().idEq(r_id)
-                    .lat(geo_coord_double_to_longdb(lat))
-                    .lon(geo_coord_double_to_longdb(lon)).execute()
-                load_restaurants()
-            }
-        }
-        catch(e: Exception)
-        {
-            e.printStackTrace()
-        }
-        finally {
-            connection.disconnect()
-        }
-    }.start()
-}
-
-@Suppress("UNUSED_PARAMETER")
-fun get_phone(r_name: String, r_address: String, r_id: Long)
-{
-    Thread {
-        val url = HTTP_NOMINATIM_GET_LAT_LON +
-                Uri.encode(r_name)
-        Log.i(TAG, "XXXXX:url:" + url)
-        val connection = URL(url).openConnection() as HttpURLConnection
-        try {
-            val data_json = connection.inputStream.bufferedReader().use { it.readText() }
-            if (!data_json.isNullOrEmpty()) {
-                // Log.i(TAG, data_json)
-                val json_array = JSONArray(data_json)
-                // Log.i(TAG, "XXXXXXXX1:" + json_array.toString())
-                val json = json_array.getJSONObject(0)
-                // Log.i(TAG, "XXXXXXXX2:" + json.toString())
-                Log.i(TAG, "XXXXXXXX5:" + r_id)
-                var tel: String
-                try {
-                    tel = json.getString("phone")
-                } catch (_: java.lang.Exception)
-                {
-                    tel = json.getString("contact:phone")
-                }
-                Log.i(
-                    TAG,
-                    "XXXXXXXX6:" + tel
-                )
-                orma.updateRestaurant().idEq(r_id)
-                    .phonenumber(tel).execute()
-                load_restaurants()
-            }
-        }
-        catch(e: Exception)
-        {
-            e.printStackTrace()
-        }
-        finally {
-            connection.disconnect()
-        }
-    }.start()
-}
-
 
 fun geo_coord_string_to_longdb(coord: String): Long
 {
