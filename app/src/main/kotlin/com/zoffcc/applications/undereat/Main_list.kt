@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -37,7 +38,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
@@ -69,7 +69,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("ComposableNaming")
 @Composable
 fun main_list(restaurants: StateRestaurantList, context: Context) {
@@ -205,7 +204,7 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                 verticalAlignment = Alignment.Top,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(50.dp),
+                    .height(42.dp),
                 content = {
 
                     // dropdown: sort --------------------------
@@ -216,13 +215,13 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                             modifier = Modifier
                                 .randomDebugBorder()
                                 .height(60.dp)
-                                .width(150.dp)
-                                .padding(10.dp)
+                                .width(120.dp)
+                                .padding(start = 5.dp)
                                 .clickable {
                                     sort_isDropDownExpanded.value = true
                                 }
                         ) {
-                            Text(text = sort_list[sort_itemPosition.value].name, fontSize = 16.sp)
+                            Text(text = sort_list[sort_itemPosition.value].name, fontSize = 11.sp)
                             Icon(Icons.Default.ArrowDropDown, contentDescription = "select Sort Order")
                         }
                         DropdownMenu(
@@ -233,10 +232,10 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                             sort_list.forEachIndexed { index, sorter_ ->
                                 DropdownMenuItem(
                                     modifier = Modifier
-                                        .height(60.dp)
+                                        .height(45.dp)
                                         .padding(1.dp),
                                     text = {
-                                        Text(text = sorter_.name, fontSize = 16.sp)
+                                        Text(text = sorter_.name, fontSize = 19.sp)
                                     },
                                     onClick = {
                                         sort_isDropDownExpanded.value = false
@@ -261,14 +260,14 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
                                 .randomDebugBorder()
-                                .width(150.dp)
+                                .defaultMinSize(minWidth = 120.dp)
                                 .height(60.dp)
-                                .padding(10.dp)
+                                .padding(start = 5.dp)
                                 .clickable {
                                     cat_isDropDownExpanded.value = true
                                 }
                         ) {
-                            Text(text = cat_list[cat_itemPosition.value].name, fontSize = 16.sp)
+                            Text(text = cat_list[cat_itemPosition.value].name, fontSize = 11.sp)
                             Icon(Icons.Default.ArrowDropDown, contentDescription = "select Category")
                         }
                         DropdownMenu(
@@ -279,10 +278,10 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                             cat_list.forEachIndexed { index, category_ ->
                                 DropdownMenuItem(
                                     modifier = Modifier
-                                        .height(60.dp)
+                                        .height(45.dp)
                                         .padding(1.dp),
                                     text = {
-                                        Text(text = category_.name, fontSize = 16.sp)
+                                        Text(text = category_.name, fontSize = 19.sp)
                                     },
                                     onClick = {
                                         cat_isDropDownExpanded.value = false
@@ -297,27 +296,34 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                         }
                     }
                     // dropdown: filter --------------------------
-                    val state_compactMainlist by globalstore.stateFlow.collectAsState()
-                    Switch(
-                        modifier = Modifier.scale(0.6f),
-                        checked = state_compactMainlist.compactMainList,
-                        onCheckedChange = {
-                            globalstore.setCompactMainList(it)
-                            save_compact_flag()
-                        },
-                        thumbContent = if (state_compactMainlist.compactMainList) {
-                            {
-                                Icon(
-                                    imageVector = Icons.Filled.Check,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(SwitchDefaults.IconSize),
-                                )
-                            }
-                        } else {
-                            null
-                        }
 
-                    )
+
+                    Spacer(modifier = Modifier.randomDebugBorder().height(10.dp).weight(10F))
+
+                    val state_compactMainlist by globalstore.stateFlow.collectAsState()
+                    // CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides true) {
+                        Switch(
+                            modifier = Modifier.randomDebugBorder()
+                                .scale(0.6f),
+                            checked = state_compactMainlist.compactMainList,
+                            onCheckedChange = {
+                                globalstore.setCompactMainList(it)
+                                save_compact_flag()
+                            },
+                            thumbContent = if (state_compactMainlist.compactMainList) {
+                                {
+                                    Icon(
+                                        imageVector = Icons.Filled.Check,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(SwitchDefaults.IconSize),
+                                    )
+                                }
+                            } else {
+                                null
+                            }
+
+                        )
+                    // }
                 }
             )
             // Button Row ---------------------
