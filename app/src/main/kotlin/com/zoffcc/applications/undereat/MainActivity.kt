@@ -82,6 +82,7 @@ class MainActivity : ComponentActivity() {
         load_filters()
         load_sorter()
         load_restaurants()
+        load_filter_string()
     }
 
     @Deprecated("Deprecated in Java")
@@ -307,4 +308,14 @@ private fun load_sorter() {
         }
 
     }
+}
+
+fun save_filter_string() {
+    val id = restaurantliststore.getFilterString()
+    set_g_opts("FilterString", id)
+}
+
+private fun load_filter_string() {
+    val id = get_g_opts("FilterString")
+    restaurantliststore.filterByString(id)
 }

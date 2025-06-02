@@ -1,13 +1,17 @@
-@file:Suppress("LocalVariableName", "SpellCheckingInspection", "ConvertToStringTemplate")
+@file:Suppress("LocalVariableName", "SpellCheckingInspection", "ConvertToStringTemplate",
+    "FunctionName"
+)
 
 package com.zoffcc.applications.undereat
 
 import com.zoffcc.applications.sorm.Restaurant
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import java.text.Normalizer
 
 data class StateRestaurantList(val restaurantlist: List<Restaurant> = emptyList(),
-                               val restaurantDistance: List<RestDistance> = emptyList()
+                               val restaurantDistance: List<RestDistance> = emptyList(),
+                               val filterString: String? = null
 )
 
 const val MAX_DISTANCE_REST = 9999999999
@@ -30,6 +34,8 @@ interface RestaurantListStore
     fun sortByAddress()
     fun sortByDistance(restaurantDistance: ArrayList<RestDistance>)
     fun sortByRating()
+    fun filterByString(filter_string: String?)
+    fun getFilterString(): String?
     val stateFlow: StateFlow<StateRestaurantList>
     val state get() = stateFlow.value
 }
@@ -169,6 +175,45 @@ fun createRestaurantListStore(): RestaurantListStore
         override fun sortByRating() {
             mutableStateFlow.value = state.copy(restaurantlist = state.restaurantlist
                 .sortedWith(compareByDescending<Restaurant> { it.rating }.thenBy { it.name }))
+        }
+
+        override fun filterByString(filter_string: String?) {
+            if (filter_string.isNullOrEmpty())
+            {
+                load_restaurants()
+                mutableStateFlow.value = state.copy(filterString = null)
+            }
+            else {
+                load_restaurants()
+                mutableStateFlow.value = state.copy(filterString = filter_string,
+                    restaurantlist = state.restaurantlist.filter { filter_by_search_string(it, filter_string) })
+            }
+        }
+
+        private val REGEX_UNACCENT = "\\p{InCombiningDiacriticalMarks}+".toRegex()
+
+        fun CharSequence.unaccent(): String {
+            val temp = Normalizer.normalize(this, Normalizer.Form.NFD)
+            return REGEX_UNACCENT.replace(temp, "")
+        }
+
+        private fun filter_by_search_string(it: Restaurant, filter_string: String): Boolean {
+            val filter_string2 = filter_string.replace("\\p{Zs}+".toRegex(), "")
+            if (it.name.lowercase().unaccent().replace("\\p{Zs}+".toRegex(), "")
+                    .contains(filter_string2.lowercase().unaccent()))
+            {
+                return true
+            }
+            else if (it.address.lowercase().replace("\\p{Zs}+".toRegex(), "").unaccent()
+                    .contains(filter_string2.lowercase().unaccent()))
+            {
+                return true
+            }
+            return false
+        }
+
+        override fun getFilterString(): String? {
+            return state.filterString
         }
 
         private fun getRestDist(a: Restaurant, restaurantDistance: ArrayList<RestDistance>): Long {
