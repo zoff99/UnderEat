@@ -31,7 +31,6 @@ import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedCard
@@ -56,7 +55,6 @@ import androidx.compose.ui.unit.sp
 import com.zoffcc.applications.sorm.Restaurant
 import com.zoffcc.applications.undereat.GPSTracker.calculateDistance
 import com.zoffcc.applications.undereat.GPSTracker.getBearing
-import com.zoffcc.applications.undereat.corefuncs.orma
 import kotlinx.coroutines.flow.collectLatest
 import kotlin.math.pow
 import kotlin.math.roundToInt
@@ -80,7 +78,7 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
             bottomEnd = 4.dp,
             bottomStart = 4.dp,
         ),
-        elevation = CardDefaults.cardElevation(4.dp)
+        // elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -92,8 +90,7 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
                 restaurant_name_view(data, compact)
                 var cat_name: String
                 try {
-                    cat_name =
-                        orma.selectFromCategory().idEq(data.category_id).get(0).name
+                    cat_name =  global_categories[data.category_id]!!
                 } catch (_: Exception) {
                     cat_name = "unknown"
                 }

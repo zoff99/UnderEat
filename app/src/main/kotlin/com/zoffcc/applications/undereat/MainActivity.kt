@@ -36,6 +36,7 @@ const val DEBUG_COMPOSE_UI_UPDATES = false // set "false" for release builds
 const val HTTP_MAPS_URL = "https://www.google.com/maps/search/?api=1&query="
 const val HTTP_NOMINATIM_SEARCH_URL = "https://nominatim.openstreetmap.org/search?limit=1&addressdetails=1&format=json&q="
 var TAXI_PHONE_NUMBER: String? = null
+var global_categories: MutableMap<Long, String> = mutableMapOf()
 const val MAX_DISTANCE = 30_000 // max distance in meters when location will not be used anymore on mainlist
 
 @SuppressLint("StaticFieldLeak")
@@ -78,6 +79,7 @@ class MainActivity : ComponentActivity() {
         }
         corefuncs().init_me(this)
         load_taxi_number()
+        load_categories()
         load_compact_flag()
         load_filters()
         load_sorter()
@@ -228,6 +230,18 @@ fun set_taxi_number(taxi_num: String?) {
     {
         set_g_opts("TAXI_PHONE_NUMBER", taxi_num)
         TAXI_PHONE_NUMBER = taxi_num
+    }
+}
+
+private fun load_categories() {
+    val cat_list = orma.selectFromCategory().toList()
+    global_categories.clear()
+    cat_list.forEach {
+        try {
+            global_categories[it.id] = it.name
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 }
 
