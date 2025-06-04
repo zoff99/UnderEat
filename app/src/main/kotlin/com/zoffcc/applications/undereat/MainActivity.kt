@@ -241,6 +241,7 @@ private fun load_categories() {
             global_categories[it.id] = it.name
         } catch (e: Exception) {
             e.printStackTrace()
+            global_categories[it.id] = "Unknown"
         }
     }
 }

@@ -92,7 +92,7 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
                 try {
                     cat_name =  global_categories[data.category_id]!!
                 } catch (_: Exception) {
-                    cat_name = "unknown"
+                    cat_name = "Unknown"
                 }
                 if (!compact) {
                     Text(
