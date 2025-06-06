@@ -6,6 +6,7 @@ plugins {
 
 android {
     namespace 'com.zoffcc.applications.undereat'
+    //noinspection GradleDependency
     compileSdk 33
 
     def getGitHash = { ->
@@ -98,6 +99,7 @@ dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'
     // we need desugaring here to support APIs down to 21
     // add sqlite-jdbc module here -------------
+    //noinspection Aligned16KB
     implementation 'com.github.zoff99:pkgs_zoffccAndroidJDBC:1.0.6'
     // add sqlite-jdbc module here -------------
     //noinspection GradleDependency
@@ -106,6 +108,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
     //noinspection GradleDependency
     implementation 'androidx.activity:activity-compose:1.5.1'
+    //noinspection GradleDependency
     implementation platform('androidx.compose:compose-bom:2022.10.00')
     implementation 'androidx.compose.ui:ui'
     implementation 'androidx.compose.ui:ui-graphics'
@@ -114,6 +117,7 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
+    //noinspection GradleDependency
     androidTestImplementation platform('androidx.compose:compose-bom:2022.10.00')
     androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
     debugImplementation 'androidx.compose.ui:ui-tooling'
