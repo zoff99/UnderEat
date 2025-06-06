@@ -195,7 +195,13 @@ fun createRestaurantListStore(): RestaurantListStore
         override fun filterBySummerflag(flag: Boolean) {
             load_restaurants()
             mutableStateFlow.value = state.copy(summerflag = flag,
-                restaurantlist = state.restaurantlist.filter { it.for_summer == flag })
+                restaurantlist = state.restaurantlist.filter {
+                    if (flag) {
+                        it.for_summer == flag
+                    } else {
+                        true
+                    }
+                })
         }
 
         private val REGEX_UNACCENT = "\\p{InCombiningDiacriticalMarks}+".toRegex()
