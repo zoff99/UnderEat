@@ -389,6 +389,8 @@ fun add_form(context: Context) {
                             r.active = true
                             r.for_summer = input_for_summer
                             r.category_id = cat_list[cat_itemPosition.value].id
+                            r.lat = geo_coord_string_to_longdb(input_lat.text)
+                            r.lon = geo_coord_string_to_longdb(input_lon.text)
                             val r_id_new: Long = orma.insertIntoRestaurant(r)
                             restore_mainlist_state()
                             globalstore.updateMainscreenState(MAINSCREEN.MAINLIST)
