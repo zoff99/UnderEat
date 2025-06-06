@@ -196,6 +196,7 @@ fun createRestaurantListStore(): RestaurantListStore
             load_restaurants()
             mutableStateFlow.value = state.copy(summerflag = flag,
                 restaurantlist = state.restaurantlist.filter {
+                    @Suppress("KotlinConstantConditions")
                     if (flag) {
                         it.for_summer == flag
                     } else {
