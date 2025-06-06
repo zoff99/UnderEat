@@ -484,16 +484,30 @@ fun get_address(search_item: String,
             e.printStackTrace()
         }
         finally {
-            connection.disconnect()
+            try {
+                connection.disconnect()
+            } catch(e: Exception){
+                e.printStackTrace()
+            }
         }
-        queue.add(full_addr)
+        try {
+            queue.add(full_addr)
+        } catch(e: Exception){
+            e.printStackTrace()
+            queue.add("")
+        }
     }
 
     t.start()
     t.join()
-    val full_address = queue.take()
-    Log.i(TAG, "address is: " + full_address)
-    onResult(full_address)
+    try {
+        val full_address = queue.take()
+        Log.i(TAG, "address is: " + full_address)
+        onResult(full_address)
+    } catch(e: Exception){
+        e.printStackTrace()
+        onResult("")
+    }
 }
 
 fun get_phonenumber(search_item: String,
@@ -533,16 +547,30 @@ fun get_phonenumber(search_item: String,
             e.printStackTrace()
         }
         finally {
-            connection.disconnect()
+            try {
+                connection.disconnect()
+            } catch(e: Exception){
+                e.printStackTrace()
+            }
         }
-        queue.add(tel)
+        try {
+            queue.add(tel)
+        } catch(e: Exception){
+            e.printStackTrace()
+            queue.add("")
+        }
     }
 
     t.start()
     t.join()
-    val tel = queue.take()
-    Log.i(TAG, "phonenumber is: " + tel)
-    onResult(tel)
+    try {
+        val tel = queue.take()
+        Log.i(TAG, "phonenumber is: " + tel)
+        onResult(tel)
+    } catch(e: Exception){
+        e.printStackTrace()
+        onResult("")
+    }
 }
 
 data class lat_lon_double(
@@ -584,14 +612,28 @@ fun get_lat_lon(search_item: String,
             e.printStackTrace()
         }
         finally {
-            connection.disconnect()
+            try {
+                connection.disconnect()
+            } catch(e: Exception){
+                e.printStackTrace()
+            }
         }
-        queue.add(lat_lon)
+        try {
+            queue.add(lat_lon)
+        } catch(e: Exception){
+            e.printStackTrace()
+            queue.add(lat_lon_double("", ""))
+        }
     }
 
     t.start()
     t.join()
-    val lat_long = queue.take()
-    Log.i(TAG, "lat lon is: " + lat_long)
-    onResult(lat_long)
+    try {
+        val lat_long = queue.take()
+        Log.i(TAG, "lat lon is: " + lat_long)
+        onResult(lat_long)
+    } catch(e: Exception){
+        e.printStackTrace()
+        onResult(null)
+    }
 }
