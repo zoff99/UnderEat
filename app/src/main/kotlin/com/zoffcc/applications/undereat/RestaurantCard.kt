@@ -8,7 +8,6 @@ package com.zoffcc.applications.undereat
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.content.res.Resources.Theme
 import android.net.Uri
 import android.widget.Toast
 import androidx.compose.animation.core.LinearOutSlowInEasing
@@ -27,7 +26,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Call
@@ -37,7 +35,6 @@ import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -61,7 +58,6 @@ import com.zoffcc.applications.sorm.Restaurant
 import com.zoffcc.applications.undereat.GPSTracker.calculateDistance
 import com.zoffcc.applications.undereat.GPSTracker.getBearing
 import kotlinx.coroutines.flow.collectLatest
-import java.util.Random
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
