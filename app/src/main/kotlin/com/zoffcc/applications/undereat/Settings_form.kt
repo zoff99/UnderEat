@@ -96,7 +96,7 @@ fun settings_form(context: Context) {
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
-                    load_restaurants()
+                    restore_mainlist_state()
                     show_import_alert = false
                 }) {
                     Text("Yes")

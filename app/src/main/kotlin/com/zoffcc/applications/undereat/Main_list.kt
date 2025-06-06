@@ -315,29 +315,62 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                 Spacer(modifier = Modifier.randomDebugBorder().height(10.dp).weight(10F))
 
                 val state_compactMainlist by globalstore.stateFlow.collectAsState()
-                // CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides true) {
-                    Switch(
-                        modifier = Modifier.randomDebugBorder()
-                            .scale(0.6f),
-                        checked = state_compactMainlist.compactMainList,
-                        onCheckedChange = {
-                            globalstore.setCompactMainList(it)
-                            save_compact_flag()
-                        },
-                        thumbContent = if (state_compactMainlist.compactMainList) {
-                            {
-                                Icon(
-                                    imageVector = Icons.Filled.Check,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(SwitchDefaults.IconSize),
-                                )
-                            }
-                        } else {
-                            null
+                // switch: compact list --------------------------
+                Switch(
+                    modifier = Modifier.randomDebugBorder()
+                        .scale(0.6f),
+                    checked = state_compactMainlist.compactMainList,
+                    onCheckedChange = {
+                        globalstore.setCompactMainList(it)
+                        save_compact_flag()
+                    },
+                    thumbContent = if (state_compactMainlist.compactMainList) {
+                        {
+                            Icon(
+                                imageVector = Icons.Filled.Check,
+                                contentDescription = null,
+                                modifier = Modifier.size(SwitchDefaults.IconSize),
+                            )
                         }
+                    } else {
+                        null
+                    }
 
-                    )
-                // }
+                )
+                // switch: compact list --------------------------
+
+                // switch: for_summer flag --------------------------
+                val flag_color = Color.Yellow.copy(green = 0.8f, alpha = 0.4f)
+                val flag_color_brighter = Color.Yellow.copy(green = 0.8f, alpha = 0.76f)
+                Switch(
+                    modifier = Modifier.randomDebugBorder()
+                        .scale(0.6f),
+                    checked = state_compactMainlist.forsummerFilter,
+                    colors = SwitchDefaults.colors(uncheckedThumbColor = Color.DarkGray,
+                        uncheckedBorderColor = flag_color,
+                        checkedBorderColor = flag_color,
+                        uncheckedTrackColor = flag_color,
+                        checkedTrackColor = flag_color_brighter),
+                    onCheckedChange = {
+                        globalstore.setForsummerFilter(it)
+                        restaurantliststore.filterBySummerflag(it)
+                        save_forsummer_flag()
+                    },
+                    thumbContent = if (state_compactMainlist.forsummerFilter) {
+                        {
+                            Icon(
+                                imageVector = Icons.Filled.Check,
+                                contentDescription = null,
+                                modifier = Modifier.size(SwitchDefaults.IconSize),
+                                tint = Color.Yellow.copy(green = 0.8f)
+                            )
+                        }
+                    } else {
+                        null
+                    }
+
+                )
+                // switch: for_summer flag --------------------------
             }
         )
         // select and filter Row ---------------------

@@ -113,7 +113,7 @@ fun edit_form(context: Context) {
                         orma.deleteFromRestaurant().idEq(restaurant_id).execute()
                         //
                         globalstore.setEditRestaurantId(-1)
-                        load_restaurants()
+                        restore_mainlist_state()
                         globalstore.updateMainscreenState(MAINSCREEN.MAINLIST)
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -445,7 +445,7 @@ fun edit_form(context: Context) {
                                 .comment(r.comment).category_id(r.category_id)
                                 .phonenumber(r.phonenumber).execute()
 
-                            load_restaurants()
+                            restore_mainlist_state()
                             //
                             globalstore.setEditRestaurantId(-1)
                             globalstore.updateMainscreenState(MAINSCREEN.MAINLIST)

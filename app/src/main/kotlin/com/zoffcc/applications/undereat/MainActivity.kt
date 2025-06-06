@@ -78,13 +78,7 @@ class MainActivity : ComponentActivity() {
             }
         }
         corefuncs().init_me(this)
-        load_taxi_number()
-        load_categories()
-        load_compact_flag()
-        load_filters()
-        load_sorter()
-        load_restaurants()
-        load_filter_string()
+        restore_mainlist_state()
     }
 
     @Deprecated("Deprecated in Java")
@@ -143,6 +137,17 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+}
+
+internal fun restore_mainlist_state() {
+    load_taxi_number()
+    load_categories()
+    load_compact_flag()
+    load_filters()
+    load_sorter()
+    load_restaurants()
+    load_filter_string()
+    load_forsummer_flag()
 }
 
 val restaurantliststore = createRestaurantListStore()
@@ -255,6 +260,11 @@ fun save_compact_flag() {
     set_g_opts("CompactMainList", flag.toString())
 }
 
+fun save_forsummer_flag() {
+    val flag = globalstore.getForsummerFilter()
+    set_g_opts("ForsummerFilter", flag.toString())
+}
+
 private fun load_compact_flag() {
     val flag = get_g_opts("CompactMainList")
     if (flag.isNullOrEmpty())
@@ -266,6 +276,27 @@ private fun load_compact_flag() {
         try
         {
             globalstore.setCompactMainList(flag.toBoolean())
+        }
+        catch(e: Exception)
+        {
+            e.printStackTrace()
+        }
+
+    }
+}
+
+private fun load_forsummer_flag() {
+    val flag = get_g_opts("ForsummerFilter")
+    if (flag.isNullOrEmpty())
+    {
+        globalstore.setForsummerFilter(false)
+    }
+    else
+    {
+        try
+        {
+            globalstore.setForsummerFilter(flag.toBoolean())
+            restaurantliststore.filterBySummerflag(flag.toBoolean())
         }
         catch(e: Exception)
         {

@@ -1,4 +1,4 @@
-@file:Suppress("ClassName", "SpellCheckingInspection", "ConvertToStringTemplate")
+@file:Suppress("ClassName", "SpellCheckingInspection", "ConvertToStringTemplate", "PropertyName")
 
 package com.zoffcc.applications.undereat
 
@@ -11,6 +11,7 @@ data class globalstore_state(
     val restaurantId: Long = -1,
     val filterCategoryId: Long = -1,
     val compactMainList: Boolean = false,
+    val forsummerFilter: Boolean = false,
     val sorterId: Long = 0
 )
 
@@ -19,12 +20,14 @@ interface GlobalStore {
     fun setFilterCategoryId(value: Long)
     fun setSorterId(value: Long)
     fun setCompactMainList(value: Boolean)
+    fun setForsummerFilter(value: Boolean)
     fun updateMainscreenState(value: MAINSCREEN)
     fun getMainscreenState(): MAINSCREEN
     fun getRestaurantId(): Long
     fun getFilterCategoryId(): Long
     fun getSorterId(): Long
     fun getCompactMainList(): Boolean
+    fun getForsummerFilter(): Boolean
     val stateFlow: StateFlow<globalstore_state>
     val state get() = stateFlow.value
 }
@@ -69,6 +72,10 @@ fun createGlobalStore(): GlobalStore {
             mutableStateFlow.value = state.copy(compactMainList = value)
         }
 
+        override fun setForsummerFilter(value: Boolean) {
+            mutableStateFlow.value = state.copy(forsummerFilter = value)
+        }
+
         override fun getMainscreenState(): MAINSCREEN
         {
             return state.mainscreen_state
@@ -90,6 +97,10 @@ fun createGlobalStore(): GlobalStore {
 
         override fun getCompactMainList(): Boolean {
             return state.compactMainList
+        }
+
+        override fun getForsummerFilter(): Boolean {
+            return state.forsummerFilter
         }
     }
 }

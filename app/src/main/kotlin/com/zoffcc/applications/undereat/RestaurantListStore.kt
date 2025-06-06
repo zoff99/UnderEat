@@ -11,7 +11,8 @@ import java.text.Normalizer
 
 data class StateRestaurantList(val restaurantlist: List<Restaurant> = emptyList(),
                                val restaurantDistance: List<RestDistance> = emptyList(),
-                               val filterString: String? = null
+                               val filterString: String? = null,
+                               val summerflag: Boolean = false
 )
 
 const val MAX_DISTANCE_REST = 9999999999
@@ -35,6 +36,7 @@ interface RestaurantListStore
     fun sortByDistance(restaurantDistance: ArrayList<RestDistance>)
     fun sortByRating()
     fun filterByString(filter_string: String?)
+    fun filterBySummerflag(flag: Boolean)
     fun getFilterString(): String?
     val stateFlow: StateFlow<StateRestaurantList>
     val state get() = stateFlow.value
@@ -188,6 +190,12 @@ fun createRestaurantListStore(): RestaurantListStore
                 mutableStateFlow.value = state.copy(filterString = filter_string,
                     restaurantlist = state.restaurantlist.filter { filter_by_search_string(it, filter_string) })
             }
+        }
+
+        override fun filterBySummerflag(flag: Boolean) {
+            load_restaurants()
+            mutableStateFlow.value = state.copy(summerflag = flag,
+                restaurantlist = state.restaurantlist.filter { it.for_summer == flag })
         }
 
         private val REGEX_UNACCENT = "\\p{InCombiningDiacriticalMarks}+".toRegex()
