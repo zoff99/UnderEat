@@ -28,8 +28,8 @@ android {
         minSdk 21
         //noinspection OldTargetApi
         targetSdk 33
-        versionCode 10002
-        versionName "1.0.2"
+        versionCode 10003
+        versionName "1.0.3"
 
         buildConfigField "String", "GIT_HASH", getGitHash()
 
