@@ -1,5 +1,5 @@
 @file:Suppress("UselessCallOnNotNull", "LocalVariableName", "ConvertToStringTemplate",
-    "FunctionName", "UNUSED_VARIABLE", "ClassName", "LiftReturnOrAssignment"
+    "FunctionName", "UNUSED_VARIABLE", "ClassName", "LiftReturnOrAssignment", "unused"
 )
 
 package com.zoffcc.applications.undereat
@@ -30,6 +30,7 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -62,6 +63,7 @@ import java.util.concurrent.LinkedBlockingQueue
 @SuppressLint("ComposableNaming")
 @Composable
 fun add_form(context: Context) {
+    var input_for_summer by remember { mutableStateOf(false) }
     var input_name by remember {
         val textFieldValue = TextFieldValue(text = "")
         mutableStateOf(textFieldValue)
@@ -243,6 +245,21 @@ fun add_form(context: Context) {
             // ----------- category -----------
             //
             //
+            // ----------- for summer label -----------
+            Row {
+                Text(text = "ok for summer",
+                    modifier = Modifier.padding(start = 12.dp, end = 5.dp).align(Alignment.CenterVertically)
+                    )
+                Checkbox(
+                    checked = input_for_summer,
+                    onCheckedChange = { input_for_summer = it },
+                    modifier = Modifier.size(60.dp).align(Alignment.CenterVertically),
+                    enabled = true
+                )
+            }
+            // ----------- for summer label -----------
+            //
+            //
             // ----------- comment -----------
             TextField(modifier = Modifier
                 .fillMaxWidth()
@@ -370,14 +387,10 @@ fun add_form(context: Context) {
                                 r.phonenumber = input_phonenumber.text
                             }
                             r.active = true
-                            r.for_summer = false
+                            r.for_summer = input_for_summer
                             r.category_id = cat_list[cat_itemPosition.value].id
                             val r_id_new: Long = orma.insertIntoRestaurant(r)
                             load_restaurants()
-                            //get_lat_lon(r.name, r.address, r_id_new)
-                            //if ((input_phonenumber.text.isNullOrEmpty()) || (input_phonenumber.text.isNullOrEmpty())) {
-                            //    get_phone(r.name, r.address, r_id_new)
-                            //}
                             globalstore.updateMainscreenState(MAINSCREEN.MAINLIST)
                         }
                     } catch (e: Exception) {
@@ -534,7 +547,6 @@ data class lat_lon_double(
     val lat: String,
     val lon: String
 )
-
 
 fun get_lat_lon(search_item: String,
                 onResult: (lat_lon_double?) -> Unit

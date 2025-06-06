@@ -32,6 +32,7 @@ import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -65,6 +66,7 @@ fun edit_form(context: Context) {
     var show_delete_alert by remember { mutableStateOf(false) }
     val restaurant_id = globalstore.getRestaurantId()
     val rest_data = restaurantliststore.get(restaurant_id)
+    var input_for_summer by remember { mutableStateOf(rest_data.for_summer) }
     var input_name by remember {
         val textFieldValue =
             TextFieldValue(text = if (rest_data.name.isNullOrEmpty()) "" else rest_data.name)
@@ -281,7 +283,21 @@ fun edit_form(context: Context) {
             // ----------- category -----------
             //
             //
-            // ----------- comment -----------
+            // ----------- for summer label -----------
+            Row {
+                Text(text = "ok for summer",
+                    modifier = Modifier.padding(start = 12.dp, end = 5.dp).align(Alignment.CenterVertically)
+                )
+                Checkbox(
+                    checked = input_for_summer,
+                    onCheckedChange = { input_for_summer = it },
+                    modifier = Modifier.size(60.dp).align(Alignment.CenterVertically),
+                    enabled = true
+                )
+            }
+            // ----------- for summer label -----------
+            //
+            //            // ----------- comment -----------
             TextField(modifier = Modifier
                 .fillMaxWidth()
                 .padding(3.dp),
@@ -418,13 +434,14 @@ fun edit_form(context: Context) {
                             r.lon = geo_coord_string_to_longdb(input_lon.text)
                             r.address = input_addr.text
                             r.active = true
-                            r.for_summer = false
+                            r.for_summer = input_for_summer
                             r.rating = rating
                             r.category_id = cat_list[cat_itemPosition.value - 1].id
 
                             orma.updateRestaurant().idEq(restaurant_id)
                                 .name(r.name).address(r.address)
                                 .lat(r.lat).lon(r.lon).rating(rating)
+                                .for_summer(r.for_summer)
                                 .comment(r.comment).category_id(r.category_id)
                                 .phonenumber(r.phonenumber).execute()
 

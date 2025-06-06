@@ -1,6 +1,6 @@
 @file:Suppress("LiftReturnOrAssignment", "LocalVariableName", "UNUSED_PARAMETER",
     "SpellCheckingInspection", "ConvertToStringTemplate", "UsePropertyAccessSyntax",
-    "ReplaceWithOperatorAssignment", "unused"
+    "ReplaceWithOperatorAssignment", "unused", "KotlinConstantConditions"
 )
 
 package com.zoffcc.applications.undereat
@@ -32,11 +32,16 @@ import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalMinimumTouchTargetEnforcement
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
@@ -174,20 +179,24 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
                             @Suppress("KotlinConstantConditions")
                             Compass(data, compact)
                         }
+                        summer_label(data, compact)
                     }
                 } else {
                     var rating by remember { mutableStateOf(data.rating) }
-                    @Suppress("KotlinConstantConditions")
-                    StarRatingBar(
-                        maxStars = 5,
-                        starSizeDp = if (compact) 14.dp else 22.dp,
-                        starSpacingDp = 2.dp,
-                        isEnabled = false,
-                        rating = rating.toFloat(),
-                        onRatingChanged = {
-                            rating = it.roundToInt()
-                        }
-                    )
+                    Row {
+                        @Suppress("KotlinConstantConditions")
+                        StarRatingBar(
+                            maxStars = 5,
+                            starSizeDp = if (compact) 14.dp else 22.dp,
+                            starSpacingDp = 2.dp,
+                            isEnabled = false,
+                            rating = rating.toFloat(),
+                            onRatingChanged = {
+                                rating = it.roundToInt()
+                            }
+                        )
+                        summer_label(data, compact)
+                    }
                 }
                 Spacer(
                     modifier = Modifier
@@ -274,6 +283,31 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
                     }
                 }
             }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("ComposableNaming")
+@Composable
+private fun summer_label(data: Restaurant, compact: Boolean) {
+    var padding_top = 4.dp
+    var padding_start = 4.dp
+    var icons_size = SwitchDefaults.IconSize
+    if (compact) {
+        padding_top = 0.dp
+        padding_start = 2.dp
+        icons_size = SwitchDefaults.IconSize * 0.8f
+    }
+    if (data.for_summer) {
+        CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+            Icon(
+                imageVector = Icons.Filled.Warning,
+                contentDescription = "ok for summer",
+                modifier = Modifier.size(icons_size + padding_top)
+                    .padding(start = padding_top, top = padding_start),
+                tint = Color.Yellow.copy(green = 0.8f)
+            )
         }
     }
 }
