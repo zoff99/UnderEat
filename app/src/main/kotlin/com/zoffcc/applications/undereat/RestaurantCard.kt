@@ -8,12 +8,15 @@ package com.zoffcc.applications.undereat
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources.Theme
 import android.net.Uri
 import android.widget.Toast
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -33,6 +36,7 @@ import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -48,6 +52,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -56,6 +61,7 @@ import com.zoffcc.applications.sorm.Restaurant
 import com.zoffcc.applications.undereat.GPSTracker.calculateDistance
 import com.zoffcc.applications.undereat.GPSTracker.getBearing
 import kotlinx.coroutines.flow.collectLatest
+import java.util.Random
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
@@ -63,22 +69,20 @@ import kotlin.math.roundToInt
 @Composable
 fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
     val state_compactMainlist by globalstore.stateFlow.collectAsState()
-    OutlinedCard(
+    Box(
         modifier = Modifier
-            .padding(start = 2.dp, end = 6.dp)
+            .padding(start = 2.dp, end = 6.dp, bottom = 2.dp)
             .fillMaxWidth()
             .wrapContentHeight()
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outline,
+                shape = RectangleShape
+            )
             .clickable {
                 globalstore.setEditRestaurantId(data.id)
                 globalstore.updateMainscreenState(MAINSCREEN.EDIT)
             },
-        shape = RoundedCornerShape(
-            topStart = 4.dp,
-            topEnd = 4.dp,
-            bottomEnd = 4.dp,
-            bottomStart = 4.dp,
-        ),
-        // elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
