@@ -7,7 +7,7 @@ export _HOME_
 
 basedir="$_HOME_""/../"
 
-f1="android-refimpl-app/app/build.gradle"
+f1="app/build.gradle"
 
 cd "$basedir"
 
