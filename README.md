@@ -1,4 +1,4 @@
-# UnderEat
+# Under Eat
 
 [![build](https://github.com/zoff99/UnderEat/actions/workflows/android_app.yml/badge.svg)](https://github.com/zoff99/UnderEat/actions/workflows/android_app.yml)
 
