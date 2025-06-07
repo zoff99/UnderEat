@@ -133,13 +133,33 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install system packages
+        run: |
+            sudo apt-get update && \
+            sudo DEBIAN_FRONTEND=noninteractive \
+            apt-get install -y --no-install-recommends \
+            zipalign \
+            apksigner
+
+      - name: generate debug key
+        run: keytool -genkey -v -keystore debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname CN=appauth
+
       - name: build artifact for nightly upload
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         run: |
          pwd
-         ./gradlew build
-         find . -name '*.apk'
-         cp -av ./app/build/outputs/apk/debug/app-debug.apk UnderEat-nightly.apk
+         rm -fv working.apk.idsig
+         find . -name '*.apk' -exec 'rm' '-fv' {} \;
+         ./gradlew assembleRelease || exit 1
+         find . -name '*.apk' 2>/dev/null | grep 'app-release-unsigned.apk' || exit 1
+         release_apk_file=$(find . -name '*.apk' 2>/dev/null)
+         cp -av "$release_apk_file" UnderEat-nightly.apk
+
+      - name: align and sign apk
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        run: |
+          zipalign -p 4 UnderEat-nightly.apk UnderEat-nightly-aligned.apk
+          apksigner sign --ks debug.keystore --ks-pass "pass:android" --ks-key-alias androiddebugkey --out UnderEat-nightly.apk --verbose UnderEat-nightly-aligned.apk
 
       - name: Upload to nightly release
         uses: ncipollo/release-action@v1
