@@ -67,6 +67,7 @@ fun edit_form(context: Context) {
     val restaurant_id = globalstore.getRestaurantId()
     val rest_data = restaurantliststore.get(restaurant_id)
     var input_for_summer by remember { mutableStateOf(rest_data.for_summer) }
+    var input_needs_reservation by remember { mutableStateOf(rest_data.need_reservation) }
     var input_name by remember {
         val textFieldValue =
             TextFieldValue(text = if (rest_data.name.isNullOrEmpty()) "" else rest_data.name)
@@ -297,7 +298,23 @@ fun edit_form(context: Context) {
             }
             // ----------- for summer label -----------
             //
-            //            // ----------- comment -----------
+            //
+            // ----------- need reservation -----------
+            Row {
+                Text(text = "needs reservation",
+                    modifier = Modifier.padding(start = 12.dp, end = 5.dp).align(Alignment.CenterVertically)
+                )
+                Checkbox(
+                    checked = input_needs_reservation,
+                    onCheckedChange = { input_needs_reservation = it },
+                    modifier = Modifier.size(60.dp).align(Alignment.CenterVertically),
+                    enabled = true
+                )
+            }
+            // ----------- need reservation -----------
+            //
+            //
+            // ----------- comment -----------
             TextField(modifier = Modifier
                 .fillMaxWidth()
                 .padding(3.dp),
@@ -435,6 +452,7 @@ fun edit_form(context: Context) {
                             r.address = input_addr.text
                             r.active = true
                             r.for_summer = input_for_summer
+                            r.need_reservation = input_needs_reservation
                             r.rating = rating
                             r.category_id = cat_list[cat_itemPosition.value - 1].id
 
@@ -442,6 +460,7 @@ fun edit_form(context: Context) {
                                 .name(r.name).address(r.address)
                                 .lat(r.lat).lon(r.lon).rating(rating)
                                 .for_summer(r.for_summer)
+                                .need_reservation(r.need_reservation)
                                 .comment(r.comment).category_id(r.category_id)
                                 .phonenumber(r.phonenumber).execute()
 

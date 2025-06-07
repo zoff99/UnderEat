@@ -64,6 +64,7 @@ import java.util.concurrent.LinkedBlockingQueue
 @Composable
 fun add_form(context: Context) {
     var input_for_summer by remember { mutableStateOf(false) }
+    var input_needs_reservation by remember { mutableStateOf(false) }
     var input_name by remember {
         val textFieldValue = TextFieldValue(text = "")
         mutableStateOf(textFieldValue)
@@ -260,6 +261,21 @@ fun add_form(context: Context) {
             // ----------- for summer label -----------
             //
             //
+            // ----------- need reservation -----------
+            Row {
+                Text(text = "needs reservation",
+                    modifier = Modifier.padding(start = 12.dp, end = 5.dp).align(Alignment.CenterVertically)
+                )
+                Checkbox(
+                    checked = input_needs_reservation,
+                    onCheckedChange = { input_needs_reservation = it },
+                    modifier = Modifier.size(60.dp).align(Alignment.CenterVertically),
+                    enabled = true
+                )
+            }
+            // ----------- need reservation -----------
+            //
+            //
             // ----------- comment -----------
             TextField(modifier = Modifier
                 .fillMaxWidth()
@@ -388,6 +404,7 @@ fun add_form(context: Context) {
                             }
                             r.active = true
                             r.for_summer = input_for_summer
+                            r.need_reservation = input_needs_reservation
                             r.category_id = cat_list[cat_itemPosition.value].id
                             r.lat = geo_coord_string_to_longdb(input_lat.text)
                             r.lon = geo_coord_string_to_longdb(input_lon.text)

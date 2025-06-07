@@ -52,11 +52,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zoffcc.applications.sorm.Restaurant
@@ -211,6 +215,7 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
                         .width(1.dp)
                         .weight(10F)
                 )
+                // --------- phone number ---------
                 Column(modifier = Modifier.width(55.dp)) {
                     if (data.phonenumber.isNullOrEmpty()) {
                         IconButton(
@@ -257,6 +262,7 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
                             )
                         }
                     }
+                    // --------- phone number ---------
                     IconButton(
                         onClick = {
                             val mapuri = Uri.parse("geo:0,0?q=" + data.name + " " + data.address)
@@ -325,7 +331,19 @@ private fun restaurant_name_view(data: Restaurant, compact: Boolean) {
         maxLines = 2,
         modifier = Modifier
             .randomDebugBorder()
-            .padding(start = 4.dp),
+            .padding(start = 4.dp)
+            .drawBehind {
+                if (data.need_reservation) {
+                    val strokeWidthPx = 4.dp.toPx()
+                    val verticalOffset = size.height - 2.sp.toPx()
+                    drawLine(
+                        color = RESERVATION_LINE,
+                        strokeWidth = strokeWidthPx,
+                        start = Offset(0f, verticalOffset),
+                        end = Offset(size.width, verticalOffset)
+                    )
+                }
+            },
         textAlign = TextAlign.Start,
         style = TextStyle(
             fontSize = if (compact) text_size_compact else 20.sp,

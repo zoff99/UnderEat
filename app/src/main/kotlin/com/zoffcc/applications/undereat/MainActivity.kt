@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.zoffcc.applications.sorm.Restaurant
@@ -38,6 +39,7 @@ const val HTTP_NOMINATIM_SEARCH_URL = "https://nominatim.openstreetmap.org/searc
 var TAXI_PHONE_NUMBER: String? = null
 var global_categories: MutableMap<Long, String> = mutableMapOf()
 const val MAX_DISTANCE = 30_000 // max distance in meters when location will not be used anymore on mainlist
+val RESERVATION_LINE = Color(0xff842111)
 
 @SuppressLint("StaticFieldLeak")
 var gps: GPSTracker? = null
