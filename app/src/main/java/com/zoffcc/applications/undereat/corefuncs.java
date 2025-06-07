@@ -22,7 +22,7 @@ public class corefuncs
     private static String ret = "";
 
     static OrmaDatabase orma = null;
-    final static int ORMA_CURRENT_DB_SCHEMA_VERSION = 5; // increase for database schema changes // minimum is 1
+    final static int ORMA_CURRENT_DB_SCHEMA_VERSION = 6; // increase for database schema changes // minimum is 1
     public final static String MAIN_DB_NAME = "main.db"; // DO NOT CHANGE
     private static boolean PREF__DB_wal_mode = true; // use WAL mode, set "true" for release builds
     private final String PREF__DB_secrect_key = ""; // no encryption
@@ -115,6 +115,16 @@ public class corefuncs
         {
             // @formatter:off
             run_multi_sql("update Category set name='Chinesisch' where id='2'");
+            // @formatter:on
+        }
+
+        if (new_version == 6)
+        {
+            // @formatter:off
+            run_multi_sql("CREATE INDEX Restaurant_name_Index ON Restaurant(name);\n");
+            run_multi_sql("CREATE INDEX Restaurant_address_Index ON Restaurant(address);\n");
+            run_multi_sql("CREATE INDEX Restaurant_category_id_Index ON Restaurant(category_id);\n");
+            run_multi_sql("CREATE INDEX Restaurant_for_summer_Index ON Restaurant(for_summer);\n");
             // @formatter:on
         }
 
