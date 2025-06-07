@@ -89,6 +89,11 @@ android {
     packagingOptions {
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
+            exclude 'kotlin-tooling-metadata.json'
+            exclude 'version-control-info.textproto'
+            exclude '/META-INF/*.version'
+            // https://github.com/Kotlin/kotlinx.coroutines/issues/2274
+            exclude 'DebugProbesKt.bin'
         }
     }
 }
