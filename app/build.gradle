@@ -7,7 +7,7 @@ plugins {
 android {
     namespace 'com.zoffcc.applications.undereat'
     //noinspection GradleDependency
-    compileSdk 33
+    compileSdk 34
 
     def getGitHash = { ->
         try {
@@ -64,11 +64,11 @@ android {
         coreLibraryDesugaringEnabled true
         // we need desugaring here to support APIs down to 21
         encoding "UTF-8"
-        // sourceCompatibility JavaVersion.VERSION_1_8
-        // targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
     kotlinOptions {
-        // jvmTarget = '1.8'
+        jvmTarget = '21'
     }
     dependenciesInfo {
         // Disables dependency metadata when building APKs.
@@ -84,7 +84,7 @@ android {
         buildConfig = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion '1.3.2'
+        kotlinCompilerExtensionVersion '1.5.8'
     }
     packagingOptions {
         resources {
