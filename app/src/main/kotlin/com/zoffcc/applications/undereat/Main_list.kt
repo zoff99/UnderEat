@@ -542,11 +542,12 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                                 try {
                                     val ical = ICalendar()
                                     val event = VEvent()
-                                    val tzi = TimezoneInfo()
                                     // Log.i(TAG, "ZZZZ:" + java.util.TimeZone.getDefault().id)
-                                    tzi.setDefaultTimezone(TimezoneAssignment(java.util.TimeZone.getDefault(),
-                                        java.util.TimeZone.getDefault().id))
-                                    ical.timezoneInfo = tzi
+                                    // this thing is sadly broken. apps cant read this kind of TZ info ------------
+                                    // tzi.setDefaultTimezone(TimezoneAssignment(java.util.TimeZone.getDefault(),
+                                    //    java.util.TimeZone.getDefault().id))
+                                    // ical.timezoneInfo = tzi
+                                    // this thing is sadly broken. apps cant read this kind of TZ info ------------
                                     val summary = event.setSummary(ics_item_name)
                                     summary.language = "en-us"
                                     val loc = event.setLocation(ics_item_address)
@@ -568,10 +569,10 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                                     ical.addEvent(event)
                                     val ical_str = Biweekly.write(ical).go()
 
-                                    // Log.i(TAG, "ical=" + ical_str)
+                                    Log.i(TAG, "ical=" + ical_str)
 
                                     val ical_path: String = context.filesDir.absolutePath
-                                    val ical_export_filename: String = ical_path + "/" + export_ical_filename
+                                    val ical_export_filename: String = ical_path + "/" + export_ics_filename
                                     try {
                                         File(ical_export_filename).delete()
                                     } catch (e: Exception) {
