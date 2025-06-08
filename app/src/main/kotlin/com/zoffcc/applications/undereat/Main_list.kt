@@ -74,6 +74,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
@@ -81,6 +82,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.core.content.FileProvider
+import biweekly.Biweekly
+import biweekly.ICalendar
+import biweekly.component.VEvent
+import biweekly.io.TimezoneAssignment
+import biweekly.io.TimezoneInfo
+import biweekly.util.Duration
 import com.zoffcc.applications.sorm.Category
 import com.zoffcc.applications.undereat.corefuncs.orma
 import kotlinx.coroutines.Job
@@ -88,11 +96,16 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
+import java.io.File
+import java.io.PrintWriter
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 
 
 @OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("ComposableNaming", "UseKtx")
+@SuppressLint("ComposableNaming", "UseKtx", "SimpleDateFormat")
 @Composable
 fun main_list(restaurants: StateRestaurantList, context: Context) {
 
@@ -525,6 +538,75 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                                         + ics_24hour + " "
                                         + ics_minute + " "
                                 )
+
+                                try {
+                                    val ical = ICalendar()
+                                    val event = VEvent()
+                                    val tzi = TimezoneInfo()
+                                    // Log.i(TAG, "ZZZZ:" + java.util.TimeZone.getDefault().id)
+                                    tzi.setDefaultTimezone(TimezoneAssignment(java.util.TimeZone.getDefault(),
+                                        java.util.TimeZone.getDefault().id))
+                                    ical.timezoneInfo = tzi
+                                    val summary = event.setSummary(ics_item_name)
+                                    summary.language = "en-us"
+                                    val loc = event.setLocation(ics_item_address)
+                                    loc.language = "en-us"
+
+                                    val start_date_str = "" +
+                                            ics_y + "-" +
+                                            ics_m.toString().padStart(2, '0') + "-" +
+                                            ics_d.toString().padStart(2, '0') + " " +
+                                            ics_24hour.toString().padStart(2, '0') + ":" +
+                                            ics_minute.toString().padStart(2, '0') + ":" + "00"
+
+                                    val formatter: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                                    val start: Date? = formatter.parse(start_date_str)
+                                    event.setDateStart(start)
+                                    // TODO: now we hardcode 1 hour duration of the event
+                                    val duration = Duration.builder().hours(1).build()
+                                    event.setDuration(duration)
+                                    ical.addEvent(event)
+                                    val ical_str = Biweekly.write(ical).go()
+
+                                    // Log.i(TAG, "ical=" + ical_str)
+
+                                    val ical_path: String = context.filesDir.absolutePath
+                                    val ical_export_filename: String = ical_path + "/" + export_ical_filename
+                                    try {
+                                        File(ical_export_filename).delete()
+                                    } catch (e: Exception) {
+                                        e.printStackTrace()
+                                    }
+
+                                    // write ical string to file -----------
+                                    PrintWriter(ical_export_filename).use { out ->
+                                        out.println(ical_str)
+                                    }
+                                    // write ical string to file -----------
+
+                                    val file_uri = FileProvider.getUriForFile(
+                                        context, "com.zoffcc.applications.undereat.std_fileprovider",
+                                        File(ical_export_filename))
+                                    Log.i(TAG, "share_local_file:file_uri : " + file_uri)
+
+
+                                    val intent = Intent(Intent.ACTION_SEND, file_uri)
+                                    intent.putExtra(Intent.EXTRA_STREAM, file_uri)
+                                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+
+                                    val mimeType = "text/calender"
+
+                                    Log.i(TAG, "share_local_file:mime type: " + mimeType)
+                                    intent.setDataAndType(file_uri, mimeType)
+                                    try {
+                                        context.startActivity(Intent.createChooser(intent, "Share"))
+                                    } catch (e2: Exception) {
+                                        e2.printStackTrace()
+                                    }
+                                } catch(e: Exception) {
+                                    e.printStackTrace()
+                                }
+
                                 showTimePicker = false
                             }) {
                                 Text("Ok")
@@ -712,4 +794,10 @@ fun rememberForeverLazyListState(
     return scrollState
 }
 
+@Composable
+fun theme_is_lightmode(): Boolean {
+    val isLight = MaterialTheme.colorScheme.onPrimary.luminance() > 0.5
+    Log.i(TAG, "isLight = " + isLight)
+    return isLight
+}
 

@@ -3,6 +3,7 @@
 package com.zoffcc.applications.undereat
 
 import android.text.format.DateFormat
+import android.util.Log
 import android.widget.CalendarView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -23,6 +24,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
@@ -149,10 +151,13 @@ private fun CustomCalendarView(
     maxDate: Long? = null,
     onDateSelected: (Date) -> Unit
 ) {
+
     // Adds view to Compose
     AndroidView(
         modifier = Modifier.wrapContentSize()
-            .background(MaterialTheme.colorScheme.inverseSurface),
+            .background(
+                if (theme_is_lightmode()) MaterialTheme.colorScheme.onPrimary
+                else MaterialTheme.colorScheme.onBackground),
         factory = { context ->
             CalendarView(context)
         },
