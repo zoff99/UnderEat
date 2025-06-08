@@ -27,7 +27,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Phone
@@ -36,7 +36,7 @@ import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalMinimumTouchTargetEnforcement
+import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
@@ -46,6 +46,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -58,9 +60,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zoffcc.applications.sorm.Restaurant
@@ -71,6 +72,7 @@ import kotlin.math.pow
 import kotlin.math.roundToInt
 
 
+@SuppressLint("UseKtx")
 @Composable
 fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
     val state_compactMainlist by globalstore.stateFlow.collectAsState()
@@ -165,7 +167,7 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
                 }
 
                 if (compact) {
-                    var rating by remember { mutableStateOf(data.rating) }
+                    var rating by remember { mutableIntStateOf(data.rating) }
                     Row {
                         @Suppress("KotlinConstantConditions")
                         StarRatingBar(
@@ -186,7 +188,7 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
                         summer_label(data, compact)
                     }
                 } else {
-                    var rating by remember { mutableStateOf(data.rating) }
+                    var rating by remember { mutableIntStateOf(data.rating) }
                     Row {
                         @Suppress("KotlinConstantConditions")
                         StarRatingBar(
@@ -306,7 +308,7 @@ private fun summer_label(data: Restaurant, compact: Boolean) {
         icons_size = SwitchDefaults.IconSize * 0.8f
     }
     if (data.for_summer) {
-        CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+        CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides Dp.Unspecified) {
             Icon(
                 imageVector = Icons.Filled.Warning,
                 contentDescription = "ok for summer",
@@ -355,7 +357,7 @@ private fun restaurant_name_view(data: Restaurant, compact: Boolean) {
 private fun Compass(data: Restaurant, compact: Boolean) {
     var distance by remember { mutableStateOf("") }
     val state_location by locationstore.stateFlow.collectAsState()
-    var relativeBearing by remember { mutableStateOf(0F) }
+    var relativeBearing by remember { mutableFloatStateOf(0F) }
     if ((gps != null) && (data.lat != 0L) && (data.lon != 0L)) {
         val lat = state_location.lat
         val lon = state_location.lon
@@ -406,7 +408,7 @@ private fun Compass(data: Restaurant, compact: Boolean) {
         if (compact) {
             Row(modifier = Modifier.width(180.dp)) {
                 Icon(
-                    imageVector = Icons.Default.ArrowBack,
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Navigation Arrow to Target",
                     modifier = Modifier
                         .size(16.dp)
@@ -427,7 +429,7 @@ private fun Compass(data: Restaurant, compact: Boolean) {
             }
         } else {
             Icon(
-                imageVector = Icons.Default.ArrowBack,
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Navigation Arrow to Target",
                 modifier = Modifier
                     .size(30.dp)
@@ -451,7 +453,7 @@ private fun Compass(data: Restaurant, compact: Boolean) {
 
 @Composable
 private fun smoothRotation(rotation: Float): MutableState<Float> {
-    val storedRotation = remember { mutableStateOf(rotation) }
+    val storedRotation = remember { mutableFloatStateOf(rotation) }
 
     // Sample data
     // current angle 340 -> new angle 10 -> diff -330 -> +30
@@ -462,13 +464,13 @@ private fun smoothRotation(rotation: Float): MutableState<Float> {
     LaunchedEffect(rotation){
         snapshotFlow { rotation  }
             .collectLatest { newRotation ->
-                val diff = newRotation - storedRotation.value
+                val diff = newRotation - storedRotation.floatValue
                 val shortestDiff = when {
                     diff > 180 -> diff - 360
                     diff < -180 -> diff + 360
                     else -> diff
                 }
-                storedRotation.value = storedRotation.value + shortestDiff
+                storedRotation.floatValue = storedRotation.floatValue + shortestDiff
             }
     }
 

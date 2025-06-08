@@ -1,5 +1,5 @@
 @file:Suppress("unused", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
-    "SpellCheckingInspection", "ConvertToStringTemplate", "UselessCallOnNotNull"
+    "SpellCheckingInspection", "ConvertToStringTemplate", "UselessCallOnNotNull", "DEPRECATION"
 )
 
 package com.zoffcc.applications.undereat
@@ -8,11 +8,13 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -29,6 +31,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -43,17 +46,21 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TimePicker
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -72,6 +79,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.zoffcc.applications.sorm.Category
 import com.zoffcc.applications.undereat.corefuncs.orma
 import kotlinx.coroutines.Job
@@ -79,11 +88,22 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
+import java.util.Calendar
 
 
-@SuppressLint("ComposableNaming")
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("ComposableNaming", "UseKtx")
 @Composable
 fun main_list(restaurants: StateRestaurantList, context: Context) {
+
+    var ics_item_name by remember { mutableStateOf("") }
+    var ics_item_address by remember { mutableStateOf("") }
+    var ics_y by remember { mutableIntStateOf(1900) }
+    var ics_m by remember { mutableIntStateOf(0) }
+    var ics_d by remember { mutableIntStateOf(0) }
+    var ics_24hour by remember { mutableIntStateOf(0) }
+    var ics_minute by remember { mutableIntStateOf(0) }
+
     val all_cat = Category()
     all_cat.id = -1
     all_cat.name = "* All *"
@@ -100,7 +120,7 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
         }
     }
     val cat_isDropDownExpanded = remember { mutableStateOf(false) }
-    val cat_itemPosition = remember { mutableStateOf(current_filter_cat_id_pos) }
+    val cat_itemPosition = remember { mutableIntStateOf(current_filter_cat_id_pos) }
     //
     val sort_list = ArrayList<Sorter>()
     val name_sorter = Sorter(id = SORTER.NAME.value, name = "Name")
@@ -120,7 +140,7 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
         }
     }
     val sort_isDropDownExpanded = remember { mutableStateOf(false) }
-    val sort_itemPosition = remember { mutableStateOf(current_sort_id_pos) }
+    val sort_itemPosition = remember { mutableIntStateOf(current_sort_id_pos) }
     //
     val filter_string_current = restaurantliststore.getFilterString()
     var input_filter by remember {
@@ -238,7 +258,7 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                                 sort_isDropDownExpanded.value = true
                             }
                     ) {
-                        Text(text = sort_list[sort_itemPosition.value].name, fontSize = 11.sp)
+                        Text(text = sort_list[sort_itemPosition.intValue].name, fontSize = 11.sp)
                         Icon(Icons.Default.ArrowDropDown, contentDescription = "select Sort Order")
                     }
                     DropdownMenu(
@@ -256,10 +276,10 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                                 },
                                 onClick = {
                                     sort_isDropDownExpanded.value = false
-                                    sort_itemPosition.value = index
+                                    sort_itemPosition.intValue = index
                                     // Log.i(TAG, "SSO1:" + sort_isDropDownExpanded.value + " " + sort_itemPosition.value)
                                     // Log.i(TAG, "SSO2:" + sort_list[sort_itemPosition.value].id + " " + sort_list[sort_itemPosition.value].name)
-                                    globalstore.setSorterId(sort_list[sort_itemPosition.value].id)
+                                    globalstore.setSorterId(sort_list[sort_itemPosition.intValue].id)
                                     save_sorter()
                                     sort_restaurants()
                                 })
@@ -284,7 +304,7 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                                 cat_isDropDownExpanded.value = true
                             }
                     ) {
-                        Text(text = cat_list[cat_itemPosition.value].name, fontSize = 11.sp)
+                        Text(text = cat_list[cat_itemPosition.intValue].name, fontSize = 11.sp)
                         Icon(Icons.Default.ArrowDropDown, contentDescription = "select Category")
                     }
                     DropdownMenu(
@@ -302,10 +322,10 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                                 },
                                 onClick = {
                                     cat_isDropDownExpanded.value = false
-                                    cat_itemPosition.value = index
+                                    cat_itemPosition.intValue = index
                                     //Log.i(TAG, "CTT1:" + cat_isDropDownExpanded.value + " " + cat_itemPosition.value)
                                     //Log.i(TAG, "CTT2:" + cat_list[cat_itemPosition.value].id + " " + cat_list[cat_itemPosition.value].name)
-                                    globalstore.setFilterCategoryId(cat_list[cat_itemPosition.value].id)
+                                    globalstore.setFilterCategoryId(cat_list[cat_itemPosition.intValue].id)
                                     save_filters()
                                     load_restaurants()
                                 })
@@ -315,12 +335,16 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                 // dropdown: filter --------------------------
 
 
-                Spacer(modifier = Modifier.randomDebugBorder().height(10.dp).weight(10F))
+                Spacer(modifier = Modifier
+                    .randomDebugBorder()
+                    .height(10.dp)
+                    .weight(10F))
 
                 val state_compactMainlist by globalstore.stateFlow.collectAsState()
                 // switch: compact list --------------------------
                 Switch(
-                    modifier = Modifier.randomDebugBorder()
+                    modifier = Modifier
+                        .randomDebugBorder()
                         .scale(0.6f),
                     checked = state_compactMainlist.compactMainList,
                     onCheckedChange = {
@@ -346,7 +370,8 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                 val flag_color = Color.Yellow.copy(green = 0.8f, alpha = 0.4f)
                 val flag_color_brighter = Color.Yellow.copy(green = 0.8f, alpha = 0.76f)
                 Switch(
-                    modifier = Modifier.randomDebugBorder()
+                    modifier = Modifier
+                        .randomDebugBorder()
                         .scale(0.6f),
                     checked = state_compactMainlist.forsummerFilter,
                     colors = SwitchDefaults.colors(uncheckedThumbColor = Color.DarkGray,
@@ -395,7 +420,8 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                 modifier = Modifier
                     .randomDebugBorder()
                     .clip(RoundedCornerShape(rounded_broder_dp))
-                    .border(width = 1.dp,
+                    .border(
+                        width = 1.dp,
                         color = MaterialTheme.colorScheme.outline,
                         shape = RoundedCornerShape(rounded_broder_dp)
                     )
@@ -415,6 +441,99 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                 }
             )
             // ----------- name -----------
+        }
+
+        var showDatePicker by remember { mutableStateOf(false) }
+        var showTimePicker by remember { mutableStateOf(false) }
+
+        if (showDatePicker) {
+            DatePicker2(onDateSelected = {
+                val calendar = Calendar.getInstance()
+                calendar.setTime(it)
+                ics_d = calendar.get(Calendar.DAY_OF_MONTH) // starts with 1
+                ics_m = calendar.get(Calendar.MONTH) + 1 // between 0 and 11, with the value 0 representing January
+                ics_y = calendar.get(Calendar.YEAR) // the year represented by this date, minus 1900
+                Log.i(TAG, "ics1: " + ics_item_name + " "
+                        + ics_item_address + " "
+                        + ics_y + " "
+                        + ics_m + " "
+                        + ics_d + " "
+                        + ics_24hour + " "
+                        + ics_minute + " "
+                )
+                showDatePicker = false
+                showTimePicker = true
+            }, onDismissRequest = {
+                ics_item_name = ""
+                ics_item_address = ""
+                ics_d = 0
+                ics_m = 0
+                ics_y = 1900
+                ics_minute = 0
+                ics_24hour = 0
+                showDatePicker = false
+            })
+        }
+
+        if (showTimePicker) {
+            val currentTime = Calendar.getInstance()
+            val timePickerState = rememberTimePickerState(
+                initialHour = currentTime.time.hours,
+                initialMinute = currentTime.time.minutes,
+                is24Hour = true,
+            )
+
+            Dialog(onDismissRequest = {}, properties = DialogProperties()) {
+                Row(modifier = Modifier
+                    .wrapContentSize()
+                    .background(
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        shape = RoundedCornerShape(size = 16.dp)
+                    )) {
+                    Spacer(modifier = Modifier.width(25.dp))
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Spacer(modifier = Modifier.height(25.dp))
+                        TimePicker(
+                            state = timePickerState,
+                        )
+                        Row(
+                            modifier = Modifier
+                                .align(Alignment.End)
+                                .padding(bottom = 16.dp, end = 16.dp)
+                        ) {
+                            Button(onClick = {
+                                ics_item_name = ""
+                                ics_item_address = ""
+                                ics_d = 0
+                                ics_m = 0
+                                ics_y = 1900
+                                ics_minute = 0
+                                ics_24hour = 0
+                                showTimePicker = false
+                            }) {
+                                Text("Cancel")
+                            }
+                            Spacer(modifier = Modifier.width(30.dp))
+                            Button(onClick = {
+                                ics_minute = timePickerState.minute // 0 - 59
+                                ics_24hour = timePickerState.hour // 0 - 23
+                                Log.i(TAG, "ics2: " + ics_item_name + " "
+                                        + ics_item_address + " "
+                                        + ics_y + " "
+                                        + ics_m + " "
+                                        + ics_d + " "
+                                        + ics_24hour + " "
+                                        + ics_minute + " "
+                                )
+                                showTimePicker = false
+                            }) {
+                                Text("Ok")
+                            }
+                        }
+                    }
+                    Spacer(modifier = Modifier.width(25.dp))
+                }
+            }
         }
 
         // Data list ----------------------
@@ -443,6 +562,9 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                         },
                         background = Color.Green.copy(alpha = 0.6f),
                         onSwipe = {
+                            ics_item_name = data.name
+                            ics_item_address = data.address
+                            showDatePicker = true
                         },
                         isUndo = false
                     )

@@ -38,12 +38,13 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalMinimumTouchTargetEnforcement
+import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -52,6 +53,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zoffcc.applications.sorm.Restaurant
@@ -60,7 +62,7 @@ import kotlin.math.roundToInt
 
 
 @OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("ComposableNaming")
+@SuppressLint("ComposableNaming", "UseKtx")
 @Composable
 fun edit_form(context: Context) {
     var show_delete_alert by remember { mutableStateOf(false) }
@@ -97,11 +99,11 @@ fun edit_form(context: Context) {
         val textFieldValue = TextFieldValue(text = geo_coord_longdb_to_string(rest_data.lon))
         mutableStateOf(textFieldValue)
     }
-    var rating by remember { mutableStateOf(rest_data.rating) }
+    var rating by remember { mutableIntStateOf(rest_data.rating) }
 
     val cat_list = orma.selectFromCategory().toList()
     val cat_isDropDownExpanded = remember { mutableStateOf(false) }
-    val cat_itemPosition = remember { mutableStateOf(rest_data.category_id.toInt()) }
+    val cat_itemPosition = remember { mutableIntStateOf(rest_data.category_id.toInt()) }
     val scrollState = rememberScrollState()
 
     if (show_delete_alert)
@@ -156,7 +158,7 @@ fun edit_form(context: Context) {
                     .width(5.dp)
                     .height(6.dp)
             )
-            CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+            CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides Dp.Unspecified) {
                 Button(
                     modifier = Modifier
                         .height(40.dp)
@@ -202,7 +204,7 @@ fun edit_form(context: Context) {
                     .width(5.dp)
                     .height(6.dp)
             )
-            CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+            CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides Dp.Unspecified) {
                 Button(
                     modifier = Modifier
                         .height(40.dp)
@@ -257,7 +259,7 @@ fun edit_form(context: Context) {
                         }
                 ) {
                     // Log.i(TAG, "CCCCCCC22:" + cat_itemPosition.value + " ___ " + cat_list)
-                    Text(text = cat_list[cat_itemPosition.value - 1].name, fontSize = 16.sp)
+                    Text(text = cat_list[cat_itemPosition.intValue - 1].name, fontSize = 16.sp)
                     Icon(Icons.Default.ArrowDropDown, contentDescription = "select Category")
                 }
                 DropdownMenu(
@@ -276,7 +278,7 @@ fun edit_form(context: Context) {
                             onClick = {
                                 cat_isDropDownExpanded.value = false
                                 // Log.i(TAG, "CCCCCCC333:" + cat_itemPosition.value + " ___ " + index)
-                                cat_itemPosition.value = index + 1
+                                cat_itemPosition.intValue = index + 1
                             })
                     }
                 }
@@ -340,7 +342,7 @@ fun edit_form(context: Context) {
             //
             // --------- lat lon ---------
             Spacer(modifier = Modifier.width(1.dp).height(10.dp))
-            CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+            CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides Dp.Unspecified) {
                 Button(
                     modifier = Modifier
                         .height(40.dp)
@@ -454,7 +456,7 @@ fun edit_form(context: Context) {
                             r.for_summer = input_for_summer
                             r.need_reservation = input_needs_reservation
                             r.rating = rating
-                            r.category_id = cat_list[cat_itemPosition.value - 1].id
+                            r.category_id = cat_list[cat_itemPosition.intValue - 1].id
 
                             orma.updateRestaurant().idEq(restaurant_id)
                                 .name(r.name).address(r.address)

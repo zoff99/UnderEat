@@ -36,7 +36,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalMinimumTouchTargetEnforcement
+import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -50,6 +50,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zoffcc.applications.sorm.Restaurant
@@ -60,7 +61,7 @@ import java.net.URL
 import java.util.concurrent.LinkedBlockingQueue
 
 @OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("ComposableNaming")
+@SuppressLint("ComposableNaming", "UseKtx")
 @Composable
 fun add_form(context: Context) {
     var input_for_summer by remember { mutableStateOf(false) }
@@ -119,7 +120,7 @@ fun add_form(context: Context) {
                     .width(5.dp)
                     .height(6.dp)
             )
-            CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+            CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides Dp.Unspecified) {
                 Button(
                     modifier = Modifier
                         .height(40.dp)
@@ -165,7 +166,7 @@ fun add_form(context: Context) {
                     .width(5.dp)
                     .height(6.dp)
             )
-            CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+            CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides Dp.Unspecified) {
                 Button(
                     modifier = Modifier
                         .height(40.dp)
@@ -291,7 +292,7 @@ fun add_form(context: Context) {
                     .width(5.dp)
                     .height(6.dp)
             )
-            CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+            CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides Dp.Unspecified) {
                 Button(
                     modifier = Modifier
                         .height(40.dp)
