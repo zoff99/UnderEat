@@ -38,6 +38,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
@@ -76,6 +77,8 @@ import com.zoffcc.applications.undereat.corefuncs.orma
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import me.saket.swipe.SwipeAction
+import me.saket.swipe.SwipeableActionsBox
 
 
 @SuppressLint("ComposableNaming")
@@ -429,7 +432,28 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                 itemsIndexed(items = restaurants.restaurantlist,
                     key = { index, item -> item.id }
                 ) { index, data ->
-                    RestaurantCard(index, data, context)
+                    val createICS = SwipeAction(
+                        icon = {
+                            Icon(
+                                Icons.Default.DateRange,
+                                contentDescription = "create ICS file",
+                                modifier = Modifier.padding(end = 20.dp),
+                                tint = Color.White
+                            )
+                        },
+                        background = Color.Green.copy(alpha = 0.6f),
+                        onSwipe = {
+                        },
+                        isUndo = false
+                    )
+
+                    SwipeableActionsBox(
+                        startActions = listOf(createICS),
+                        backgroundUntilSwipeThreshold = Color.Yellow.copy(alpha = 0.6f),
+                        swipeThreshold = 150.dp,
+                    ) {
+                        RestaurantCard(index, data, context)
+                    }
                 }
             }
             ScrollBar(lazyListState = listState, hidable = false)
