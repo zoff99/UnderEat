@@ -39,7 +39,7 @@ import com.zoffcc.applications.sorm.OrmaDatabase.run_query_for_single_result
 import java.io.File
 
 const val export_sql_filename = "export.uedb"
-const val export_ical_filename = "export.ical"
+const val export_ics_filename = "export.ics"
 private const val sql_dump_prefix = "import_5907edf"
 
 // private const val sql_export_dir = "export"
