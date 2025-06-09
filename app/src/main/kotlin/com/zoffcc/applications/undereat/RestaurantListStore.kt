@@ -4,14 +4,15 @@
 
 package com.zoffcc.applications.undereat
 
+import android.util.Log
 import com.zoffcc.applications.sorm.Restaurant
+import com.zoffcc.applications.undereat.corefuncs.orma
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.text.Normalizer
 
 data class StateRestaurantList(val restaurantlist: List<Restaurant> = emptyList(),
                                val restaurantDistance: List<RestDistance> = emptyList(),
-                               val filterString: String? = null,
                                val summerflag: Boolean = false
 )
 
@@ -37,7 +38,6 @@ interface RestaurantListStore
     fun sortByRating()
     fun filterByString(filter_string: String?)
     fun filterBySummerflag(flag: Boolean)
-    fun getFilterString(): String?
     val stateFlow: StateFlow<StateRestaurantList>
     val state get() = stateFlow.value
 }
@@ -180,20 +180,13 @@ fun createRestaurantListStore(): RestaurantListStore
         }
 
         override fun filterByString(filter_string: String?) {
-            if (filter_string.isNullOrEmpty())
-            {
-                load_restaurants()
-                mutableStateFlow.value = state.copy(filterString = null)
-            }
-            else {
-                load_restaurants()
-                mutableStateFlow.value = state.copy(filterString = filter_string,
+            if (!filter_string.isNullOrEmpty()) {
+                mutableStateFlow.value = state.copy(
                     restaurantlist = state.restaurantlist.filter { filter_by_search_string(it, filter_string) })
             }
         }
 
         override fun filterBySummerflag(flag: Boolean) {
-            load_restaurants()
             mutableStateFlow.value = state.copy(summerflag = flag,
                 restaurantlist = state.restaurantlist.filter {
                     @Suppress("KotlinConstantConditions")
@@ -227,10 +220,6 @@ fun createRestaurantListStore(): RestaurantListStore
             return false
         }
 
-        override fun getFilterString(): String? {
-            return state.filterString
-        }
-
         private fun getRestDist(a: Restaurant, restaurantDistance: ArrayList<RestDistance>): Long {
             restaurantDistance.forEach {
                 if (a.id == it.id)
@@ -240,5 +229,53 @@ fun createRestaurantListStore(): RestaurantListStore
             }
             return MAX_DISTANCE_REST
         }
+    }
+}
+
+fun load_restaurants() {
+    Log.i(TAG, "load_restaurants:start")
+    restaurantliststore.clear()
+    val filter_category_id = globalstore.getFilterCategoryId()
+    if (filter_category_id == -1L) {
+        orma.selectFromRestaurant().toList().forEach {
+            try {
+                val r = Restaurant.deep_copy(it)
+                restaurantliststore.add(item = r)
+                // Log.i(TAG, "load_restaurants: " + r)
+            } catch (_: Exception) {
+            }
+        }
+    }
+    else
+    {
+        orma.selectFromRestaurant().category_idEq(filter_category_id).toList().forEach {
+            try {
+                val r = Restaurant.deep_copy(it)
+                restaurantliststore.add(item = r)
+                // Log.i(TAG, "load_restaurants: " + r)
+            } catch (_: Exception) {
+            }
+        }
+    }
+    sort_restaurants()
+    restaurantliststore.filterBySummerflag(globalstore.getForsummerFilter())
+    restaurantliststore.filterByString(globalstore.getFilterString())
+    Log.i(TAG, "load_restaurants:end")
+}
+
+fun sort_restaurants()
+{
+    val id = globalstore.getSorterId()
+    if (id == SORTER.NAME.value)
+    {
+        restaurantliststore.sortByName()
+    }
+    else if (id == SORTER.ADDRESS.value)
+    {
+        restaurantliststore.sortByAddress()
+    }
+    else if (id == SORTER.RATING.value)
+    {
+        restaurantliststore.sortByRating()
     }
 }

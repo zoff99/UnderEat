@@ -11,7 +11,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,7 +23,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.zoffcc.applications.sorm.Restaurant
 import com.zoffcc.applications.undereat.corefuncs.del_g_opts
 import com.zoffcc.applications.undereat.corefuncs.get_g_opts
 import com.zoffcc.applications.undereat.corefuncs.orma
@@ -147,9 +145,9 @@ internal fun restore_mainlist_state() {
     load_compact_flag()
     load_filters()
     load_sorter()
-    load_restaurants()
     load_filter_string()
     load_forsummer_flag()
+    load_restaurants()
 }
 
 val restaurantliststore = createRestaurantListStore()
@@ -178,52 +176,6 @@ fun MainScreen(context: Context) {
     else if (state_mainscreen.mainscreen_state == MAINSCREEN.EDIT)
     {
         edit_form(context)
-    }
-}
-
-fun load_restaurants() {
-    Log.i(TAG, "load_restaurants:start")
-    restaurantliststore.clear()
-    val filter_category_id = globalstore.getFilterCategoryId()
-    if (filter_category_id == -1L) {
-        orma.selectFromRestaurant().toList().forEach {
-            try {
-                val r = Restaurant.deep_copy(it)
-                restaurantliststore.add(item = r)
-                // Log.i(TAG, "load_restaurants: " + r)
-            } catch (_: Exception) {
-            }
-        }
-    }
-    else
-    {
-        orma.selectFromRestaurant().category_idEq(filter_category_id).toList().forEach {
-            try {
-                val r = Restaurant.deep_copy(it)
-                restaurantliststore.add(item = r)
-                // Log.i(TAG, "load_restaurants: " + r)
-            } catch (_: Exception) {
-            }
-        }
-    }
-    sort_restaurants()
-    Log.i(TAG, "load_restaurants:end")
-}
-
-fun sort_restaurants()
-{
-    val id = globalstore.getSorterId()
-    if (id == SORTER.NAME.value)
-    {
-        restaurantliststore.sortByName()
-    }
-    else if (id == SORTER.ADDRESS.value)
-    {
-        restaurantliststore.sortByAddress()
-    }
-    else if (id == SORTER.RATING.value)
-    {
-        restaurantliststore.sortByRating()
     }
 }
 
@@ -298,7 +250,6 @@ private fun load_forsummer_flag() {
         try
         {
             globalstore.setForsummerFilter(flag.toBoolean())
-            restaurantliststore.filterBySummerflag(flag.toBoolean())
         }
         catch(e: Exception)
         {
@@ -359,11 +310,11 @@ private fun load_sorter() {
 }
 
 fun save_filter_string() {
-    val id = restaurantliststore.getFilterString()
+    val id = globalstore.getFilterString()
     set_g_opts("FilterString", id)
 }
 
 private fun load_filter_string() {
     val id = get_g_opts("FilterString")
-    restaurantliststore.filterByString(id)
+    globalstore.setFilterString(id)
 }

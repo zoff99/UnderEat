@@ -86,8 +86,6 @@ import androidx.core.content.FileProvider
 import biweekly.Biweekly
 import biweekly.ICalendar
 import biweekly.component.VEvent
-import biweekly.io.TimezoneAssignment
-import biweekly.io.TimezoneInfo
 import biweekly.util.Duration
 import com.zoffcc.applications.sorm.Category
 import com.zoffcc.applications.undereat.corefuncs.orma
@@ -155,7 +153,7 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
     val sort_isDropDownExpanded = remember { mutableStateOf(false) }
     val sort_itemPosition = remember { mutableIntStateOf(current_sort_id_pos) }
     //
-    val filter_string_current = restaurantliststore.getFilterString()
+    val filter_string_current = globalstore.getFilterString()
     var input_filter by remember {
         val textFieldValue =
             TextFieldValue(text = if (filter_string_current.isNullOrEmpty()) "" else filter_string_current)
@@ -294,7 +292,7 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                                     // Log.i(TAG, "SSO2:" + sort_list[sort_itemPosition.value].id + " " + sort_list[sort_itemPosition.value].name)
                                     globalstore.setSorterId(sort_list[sort_itemPosition.intValue].id)
                                     save_sorter()
-                                    sort_restaurants()
+                                    load_restaurants()
                                 })
                         }
                     }
@@ -363,6 +361,7 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                     onCheckedChange = {
                         globalstore.setCompactMainList(it)
                         save_compact_flag()
+                        //****// load_restaurants()
                     },
                     thumbContent = if (state_compactMainlist.compactMainList) {
                         {
@@ -394,8 +393,8 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                         checkedTrackColor = flag_color_brighter),
                     onCheckedChange = {
                         globalstore.setForsummerFilter(it)
-                        restaurantliststore.filterBySummerflag(it)
                         save_forsummer_flag()
+                        load_restaurants()
                     },
                     thumbContent = if (state_compactMainlist.forsummerFilter) {
                         {
@@ -428,8 +427,10 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                 singleLine = true,
                 onValueChange = { targetValue ->
                     input_filter = targetValue
-                    restaurantliststore.filterByString(input_filter.text)
-                    save_filter_string() },
+                    globalstore.setFilterString(input_filter.text)
+                    save_filter_string()
+                    load_restaurants()
+                                },
                 modifier = Modifier
                     .randomDebugBorder()
                     .clip(RoundedCornerShape(rounded_broder_dp))

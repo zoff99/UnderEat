@@ -42,6 +42,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -94,7 +95,7 @@ fun add_form(context: Context) {
 
     val cat_list = orma.selectFromCategory().toList()
     val cat_isDropDownExpanded = remember { mutableStateOf(false) }
-    val cat_itemPosition = remember { mutableStateOf(0) }
+    val cat_itemPosition = remember { mutableIntStateOf(0) }
     val scrollState = rememberScrollState()
 
     Column(modifier = Modifier.fillMaxSize().verticalScroll(scrollState))
@@ -221,7 +222,7 @@ fun add_form(context: Context) {
                             cat_isDropDownExpanded.value = true
                         }
                 ) {
-                    Text(text = cat_list[cat_itemPosition.value].name, fontSize = 16.sp)
+                    Text(text = cat_list[cat_itemPosition.intValue].name, fontSize = 16.sp)
                     Icon(Icons.Default.ArrowDropDown, contentDescription = "select Category")
                 }
                 DropdownMenu(
@@ -239,7 +240,7 @@ fun add_form(context: Context) {
                             },
                             onClick = {
                                 cat_isDropDownExpanded.value = false
-                                cat_itemPosition.value = index
+                                cat_itemPosition.intValue = index
                             })
                     }
                 }
@@ -406,7 +407,7 @@ fun add_form(context: Context) {
                             r.active = true
                             r.for_summer = input_for_summer
                             r.need_reservation = input_needs_reservation
-                            r.category_id = cat_list[cat_itemPosition.value].id
+                            r.category_id = cat_list[cat_itemPosition.intValue].id
                             r.lat = geo_coord_string_to_longdb(input_lat.text)
                             r.lon = geo_coord_string_to_longdb(input_lon.text)
                             val r_id_new: Long = orma.insertIntoRestaurant(r)
