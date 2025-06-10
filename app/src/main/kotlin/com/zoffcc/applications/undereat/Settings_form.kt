@@ -37,7 +37,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.FileProvider
-import com.zoffcc.applications.sorm.Column
 import com.zoffcc.applications.sorm.OrmaDatabase.run_query_for_single_result
 import java.io.File
 

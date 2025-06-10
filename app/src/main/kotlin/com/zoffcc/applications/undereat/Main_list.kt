@@ -1,5 +1,6 @@
 @file:Suppress("unused", "UNUSED_ANONYMOUS_PARAMETER", "LocalVariableName",
-    "SpellCheckingInspection", "ConvertToStringTemplate", "UselessCallOnNotNull", "DEPRECATION"
+    "SpellCheckingInspection", "ConvertToStringTemplate", "UselessCallOnNotNull", "DEPRECATION",
+    "KotlinConstantConditions"
 )
 
 package com.zoffcc.applications.undereat
@@ -88,6 +89,7 @@ import biweekly.ICalendar
 import biweekly.component.VEvent
 import biweekly.util.Duration
 import com.zoffcc.applications.sorm.Category
+import com.zoffcc.applications.undereat.corefuncs.DEMO_SHOWCASE_DEBUG_ONLY
 import com.zoffcc.applications.undereat.corefuncs.orma
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -114,6 +116,12 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
     var ics_d by remember { mutableIntStateOf(0) }
     var ics_24hour by remember { mutableIntStateOf(0) }
     var ics_minute by remember { mutableIntStateOf(0) }
+
+    var git_hash = ""
+    try {
+        git_hash = BuildConfig.GIT_HASH
+    } catch (_: Exception) {
+    }
 
     val all_cat = Category()
     all_cat.id = -1
@@ -194,8 +202,13 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                     globalstore.updateMainscreenState(MAINSCREEN.SETTINGS)
                 })
             {
+                var num_text = "${restaurants.restaurantlist.size} Restaurants"
+                if (DEMO_SHOWCASE_DEBUG_ONLY)
+                {
+                    num_text = "${restaurants.restaurantlist.size} Restaurants" + "\n" + git_hash
+                }
                 Text(
-                    text = "${restaurants.restaurantlist.size} Restaurants",
+                    text = num_text,
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(10F)
