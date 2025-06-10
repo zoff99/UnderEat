@@ -12,11 +12,13 @@ import android.content.Intent
 import android.util.Log
 import android.webkit.MimeTypeMap
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -35,6 +37,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.FileProvider
+import com.zoffcc.applications.sorm.Column
 import com.zoffcc.applications.sorm.OrmaDatabase.run_query_for_single_result
 import java.io.File
 
@@ -212,6 +215,35 @@ fun settings_form(context: Context) {
                 input_taxi_number = it
                 set_taxi_number(input_taxi_number.text)
             })
+
+        Row {
+            Column(modifier = Modifier.width(16.dp)) {
+
+            }
+            Column {
+                Spacer(modifier = Modifier.height(70.dp))
+                var git_hash = ""
+                try {
+                    git_hash = BuildConfig.GIT_HASH
+                } catch (_: Exception) {
+                }
+                Text("git hash: " + git_hash, fontSize = 14.sp)
+
+                var b_type = ""
+                try {
+                    b_type = BuildConfig.BUILD_TYPE
+                } catch (_: Exception) {
+                }
+                Text("build type: " + b_type, fontSize = 14.sp)
+
+                var version_code = ""
+                try {
+                    version_code = "" + BuildConfig.VERSION_CODE
+                } catch (_: Exception) {
+                }
+                Text("version: " + version_code, fontSize = 14.sp)
+            }
+        }
     }
 }
 
