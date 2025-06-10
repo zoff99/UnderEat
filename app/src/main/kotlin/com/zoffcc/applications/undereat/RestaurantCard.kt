@@ -14,6 +14,7 @@ import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,7 +27,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowCircleUp
+import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Phone
@@ -85,9 +87,12 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
                 color = MaterialTheme.colorScheme.outline,
                 shape = RectangleShape
             )
-            //.clickable {
-            //
-            //}
+            .clickable {
+                if (globalstore.getSorterId() == SORTER.DISTANCE.value) {
+                    globalstore.setEditRestaurantId(data.id)
+                    globalstore.updateMainscreenState(MAINSCREEN.COMPASS)
+                }
+            }
         ,
     ) {
         Row(
@@ -321,7 +326,7 @@ private fun summer_label(data: Restaurant, compact: Boolean) {
 
 @SuppressLint("ComposableNaming")
 @Composable
-private fun restaurant_name_view(data: Restaurant, compact: Boolean) {
+internal fun restaurant_name_view(data: Restaurant, compact: Boolean) {
     var text_size_compact = 19.sp
     if (data.name.length > 32) {
         text_size_compact = 14.sp
@@ -353,7 +358,7 @@ private fun restaurant_name_view(data: Restaurant, compact: Boolean) {
 }
 
 @Composable
-private fun Compass(data: Restaurant, compact: Boolean) {
+internal fun Compass(data: Restaurant, compact: Boolean, fullsize: Boolean = false) {
     var distance by remember { mutableStateOf("") }
     val state_location by locationstore.stateFlow.collectAsState()
     var relativeBearing by remember { mutableFloatStateOf(0F) }
@@ -394,8 +399,7 @@ private fun Compass(data: Restaurant, compact: Boolean) {
             // Log.i(TAG, "dis=" + distance + " " + data.name + " " + bearing + " " + heading)
         }
     }
-    // HINT: +90° because "ArrowBack" points to the left!!
-    val rotation = smoothRotation(relativeBearing + 90)
+    val rotation = smoothRotation(relativeBearing)
     val animatedRotation by animateFloatAsState(
         targetValue = rotation.value,
         animationSpec = tween(
@@ -404,13 +408,61 @@ private fun Compass(data: Restaurant, compact: Boolean) {
         )
     )
     if (distance.isNotEmpty()) {
-        if (compact) {
-            Row(modifier = Modifier.width(180.dp)) {
+        if (fullsize) {
+            Column(modifier = Modifier.fillMaxSize()) {
                 Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    imageVector = Icons.Default.ArrowCircleUp,
                     contentDescription = "Navigation Arrow to Target",
                     modifier = Modifier
-                        .size(16.dp)
+                        .randomDebugBorder()
+                        .weight(1000F)
+                        .fillMaxSize()
+                        .rotate(animatedRotation)
+                )
+                Row {
+                    Spacer(modifier = Modifier.weight(5F).height(1.dp))
+                    Text(
+                        text = distance,
+                        softWrap = true,
+                        maxLines = 1,
+                        textAlign = TextAlign.Start,
+                        style = TextStyle(
+                            fontSize = 35.sp,
+                        )
+                    )
+                    Spacer(modifier = Modifier.weight(5F).height(1.dp))
+                }
+                Spacer(modifier = Modifier.width(1.dp).height(60.dp))
+            }
+        } else {
+            if (compact) {
+                Row(modifier = Modifier.width(180.dp)) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowUpward,
+                        contentDescription = "Navigation Arrow to Target",
+                        modifier = Modifier
+                            .size(16.dp)
+                            .rotate(animatedRotation)
+                    )
+                    Text(
+                        text = distance,
+                        softWrap = true,
+                        maxLines = 1,
+                        modifier = Modifier
+                            .randomDebugBorder()
+                            .padding(start = 6.dp),
+                        textAlign = TextAlign.Start,
+                        style = TextStyle(
+                            fontSize = 9.sp,
+                        )
+                    )
+                }
+            } else {
+                Icon(
+                    imageVector = Icons.Default.ArrowUpward,
+                    contentDescription = "Navigation Arrow to Target",
+                    modifier = Modifier
+                        .size(30.dp)
                         .rotate(animatedRotation)
                 )
                 Text(
@@ -422,30 +474,10 @@ private fun Compass(data: Restaurant, compact: Boolean) {
                         .padding(start = 6.dp),
                     textAlign = TextAlign.Start,
                     style = TextStyle(
-                        fontSize = 9.sp,
+                        fontSize = 14.sp,
                     )
                 )
             }
-        } else {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Navigation Arrow to Target",
-                modifier = Modifier
-                    .size(30.dp)
-                    .rotate(animatedRotation)
-            )
-            Text(
-                text = distance,
-                softWrap = true,
-                maxLines = 1,
-                modifier = Modifier
-                    .randomDebugBorder()
-                    .padding(start = 6.dp),
-                textAlign = TextAlign.Start,
-                style = TextStyle(
-                    fontSize = 14.sp,
-                )
-            )
         }
     }
 }

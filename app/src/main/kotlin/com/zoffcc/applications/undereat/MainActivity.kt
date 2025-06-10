@@ -86,6 +86,10 @@ class MainActivity : ComponentActivity() {
         if (globalstore.getMainscreenState() == MAINSCREEN.MAINLIST) {
             super.onBackPressed()
         }
+        else if (globalstore.getMainscreenState() == MAINSCREEN.COMPASS)
+        {
+            globalstore.updateMainscreenState(MAINSCREEN.MAINLIST)
+        }
         else if (globalstore.getMainscreenState() == MAINSCREEN.ADD)
         {
             globalstore.updateMainscreenState(MAINSCREEN.MAINLIST)
@@ -162,6 +166,10 @@ fun MainScreen(context: Context) {
     if (state_mainscreen.mainscreen_state == MAINSCREEN.MAINLIST) {
         globalstore.setEditRestaurantId(-1)
         main_list(restaurants, context)
+    }
+    else if (state_mainscreen.mainscreen_state == MAINSCREEN.COMPASS)
+    {
+        CompassScreen()
     }
     else if (state_mainscreen.mainscreen_state == MAINSCREEN.ADD)
     {
