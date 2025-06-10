@@ -22,7 +22,7 @@ public class corefuncs
     private static String ret = "";
 
     static OrmaDatabase orma = null;
-    final static int ORMA_CURRENT_DB_SCHEMA_VERSION = 6; // increase for database schema changes // minimum is 1
+    final static int ORMA_CURRENT_DB_SCHEMA_VERSION = 7; // increase for database schema changes // minimum is 1
     public final static String MAIN_DB_NAME = "main.db"; // DO NOT CHANGE
     private static boolean PREF__DB_wal_mode = true; // use WAL mode, set "true" for release builds
     private final String PREF__DB_secrect_key = ""; // no encryption
@@ -35,7 +35,8 @@ public class corefuncs
         HEURIGEN(4),
         EIS(5),
         COCKTAILS(6),
-        POOL(7);
+        POOL(7),
+        STORE(8);
         public int value;
         private Category(int value)
         {
@@ -125,6 +126,13 @@ public class corefuncs
             run_multi_sql("CREATE INDEX Restaurant_address_Index ON Restaurant(address);\n");
             run_multi_sql("CREATE INDEX Restaurant_category_id_Index ON Restaurant(category_id);\n");
             run_multi_sql("CREATE INDEX Restaurant_for_summer_Index ON Restaurant(for_summer);\n");
+            // @formatter:on
+        }
+
+        if (new_version == 7)
+        {
+            // @formatter:off
+            run_multi_sql("insert into Category (id, name) values (8, 'Store')");
             // @formatter:on
         }
 
