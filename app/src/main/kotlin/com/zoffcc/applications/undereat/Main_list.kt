@@ -43,6 +43,7 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
@@ -650,6 +651,8 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                 ) { index, data ->
                     val createICS = SwipeAction(
                         icon = {
+                            Text("Calender")
+                            Spacer(modifier = Modifier.width(10.dp).height(1.dp))
                             Icon(
                                 Icons.Default.DateRange,
                                 contentDescription = "create ICS file",
@@ -666,10 +669,30 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                         isUndo = false
                     )
 
+                    val editRestaurant = SwipeAction(
+                        icon = {
+                            Icon(
+                                Icons.Default.Edit,
+                                contentDescription = "edit Restaurant",
+                                modifier = Modifier.padding(start = 20.dp),
+                                tint = Color.White
+                            )
+                            Spacer(modifier = Modifier.width(10.dp).height(1.dp))
+                            Text("Edit")
+                        },
+                        background = Color.Cyan.copy(alpha = 0.6f),
+                        onSwipe = {
+                            globalstore.setEditRestaurantId(data.id)
+                            globalstore.updateMainscreenState(MAINSCREEN.EDIT)
+                        },
+                        isUndo = false
+                    )
+
                     SwipeableActionsBox(
                         startActions = listOf(createICS),
+                        endActions = listOf(editRestaurant),
                         backgroundUntilSwipeThreshold = Color.Yellow.copy(alpha = 0.6f),
-                        swipeThreshold = 150.dp,
+                        swipeThreshold = 100.dp,
                     ) {
                         RestaurantCard(index, data, context)
                     }

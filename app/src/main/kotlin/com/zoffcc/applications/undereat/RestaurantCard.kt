@@ -14,7 +14,6 @@ import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -86,10 +85,10 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
                 color = MaterialTheme.colorScheme.outline,
                 shape = RectangleShape
             )
-            .clickable {
-                globalstore.setEditRestaurantId(data.id)
-                globalstore.updateMainscreenState(MAINSCREEN.EDIT)
-            },
+            //.clickable {
+            //
+            //}
+        ,
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
