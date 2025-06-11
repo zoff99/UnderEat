@@ -91,6 +91,8 @@ import biweekly.component.VEvent
 import biweekly.util.Duration
 import com.zoffcc.applications.sorm.Category
 import com.zoffcc.applications.undereat.corefuncs.DEMO_SHOWCASE_DEBUG_ONLY
+import com.zoffcc.applications.undereat.corefuncs.SpecialCategory.SPECIAL_CATEGORY_ALL
+import com.zoffcc.applications.undereat.corefuncs.SpecialCategory.SPECIAL_CATEGORY_NOSTORE
 import com.zoffcc.applications.undereat.corefuncs.orma
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -125,11 +127,16 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
     }
 
     val all_cat = Category()
-    all_cat.id = -1
+    all_cat.id = SPECIAL_CATEGORY_ALL.value.toLong()
     all_cat.name = "* All *"
+    //
+    val noshops_cat = Category()
+    noshops_cat.id = SPECIAL_CATEGORY_NOSTORE.value.toLong()
+    noshops_cat.name = "* No Stores *"
     //
     val cat_list = ArrayList<Category>()
     cat_list.add(all_cat)
+    cat_list.add(noshops_cat)
     cat_list.addAll(orma.selectFromCategory().toList())
     //
     val filter_category_id = globalstore.getFilterCategoryId()

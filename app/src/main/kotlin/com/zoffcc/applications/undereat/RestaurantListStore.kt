@@ -6,6 +6,9 @@ package com.zoffcc.applications.undereat
 
 import android.util.Log
 import com.zoffcc.applications.sorm.Restaurant
+import com.zoffcc.applications.undereat.corefuncs.Category.STORE
+import com.zoffcc.applications.undereat.corefuncs.SpecialCategory.SPECIAL_CATEGORY_ALL
+import com.zoffcc.applications.undereat.corefuncs.SpecialCategory.SPECIAL_CATEGORY_NOSTORE
 import com.zoffcc.applications.undereat.corefuncs.orma
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -236,8 +239,18 @@ fun load_restaurants() {
     Log.i(TAG, "load_restaurants:start")
     restaurantliststore.clear()
     val filter_category_id = globalstore.getFilterCategoryId()
-    if (filter_category_id == -1L) {
+    if (filter_category_id == SPECIAL_CATEGORY_ALL.value.toLong()) {
         orma.selectFromRestaurant().toList().forEach {
+            try {
+                val r = Restaurant.deep_copy(it)
+                restaurantliststore.add(item = r)
+                // Log.i(TAG, "load_restaurants: " + r)
+            } catch (_: Exception) {
+            }
+        }
+    }
+    else if (filter_category_id == SPECIAL_CATEGORY_NOSTORE.value.toLong()) {
+        orma.selectFromRestaurant().category_idNotEq(STORE.value.toLong()).toList().forEach {
             try {
                 val r = Restaurant.deep_copy(it)
                 restaurantliststore.add(item = r)

@@ -44,6 +44,16 @@ public class corefuncs
         }
     }
 
+    public static enum SpecialCategory {
+        SPECIAL_CATEGORY_ALL(-1),
+        SPECIAL_CATEGORY_NOSTORE(-2);
+        public int value;
+        private SpecialCategory(int value)
+        {
+            this.value = value;
+        }
+    }
+
     static final int N_ITEMS = 10;
     static final int N_OPS = 100;
     final String titlePrefix = "title ";
