@@ -146,6 +146,7 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
             current_filter_cat_id_pos = index
         }
     }
+
     val cat_isDropDownExpanded = remember { mutableStateOf(false) }
     val cat_itemPosition = remember { mutableIntStateOf(current_filter_cat_id_pos) }
     //
@@ -161,7 +162,7 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
     //
     val sorter_id = globalstore.getSorterId()
     var current_sort_id_pos = SORTER.NAME.value.toInt()
-    cat_list.forEachIndexed { index, sorter ->
+    sort_list.forEachIndexed { index, sorter ->
         if (sorter.id == sorter_id) {
             current_sort_id_pos = index
         }
@@ -290,7 +291,19 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                                 sort_isDropDownExpanded.value = true
                             }
                     ) {
-                        Text(text = sort_list[sort_itemPosition.intValue].name, fontSize = 11.sp)
+                        if ((sort_itemPosition.intValue < 0) || (sort_itemPosition.intValue >= sort_list.size))
+                        {
+                            Text(
+                                text = "????",
+                                fontSize = 11.sp
+                            )
+                        }
+                        else {
+                            Text(
+                                text = sort_list[sort_itemPosition.intValue].name,
+                                fontSize = 11.sp
+                            )
+                        }
                         Icon(Icons.Default.ArrowDropDown, contentDescription = "select Sort Order")
                     }
                     DropdownMenu(
