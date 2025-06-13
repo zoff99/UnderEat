@@ -19,7 +19,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -37,6 +39,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.FileProvider
+import com.zoffcc.applications.sorm.OrmaDatabase
 import com.zoffcc.applications.sorm.OrmaDatabase.run_query_for_single_result
 import java.io.File
 
@@ -113,9 +116,11 @@ fun settings_form(context: Context) {
             text = { "Really import data ?" })
     }
 
+    val scrollState = rememberScrollState()
     Column(modifier = Modifier
         .fillMaxSize()
-        .padding(4.dp))
+        .padding(4.dp)
+        .verticalScroll(scrollState))
     {
         Spacer(modifier = Modifier.height(50.dp))
         Button(
@@ -220,7 +225,7 @@ fun settings_form(context: Context) {
 
             }
             Column {
-                Spacer(modifier = Modifier.height(70.dp))
+                Spacer(modifier = Modifier.height(50.dp))
                 var git_hash = ""
                 try {
                     git_hash = BuildConfig.GIT_HASH
@@ -241,6 +246,56 @@ fun settings_form(context: Context) {
                 } catch (_: Exception) {
                 }
                 Text("version: " + version_code, fontSize = 14.sp)
+
+
+                var debug__sqlite_user_version: String? = "unknown"
+                try {
+                    debug__sqlite_user_version =
+                        run_query_for_single_result("PRAGMA user_version")
+                } catch (e: java.lang.Exception) {
+                    e.printStackTrace()
+                }
+
+                var debug__sqlite_version: String? = "unknown"
+                try {
+                    debug__sqlite_version =
+                        run_query_for_single_result("SELECT sqlite_version()")
+                } catch (e: java.lang.Exception) {
+                    e.printStackTrace()
+                }
+
+                var debug__cipher_version: String? = "unknown"
+                try {
+                    debug__cipher_version =
+                        run_query_for_single_result("PRAGMA cipher_version")
+                } catch (e: java.lang.Exception) {
+                    e.printStackTrace()
+                }
+
+                var debug__cipher_provider: String? = "unknown"
+                try {
+                    debug__cipher_provider =
+                        run_query_for_single_result("PRAGMA cipher_provider")
+                } catch (e: java.lang.Exception) {
+                    e.printStackTrace()
+                }
+
+                var debug__cipher_provider_version: String? = "unknown"
+                try {
+                    debug__cipher_provider_version =
+                        run_query_for_single_result("PRAGMA cipher_provider_version")
+                } catch (e: java.lang.Exception) {
+                    e.printStackTrace()
+                }
+                //
+                var debug_output = ""
+                debug_output = debug_output + "--- sorma2 ---" + "\n"
+                debug_output = debug_output + "sorma_version=" + OrmaDatabase.getVersion() + "\n"
+                debug_output = debug_output + "cipher_version=" + debug__cipher_version + "\n"
+                debug_output = debug_output + "sqlite_version=" + debug__sqlite_version + "\n"
+                debug_output = debug_output + "cipher_provider=" + debug__cipher_provider + "\n"
+                debug_output = debug_output + "cipher_provider_version=" + debug__cipher_provider_version + "\n"
+                Text("" + debug_output, fontSize = 14.sp)
             }
         }
     }
