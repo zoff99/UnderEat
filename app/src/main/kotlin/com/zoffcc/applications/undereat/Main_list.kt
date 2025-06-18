@@ -442,7 +442,7 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
         // select and filter Row ---------------------
 
         Row(modifier = Modifier.padding(start = 3.dp, end = 6.dp, bottom = 8.dp)) {
-            // ----------- name -----------
+            // ----------- search filter input -----------
             val interactionSource = remember { MutableInteractionSource() }
             val textColor = MaterialTheme.colorScheme.onBackground
             val mergedTextStyle = LocalTextStyle.current.merge(TextStyle(color = textColor))
@@ -480,7 +480,7 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                     }
                 }
             )
-            // ----------- name -----------
+            // ----------- search filter input -----------
         }
 
         var showDatePicker by remember { mutableStateOf(false) }
@@ -646,7 +646,6 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
             }
         }
 
-        // Data list ----------------------
         val padding = PaddingValues(top = 0.dp, bottom = 0.dp, end = 4.dp)
         VerticalFastScroller(
             listState = listState,
@@ -654,7 +653,7 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
             topContentPadding = padding.calculateTopPadding(),
             endContentPadding = padding.calculateEndPadding(LocalLayoutDirection.current)
         ) {
-            // Data List
+            // Data list ----------------------
             LazyColumn(
                 state = listState,
                 modifier = Modifier
