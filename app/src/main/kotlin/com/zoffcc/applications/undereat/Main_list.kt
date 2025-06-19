@@ -18,10 +18,8 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -71,7 +69,6 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.luminance
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
@@ -91,6 +88,10 @@ import com.zoffcc.applications.undereat.corefuncs.SpecialCategory.SPECIAL_CATEGO
 import com.zoffcc.applications.undereat.corefuncs.orma
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
+import my.nanihadesuka.compose.LazyColumnScrollbar
+import my.nanihadesuka.compose.ScrollbarSelectionActionable
+import my.nanihadesuka.compose.ScrollbarSelectionMode
+import my.nanihadesuka.compose.ScrollbarSettings
 import java.io.File
 import java.io.PrintWriter
 import java.text.DateFormat
@@ -646,12 +647,26 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
             }
         }
 
-        val padding = PaddingValues(top = 0.dp, bottom = 0.dp, end = 4.dp)
-        VerticalFastScroller(
-            listState = listState,
-            thumbThickness = 10.dp,
-            topContentPadding = padding.calculateTopPadding(),
-            endContentPadding = padding.calculateEndPadding(LocalLayoutDirection.current)
+        LazyColumnScrollbar(
+            state = listState,
+            indicatorContent = { index, isThumbSelected ->
+                var name_short = ""
+                try {
+                    name_short = restaurants.restaurantlist[index].name.take(20)
+                } catch(_: Exception) {}
+                Row {
+                    TearDrop(
+                        text = name_short,
+                        fontSize = 18.sp
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                }
+            },
+            settings = ScrollbarSettings.Default.copy(thumbThickness = 10.dp,
+                scrollbarPadding = 10.dp,
+                selectionActionable = ScrollbarSelectionActionable.Always,
+                selectionMode = ScrollbarSelectionMode.Full,
+                thumbShape = TearDropShape)
         ) {
             // Data list ----------------------
             LazyColumn(
