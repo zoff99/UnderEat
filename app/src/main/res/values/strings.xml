@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">Under Eat</string>
+    <string name="app_name" translatable="false">Under Eat</string>
     <string name="title_activity_share">Share</string>
 </resources>
