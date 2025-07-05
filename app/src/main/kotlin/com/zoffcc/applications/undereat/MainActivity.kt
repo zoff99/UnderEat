@@ -151,6 +151,7 @@ internal fun restore_mainlist_state() {
     load_sorter()
     load_filter_string()
     load_forsummer_flag()
+    load_haveac_flag();
     load_restaurants()
 }
 
@@ -227,6 +228,11 @@ fun save_forsummer_flag() {
     set_g_opts("ForsummerFilter", flag.toString())
 }
 
+fun save_haveac_flag() {
+    val flag = globalstore.getHaveacFilter()
+    set_g_opts("HaveacFilter", flag.toString())
+}
+
 private fun load_compact_flag() {
     val flag = get_g_opts("CompactMainList")
     if (flag.isNullOrEmpty())
@@ -258,6 +264,26 @@ private fun load_forsummer_flag() {
         try
         {
             globalstore.setForsummerFilter(flag.toBoolean())
+        }
+        catch(e: Exception)
+        {
+            e.printStackTrace()
+        }
+
+    }
+}
+
+private fun load_haveac_flag() {
+    val flag = get_g_opts("HaveacFilter")
+    if (flag.isNullOrEmpty())
+    {
+        globalstore.setHaveacFilter(false)
+    }
+    else
+    {
+        try
+        {
+            globalstore.setHaveacFilter(flag.toBoolean())
         }
         catch(e: Exception)
         {

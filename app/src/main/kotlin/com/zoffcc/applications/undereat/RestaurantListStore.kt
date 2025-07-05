@@ -16,7 +16,8 @@ import java.text.Normalizer
 
 data class StateRestaurantList(val restaurantlist: List<Restaurant> = emptyList(),
                                val restaurantDistance: List<RestDistance> = emptyList(),
-                               val summerflag: Boolean = false
+                               val summerflag: Boolean = false,
+                               val haveacflag: Boolean = false,
 )
 
 const val MAX_DISTANCE_REST = 9999999999
@@ -41,6 +42,7 @@ interface RestaurantListStore
     fun sortByRating()
     fun filterByString(filter_string: String?)
     fun filterBySummerflag(flag: Boolean)
+    fun filterByHaveacflag(flag: Boolean)
     val stateFlow: StateFlow<StateRestaurantList>
     val state get() = stateFlow.value
 }
@@ -201,6 +203,18 @@ fun createRestaurantListStore(): RestaurantListStore
                 })
         }
 
+        override fun filterByHaveacflag(flag: Boolean) {
+            mutableStateFlow.value = state.copy(haveacflag = flag,
+                restaurantlist = state.restaurantlist.filter {
+                    @Suppress("KotlinConstantConditions")
+                    if (flag) {
+                        it.have_ac == flag
+                    } else {
+                        true
+                    }
+                })
+        }
+
         private val REGEX_UNACCENT = "\\p{InCombiningDiacriticalMarks}+".toRegex()
 
         fun CharSequence.unaccent(): String {
@@ -272,6 +286,7 @@ fun load_restaurants() {
     }
     sort_restaurants()
     restaurantliststore.filterBySummerflag(globalstore.getForsummerFilter())
+    restaurantliststore.filterByHaveacflag(globalstore.getHaveacFilter())
     restaurantliststore.filterByString(globalstore.getFilterString())
     Log.i(TAG, "load_restaurants:end")
 }

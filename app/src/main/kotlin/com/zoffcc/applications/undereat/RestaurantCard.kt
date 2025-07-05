@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AcUnit
 import androidx.compose.material.icons.filled.ArrowCircleUp
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.Call
@@ -190,6 +191,7 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
                             Compass(data, compact)
                         }
                         summer_label(data, compact)
+                        have_ac_label(data, compact)
                     }
                 } else {
                     var rating by remember { mutableIntStateOf(data.rating) }
@@ -206,6 +208,7 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
                             }
                         )
                         summer_label(data, compact)
+                        have_ac_label(data, compact)
                     }
                 }
                 Spacer(
@@ -319,6 +322,31 @@ private fun summer_label(data: Restaurant, compact: Boolean) {
                 modifier = Modifier.size(icons_size + padding_top)
                     .padding(start = padding_top, top = padding_start),
                 tint = Color.Yellow.copy(green = 0.8f)
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("ComposableNaming")
+@Composable
+private fun have_ac_label(data: Restaurant, compact: Boolean) {
+    var padding_top = 4.dp
+    var padding_start = 4.dp
+    var icons_size = SwitchDefaults.IconSize * 2.0f
+    if (compact) {
+        padding_top = 0.dp
+        padding_start = 2.dp
+        icons_size = SwitchDefaults.IconSize * 1.5f * 0.8f
+    }
+    if (data.have_ac) {
+        CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides Dp.Unspecified) {
+            Icon(
+                imageVector = Icons.Filled.AcUnit,
+                contentDescription = "has real A/C",
+                modifier = Modifier.size(icons_size + padding_top)
+                    .padding(start = padding_top, top = padding_start),
+                tint = Color.Blue.copy(green = 0.8f)
             )
         }
     }
