@@ -79,7 +79,7 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
     val state_compactMainlist by globalstore.stateFlow.collectAsState()
     Box(
         modifier = Modifier
-            .padding(start = 2.dp, end = 6.dp, bottom = 2.dp)
+            .padding(start = 2.dp, end = 12.dp, bottom = 2.dp)
             .fillMaxWidth()
             .wrapContentHeight()
             .border(

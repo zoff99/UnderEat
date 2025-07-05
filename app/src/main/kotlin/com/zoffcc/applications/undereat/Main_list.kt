@@ -663,7 +663,7 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                 }
             },
             settings = ScrollbarSettings.Default.copy(thumbThickness = 10.dp,
-                scrollbarPadding = 10.dp,
+                scrollbarPadding = 6.dp,
                 selectionActionable = ScrollbarSelectionActionable.Always,
                 selectionMode = ScrollbarSelectionMode.Full,
                 thumbShape = TearDropShape)
