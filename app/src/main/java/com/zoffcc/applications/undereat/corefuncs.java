@@ -9,7 +9,9 @@ import com.zoffcc.applications.sorm.Restaurant;
 import com.zoffcc.applications.sorm.lov;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.zoffcc.applications.sorm.OrmaDatabase.run_multi_sql;
@@ -277,6 +279,7 @@ public class corefuncs
             e.printStackTrace();
         }
         */
+
         if (DEMO_SHOWCASE_DEBUG_ONLY)
         {
             Random rnd = new Random();
@@ -285,10 +288,11 @@ public class corefuncs
                 try
                 {
                     Restaurant r = new Restaurant();
-                    r.name = (rnd.nextInt(9998) + 1) + " Restaurant " + i;
-                    r.address = "" + rnd.nextInt() + " street " + rnd.nextFloat() + " longer text here öäüß %&! _;#+*<>";
+                    r.name = randomIdentifier(6) + " Restaurant " + i;
+                    r.address = "" + rnd.nextInt() + " street " + randomIdentifier(12);
                     r.active = true;
-                    r.for_summer = false;
+                    r.for_summer = kotlin.random.Random.Default.nextBoolean();
+                    r.have_ac = kotlin.random.Random.Default.nextBoolean();
                     r.category_id = Category.CHINESE.value;
                     orma.insertIntoRestaurant(r);
                 }
@@ -389,4 +393,22 @@ public class corefuncs
             Log.i(TAG, "del_g_opts:EE2:" + e.getMessage());
         }
     }
+
+    final String lexicon = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzäöüß12345674890";
+    final java.util.Random rand = new java.util.Random();
+    final Set<String> identifiers = new HashSet<String>();
+
+    public String randomIdentifier(int wanted_length) {
+        StringBuilder builder = new StringBuilder();
+        while(builder.toString().length() == 0) {
+            for(int i = 0; i < wanted_length; i++) {
+                builder.append(lexicon.charAt(rand.nextInt(lexicon.length())));
+            }
+            if(identifiers.contains(builder.toString())) {
+                builder = new StringBuilder();
+            }
+        }
+        return builder.toString();
+    }
 }
+
