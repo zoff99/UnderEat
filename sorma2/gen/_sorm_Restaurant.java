@@ -30,4 +30,6 @@ public class Restaurant
     public String phonenumber;
     @Column()
     public boolean need_reservation;
+    @Column()
+    public boolean have_ac;
 }

@@ -12,5 +12,6 @@ CREATE TABLE IF NOT EXISTS "Restaurant" (
   "for_summer" BOOLEAN,
   "phonenumber" TEXT,
   "need_reservation" BOOLEAN,
+  "have_ac" BOOLEAN,
   PRIMARY KEY("id" AUTOINCREMENT)
 );

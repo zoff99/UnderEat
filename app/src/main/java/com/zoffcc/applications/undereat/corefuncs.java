@@ -22,7 +22,7 @@ public class corefuncs
     private static String ret = "";
 
     static OrmaDatabase orma = null;
-    final static int ORMA_CURRENT_DB_SCHEMA_VERSION = 7; // increase for database schema changes // minimum is 1
+    final static int ORMA_CURRENT_DB_SCHEMA_VERSION = 8; // increase for database schema changes // minimum is 1
     public final static String MAIN_DB_NAME = "main.db"; // DO NOT CHANGE
     private static boolean PREF__DB_wal_mode = true; // use WAL mode, set "true" for release builds
     private final String PREF__DB_secrect_key = ""; // no encryption
@@ -143,6 +143,14 @@ public class corefuncs
         {
             // @formatter:off
             run_multi_sql("insert into Category (id, name) values (8, 'Store')");
+            // @formatter:on
+        }
+
+        if (new_version == 8)
+        {
+            // @formatter:off
+            run_multi_sql("ALTER TABLE \"Restaurant\" ADD COLUMN have_ac BOOLEAN DEFAULT \"0\";\n");
+            run_multi_sql("CREATE INDEX Restaurant_have_ac_Index ON Restaurant(have_ac);\n");
             // @formatter:on
         }
 

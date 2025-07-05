@@ -58,6 +58,9 @@ public class Restaurant
     @Column(indexed = true, helpers = Column.Helpers.ALL)
     public boolean need_reservation;
 
+    @Column(indexed = true, helpers = Column.Helpers.ALL)
+    public boolean have_ac;
+
     public static Restaurant deep_copy(Restaurant in)
     {
         Restaurant out = new Restaurant();
@@ -74,6 +77,7 @@ public class Restaurant
         out.for_summer = in.for_summer;
         out.phonenumber = in.phonenumber;
         out.need_reservation = in.need_reservation;
+        out.have_ac = in.have_ac;
 
         return out;
     }
@@ -81,7 +85,7 @@ public class Restaurant
     @Override
     public String toString()
     {
-        return "id=" + id + ", name=" + name + ", category_id=" + category_id + ", address=" + address + ", area_code=" + area_code + ", lat=" + lat + ", lon=" + lon + ", rating=" + rating + ", comment=" + comment + ", active=" + active + ", for_summer=" + for_summer + ", phonenumber=" + phonenumber + ", need_reservation=" + need_reservation;
+        return "id=" + id + ", name=" + name + ", category_id=" + category_id + ", address=" + address + ", area_code=" + area_code + ", lat=" + lat + ", lon=" + lon + ", rating=" + rating + ", comment=" + comment + ", active=" + active + ", for_summer=" + for_summer + ", phonenumber=" + phonenumber + ", need_reservation=" + need_reservation + ", have_ac=" + have_ac;
     }
 
 
@@ -144,6 +148,7 @@ public class Restaurant
                 out.for_summer = rs.getBoolean("for_summer");
                 out.phonenumber = rs.getString("phonenumber");
                 out.need_reservation = rs.getBoolean("need_reservation");
+                out.have_ac = rs.getBoolean("have_ac");
 
                 list.add(out);
             }
@@ -217,6 +222,7 @@ public class Restaurant
                     + ",\"for_summer\""
                     + ",\"phonenumber\""
                     + ",\"need_reservation\""
+                    + ",\"have_ac\""
                     + ")" +
                     "values" +
                     "("
@@ -232,6 +238,7 @@ public class Restaurant
                     + ",?10"
                     + ",?11"
                     + ",?12"
+                    + ",?13"
                     + ")";
 
             insert_pstmt = sqldb.prepareStatement(insert_pstmt_sql);
@@ -249,6 +256,7 @@ public class Restaurant
             insert_pstmt.setBoolean(10, this.for_summer);
             insert_pstmt.setString(11, this.phonenumber);
             insert_pstmt.setBoolean(12, this.need_reservation);
+            insert_pstmt.setBoolean(13, this.have_ac);
             // @formatter:on
 
             if (ORMA_TRACE)
@@ -664,6 +672,22 @@ public class Restaurant
         }
         this.sql_set = this.sql_set + " \"need_reservation\"=?" + (BINDVAR_OFFSET_SET + bind_set_count) + " ";
         bind_set_vars.add(new OrmaBindvar(BINDVAR_TYPE_Boolean, need_reservation));
+        bind_set_count++;
+        return this;
+    }
+
+    public Restaurant have_ac(boolean have_ac)
+    {
+        if (this.sql_set.equals(""))
+        {
+            this.sql_set = " set ";
+        }
+        else
+        {
+            this.sql_set = this.sql_set + " , ";
+        }
+        this.sql_set = this.sql_set + " \"have_ac\"=?" + (BINDVAR_OFFSET_SET + bind_set_count) + " ";
+        bind_set_vars.add(new OrmaBindvar(BINDVAR_TYPE_Boolean, have_ac));
         bind_set_count++;
         return this;
     }
@@ -1324,6 +1348,34 @@ public class Restaurant
         return this;
     }
 
+    public Restaurant have_acEq(boolean have_ac)
+    {
+        this.sql_where = this.sql_where + " and \"have_ac\"=?" + (BINDVAR_OFFSET_WHERE + bind_where_count) + " ";
+        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_Boolean, have_ac));
+        bind_where_count++;
+        return this;
+    }
+
+    public Restaurant have_acNotEq(boolean have_ac)
+    {
+        this.sql_where = this.sql_where + " and \"have_ac\"<>?" + (BINDVAR_OFFSET_WHERE + bind_where_count) + " ";
+        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_Boolean, have_ac));
+        bind_where_count++;
+        return this;
+    }
+
+    public Restaurant have_acIsNull()
+    {
+        this.sql_where = this.sql_where + " and \"have_ac\" IS NULL ";
+        return this;
+    }
+
+    public Restaurant have_acIsNotNull()
+    {
+        this.sql_where = this.sql_where + " and \"have_ac\" IS NOT NULL ";
+        return this;
+    }
+
 
     // ----------------- OrderBy funcs ------------------ //
     public Restaurant orderByIdAsc()
@@ -1687,6 +1739,34 @@ public class Restaurant
             this.sql_orderby = this.sql_orderby + " , ";
         }
         this.sql_orderby = this.sql_orderby + " \"need_reservation\" DESC ";
+        return this;
+    }
+
+    public Restaurant orderByHave_acAsc()
+    {
+        if (this.sql_orderby.equals(""))
+        {
+            this.sql_orderby = " order by ";
+        }
+        else
+        {
+            this.sql_orderby = this.sql_orderby + " , ";
+        }
+        this.sql_orderby = this.sql_orderby + " \"have_ac\" ASC ";
+        return this;
+    }
+
+    public Restaurant orderByHave_acDesc()
+    {
+        if (this.sql_orderby.equals(""))
+        {
+            this.sql_orderby = " order by ";
+        }
+        else
+        {
+            this.sql_orderby = this.sql_orderby + " , ";
+        }
+        this.sql_orderby = this.sql_orderby + " \"have_ac\" DESC ";
         return this;
     }
 

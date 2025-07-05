@@ -84,8 +84,8 @@ fun settings_form(context: Context) {
                                 "from $sql_dump_prefix.Category;"
                         //
                         val sql_03a = "DELETE FROM Restaurant;"
-                        val sql_03b = "INSERT INTO Restaurant (id, name, category_id, address, area_code, lat, lon, rating, comment, active, for_summer, need_reservation, phonenumber) " +
-                                "select id, name, category_id, address, area_code, lat, lon, rating, comment, active, for_summer, need_reservation, phonenumber " +
+                        val sql_03b = "INSERT INTO Restaurant (id, name, category_id, address, area_code, lat, lon, rating, comment, active, for_summer, need_reservation, phonenumber, have_ac) " +
+                                "select id, name, category_id, address, area_code, lat, lon, rating, comment, active, for_summer, need_reservation, phonenumber, have_ac " +
                                 "from $sql_dump_prefix.Restaurant;"
                         val sql_04 = "DETACH DATABASE $sql_dump_prefix;"
 
