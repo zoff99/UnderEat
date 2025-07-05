@@ -13,5 +13,7 @@ CREATE TABLE IF NOT EXISTS "Restaurant" (
   "phonenumber" TEXT,
   "need_reservation" BOOLEAN,
   "have_ac" BOOLEAN,
+  "added_timestamp" INTEGER,
+  "modified_timestamp" INTEGER,
   PRIMARY KEY("id" AUTOINCREMENT)
 );

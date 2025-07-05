@@ -425,6 +425,9 @@ fun add_form(context: Context) {
                             r.have_ac = input_have_ac
                             r.need_reservation = input_needs_reservation
                             r.category_id = cat_list[cat_itemPosition.intValue].id
+                            val now_ts = System.currentTimeMillis()
+                            r.added_timestamp = now_ts
+                            r.modified_timestamp = now_ts
                             r.lat = geo_coord_string_to_longdb(input_lat.text)
                             r.lon = geo_coord_string_to_longdb(input_lon.text)
                             val r_id_new: Long = orma.insertIntoRestaurant(r)

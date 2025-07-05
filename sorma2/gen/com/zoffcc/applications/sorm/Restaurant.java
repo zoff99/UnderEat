@@ -61,6 +61,12 @@ public class Restaurant
     @Column(indexed = true, helpers = Column.Helpers.ALL)
     public boolean have_ac;
 
+    @Column(indexed = true, helpers = Column.Helpers.ALL)
+    public long added_timestamp;
+
+    @Column(indexed = true, helpers = Column.Helpers.ALL)
+    public long modified_timestamp;
+
     public static Restaurant deep_copy(Restaurant in)
     {
         Restaurant out = new Restaurant();
@@ -78,6 +84,8 @@ public class Restaurant
         out.phonenumber = in.phonenumber;
         out.need_reservation = in.need_reservation;
         out.have_ac = in.have_ac;
+        out.added_timestamp = in.added_timestamp;
+        out.modified_timestamp = in.modified_timestamp;
 
         return out;
     }
@@ -85,7 +93,7 @@ public class Restaurant
     @Override
     public String toString()
     {
-        return "id=" + id + ", name=" + name + ", category_id=" + category_id + ", address=" + address + ", area_code=" + area_code + ", lat=" + lat + ", lon=" + lon + ", rating=" + rating + ", comment=" + comment + ", active=" + active + ", for_summer=" + for_summer + ", phonenumber=" + phonenumber + ", need_reservation=" + need_reservation + ", have_ac=" + have_ac;
+        return "id=" + id + ", name=" + name + ", category_id=" + category_id + ", address=" + address + ", area_code=" + area_code + ", lat=" + lat + ", lon=" + lon + ", rating=" + rating + ", comment=" + comment + ", active=" + active + ", for_summer=" + for_summer + ", phonenumber=" + phonenumber + ", need_reservation=" + need_reservation + ", have_ac=" + have_ac + ", added_timestamp=" + added_timestamp + ", modified_timestamp=" + modified_timestamp;
     }
 
 
@@ -149,6 +157,8 @@ public class Restaurant
                 out.phonenumber = rs.getString("phonenumber");
                 out.need_reservation = rs.getBoolean("need_reservation");
                 out.have_ac = rs.getBoolean("have_ac");
+                out.added_timestamp = rs.getLong("added_timestamp");
+                out.modified_timestamp = rs.getLong("modified_timestamp");
 
                 list.add(out);
             }
@@ -223,6 +233,8 @@ public class Restaurant
                     + ",\"phonenumber\""
                     + ",\"need_reservation\""
                     + ",\"have_ac\""
+                    + ",\"added_timestamp\""
+                    + ",\"modified_timestamp\""
                     + ")" +
                     "values" +
                     "("
@@ -239,6 +251,8 @@ public class Restaurant
                     + ",?11"
                     + ",?12"
                     + ",?13"
+                    + ",?14"
+                    + ",?15"
                     + ")";
 
             insert_pstmt = sqldb.prepareStatement(insert_pstmt_sql);
@@ -257,6 +271,8 @@ public class Restaurant
             insert_pstmt.setString(11, this.phonenumber);
             insert_pstmt.setBoolean(12, this.need_reservation);
             insert_pstmt.setBoolean(13, this.have_ac);
+            insert_pstmt.setLong(14, this.added_timestamp);
+            insert_pstmt.setLong(15, this.modified_timestamp);
             // @formatter:on
 
             if (ORMA_TRACE)
@@ -688,6 +704,38 @@ public class Restaurant
         }
         this.sql_set = this.sql_set + " \"have_ac\"=?" + (BINDVAR_OFFSET_SET + bind_set_count) + " ";
         bind_set_vars.add(new OrmaBindvar(BINDVAR_TYPE_Boolean, have_ac));
+        bind_set_count++;
+        return this;
+    }
+
+    public Restaurant added_timestamp(long added_timestamp)
+    {
+        if (this.sql_set.equals(""))
+        {
+            this.sql_set = " set ";
+        }
+        else
+        {
+            this.sql_set = this.sql_set + " , ";
+        }
+        this.sql_set = this.sql_set + " \"added_timestamp\"=?" + (BINDVAR_OFFSET_SET + bind_set_count) + " ";
+        bind_set_vars.add(new OrmaBindvar(BINDVAR_TYPE_Long, added_timestamp));
+        bind_set_count++;
+        return this;
+    }
+
+    public Restaurant modified_timestamp(long modified_timestamp)
+    {
+        if (this.sql_set.equals(""))
+        {
+            this.sql_set = " set ";
+        }
+        else
+        {
+            this.sql_set = this.sql_set + " , ";
+        }
+        this.sql_set = this.sql_set + " \"modified_timestamp\"=?" + (BINDVAR_OFFSET_SET + bind_set_count) + " ";
+        bind_set_vars.add(new OrmaBindvar(BINDVAR_TYPE_Long, modified_timestamp));
         bind_set_count++;
         return this;
     }
@@ -1376,6 +1424,146 @@ public class Restaurant
         return this;
     }
 
+    public Restaurant added_timestampEq(long added_timestamp)
+    {
+        this.sql_where = this.sql_where + " and \"added_timestamp\"=?" + (BINDVAR_OFFSET_WHERE + bind_where_count) + " ";
+        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_Long, added_timestamp));
+        bind_where_count++;
+        return this;
+    }
+
+    public Restaurant added_timestampNotEq(long added_timestamp)
+    {
+        this.sql_where = this.sql_where + " and \"added_timestamp\"<>?" + (BINDVAR_OFFSET_WHERE + bind_where_count) + " ";
+        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_Long, added_timestamp));
+        bind_where_count++;
+        return this;
+    }
+
+    public Restaurant added_timestampLt(long added_timestamp)
+    {
+        this.sql_where = this.sql_where + " and \"added_timestamp\"<?" + (BINDVAR_OFFSET_WHERE + bind_where_count) + " ";
+        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_Long, added_timestamp));
+        bind_where_count++;
+        return this;
+    }
+
+    public Restaurant added_timestampLe(long added_timestamp)
+    {
+        this.sql_where = this.sql_where + " and \"added_timestamp\"<=?" + (BINDVAR_OFFSET_WHERE + bind_where_count) + " ";
+        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_Long, added_timestamp));
+        bind_where_count++;
+        return this;
+    }
+
+    public Restaurant added_timestampGt(long added_timestamp)
+    {
+        this.sql_where = this.sql_where + " and \"added_timestamp\">?" + (BINDVAR_OFFSET_WHERE + bind_where_count) + " ";
+        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_Long, added_timestamp));
+        bind_where_count++;
+        return this;
+    }
+
+    public Restaurant added_timestampGe(long added_timestamp)
+    {
+        this.sql_where = this.sql_where + " and \"added_timestamp\">=?" + (BINDVAR_OFFSET_WHERE + bind_where_count) + " ";
+        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_Long, added_timestamp));
+        bind_where_count++;
+        return this;
+    }
+
+    public Restaurant added_timestampBetween(long added_timestamp1, long added_timestamp2)
+    {
+        this.sql_where = this.sql_where + " and \"added_timestamp\">?" + (BINDVAR_OFFSET_WHERE + bind_where_count) + " and added_timestamp<?" + (BINDVAR_OFFSET_WHERE + 1 + bind_where_count) + " ";
+        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_Long, added_timestamp1));
+        bind_where_count++;
+        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_Long, added_timestamp2));
+        bind_where_count++;
+        return this;
+    }
+
+    public Restaurant added_timestampIsNull()
+    {
+        this.sql_where = this.sql_where + " and \"added_timestamp\" IS NULL ";
+        return this;
+    }
+
+    public Restaurant added_timestampIsNotNull()
+    {
+        this.sql_where = this.sql_where + " and \"added_timestamp\" IS NOT NULL ";
+        return this;
+    }
+
+    public Restaurant modified_timestampEq(long modified_timestamp)
+    {
+        this.sql_where = this.sql_where + " and \"modified_timestamp\"=?" + (BINDVAR_OFFSET_WHERE + bind_where_count) + " ";
+        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_Long, modified_timestamp));
+        bind_where_count++;
+        return this;
+    }
+
+    public Restaurant modified_timestampNotEq(long modified_timestamp)
+    {
+        this.sql_where = this.sql_where + " and \"modified_timestamp\"<>?" + (BINDVAR_OFFSET_WHERE + bind_where_count) + " ";
+        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_Long, modified_timestamp));
+        bind_where_count++;
+        return this;
+    }
+
+    public Restaurant modified_timestampLt(long modified_timestamp)
+    {
+        this.sql_where = this.sql_where + " and \"modified_timestamp\"<?" + (BINDVAR_OFFSET_WHERE + bind_where_count) + " ";
+        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_Long, modified_timestamp));
+        bind_where_count++;
+        return this;
+    }
+
+    public Restaurant modified_timestampLe(long modified_timestamp)
+    {
+        this.sql_where = this.sql_where + " and \"modified_timestamp\"<=?" + (BINDVAR_OFFSET_WHERE + bind_where_count) + " ";
+        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_Long, modified_timestamp));
+        bind_where_count++;
+        return this;
+    }
+
+    public Restaurant modified_timestampGt(long modified_timestamp)
+    {
+        this.sql_where = this.sql_where + " and \"modified_timestamp\">?" + (BINDVAR_OFFSET_WHERE + bind_where_count) + " ";
+        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_Long, modified_timestamp));
+        bind_where_count++;
+        return this;
+    }
+
+    public Restaurant modified_timestampGe(long modified_timestamp)
+    {
+        this.sql_where = this.sql_where + " and \"modified_timestamp\">=?" + (BINDVAR_OFFSET_WHERE + bind_where_count) + " ";
+        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_Long, modified_timestamp));
+        bind_where_count++;
+        return this;
+    }
+
+    public Restaurant modified_timestampBetween(long modified_timestamp1, long modified_timestamp2)
+    {
+        this.sql_where = this.sql_where + " and \"modified_timestamp\">?" + (BINDVAR_OFFSET_WHERE + bind_where_count) + " and modified_timestamp<?" + (BINDVAR_OFFSET_WHERE + 1 + bind_where_count) + " ";
+        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_Long, modified_timestamp1));
+        bind_where_count++;
+        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_Long, modified_timestamp2));
+        bind_where_count++;
+        return this;
+    }
+
+    public Restaurant modified_timestampIsNull()
+    {
+        this.sql_where = this.sql_where + " and \"modified_timestamp\" IS NULL ";
+        return this;
+    }
+
+    public Restaurant modified_timestampIsNotNull()
+    {
+        this.sql_where = this.sql_where + " and \"modified_timestamp\" IS NOT NULL ";
+        return this;
+    }
+
 
     // ----------------- OrderBy funcs ------------------ //
     public Restaurant orderByIdAsc()
@@ -1767,6 +1955,62 @@ public class Restaurant
             this.sql_orderby = this.sql_orderby + " , ";
         }
         this.sql_orderby = this.sql_orderby + " \"have_ac\" DESC ";
+        return this;
+    }
+
+    public Restaurant orderByAdded_timestampAsc()
+    {
+        if (this.sql_orderby.equals(""))
+        {
+            this.sql_orderby = " order by ";
+        }
+        else
+        {
+            this.sql_orderby = this.sql_orderby + " , ";
+        }
+        this.sql_orderby = this.sql_orderby + " \"added_timestamp\" ASC ";
+        return this;
+    }
+
+    public Restaurant orderByAdded_timestampDesc()
+    {
+        if (this.sql_orderby.equals(""))
+        {
+            this.sql_orderby = " order by ";
+        }
+        else
+        {
+            this.sql_orderby = this.sql_orderby + " , ";
+        }
+        this.sql_orderby = this.sql_orderby + " \"added_timestamp\" DESC ";
+        return this;
+    }
+
+    public Restaurant orderByModified_timestampAsc()
+    {
+        if (this.sql_orderby.equals(""))
+        {
+            this.sql_orderby = " order by ";
+        }
+        else
+        {
+            this.sql_orderby = this.sql_orderby + " , ";
+        }
+        this.sql_orderby = this.sql_orderby + " \"modified_timestamp\" ASC ";
+        return this;
+    }
+
+    public Restaurant orderByModified_timestampDesc()
+    {
+        if (this.sql_orderby.equals(""))
+        {
+            this.sql_orderby = " order by ";
+        }
+        else
+        {
+            this.sql_orderby = this.sql_orderby + " , ";
+        }
+        this.sql_orderby = this.sql_orderby + " \"modified_timestamp\" DESC ";
         return this;
     }
 

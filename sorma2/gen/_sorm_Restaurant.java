@@ -32,4 +32,8 @@ public class Restaurant
     public boolean need_reservation;
     @Column()
     public boolean have_ac;
+    @Column()
+    public long added_timestamp;
+    @Column()
+    public long modified_timestamp;
 }

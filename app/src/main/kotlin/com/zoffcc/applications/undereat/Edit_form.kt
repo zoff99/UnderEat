@@ -10,6 +10,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.text.format.DateFormat
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -68,6 +69,8 @@ fun edit_form(context: Context) {
     var show_delete_alert by remember { mutableStateOf(false) }
     val restaurant_id = globalstore.getRestaurantId()
     val rest_data = restaurantliststore.get(restaurant_id)
+    var text_added_timestamp by remember { mutableStateOf(rest_data.added_timestamp) }
+    var text_modified_timestamp by remember { mutableStateOf(rest_data.modified_timestamp) }
     var input_for_summer by remember { mutableStateOf(rest_data.for_summer) }
     var input_have_ac by remember { mutableStateOf(rest_data.have_ac) }
     var input_needs_reservation by remember { mutableStateOf(rest_data.need_reservation) }
@@ -435,6 +438,17 @@ fun edit_form(context: Context) {
             //
             //
         }
+        Spacer(modifier = Modifier.height(2.dp))
+        Row {
+            Spacer(modifier = Modifier.width(12.dp))
+            Text("added", modifier = Modifier.width(100.dp), fontSize = 14.sp)
+            Text(DateFormat.format("yyyy.MM.dd HH:mm:ss", text_added_timestamp).toString(), fontSize = 14.sp)
+        }
+        Row {
+            Spacer(modifier = Modifier.width(12.dp))
+            Text("modified", modifier = Modifier.width(100.dp), fontSize = 14.sp)
+            Text(DateFormat.format("yyyy.MM.dd HH:mm:ss", text_modified_timestamp).toString(), fontSize = 14.sp)
+        }
         Spacer(modifier = Modifier.height(20.dp))
         Row {
             Button(
@@ -482,6 +496,7 @@ fun edit_form(context: Context) {
                                 .have_ac(r.have_ac)
                                 .need_reservation(r.need_reservation)
                                 .comment(r.comment).category_id(r.category_id)
+                                .modified_timestamp(System.currentTimeMillis())
                                 .phonenumber(r.phonenumber).execute()
 
                             restore_mainlist_state()
