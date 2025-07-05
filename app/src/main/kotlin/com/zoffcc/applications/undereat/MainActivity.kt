@@ -151,7 +151,7 @@ internal fun restore_mainlist_state() {
     load_sorter()
     load_filter_string()
     load_forsummer_flag()
-    load_haveac_flag();
+    load_haveac_flag()
     load_restaurants()
 }
 

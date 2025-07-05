@@ -48,7 +48,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TimePicker
@@ -65,7 +64,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.luminance
@@ -263,8 +261,7 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
 
         // select and filter Row ---------------------
         Row(
-            horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.Top,
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(42.dp),
@@ -278,8 +275,7 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                         modifier = Modifier
                             .randomDebugBorder()
                             .height(60.dp)
-                            .width(120.dp)
-                            .padding(start = 5.dp)
+                            .padding(start = 0.dp)
                             .clickable {
                                 sort_isDropDownExpanded.value = true
                             }
@@ -337,7 +333,7 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                             .randomDebugBorder()
                             .defaultMinSize(minWidth = 120.dp)
                             .height(60.dp)
-                            .padding(start = 5.dp)
+                            .padding(start = 0.dp)
                             .clickable {
                                 cat_isDropDownExpanded.value = true
                             }
@@ -374,75 +370,110 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
 
 
                 Spacer(modifier = Modifier
-                    .randomDebugBorder()
-                    .height(10.dp)
-                    .weight(10F))
+                    .defaultMinSize(minWidth = 0.dp)
+                    .weight(1000F)
+                    .height(10.dp))
 
                 val state_compactMainlist by globalstore.stateFlow.collectAsState()
                 // switch: compact list --------------------------
-                Switch(
-                    modifier = Modifier
-                        .randomDebugBorder()
-                        .scale(0.6f),
-                    checked = state_compactMainlist.compactMainList,
-                    onCheckedChange = {
-                        globalstore.setCompactMainList(it)
-                        save_compact_flag()
-                        //****// load_restaurants()
-                    },
+                JCSwitch(
+                    switchWidth = 38.dp,
+                    switchHeight = 38.dp,
+                    isChecked = state_compactMainlist.compactMainList,
+                    enabledColor = SwitchDefaults.colors().checkedTrackColor,
                     thumbContent = if (state_compactMainlist.compactMainList) {
                         {
                             Icon(
                                 imageVector = Icons.Filled.Check,
                                 contentDescription = null,
                                 modifier = Modifier.size(SwitchDefaults.IconSize),
+                                tint = SwitchDefaults.colors().checkedTrackColor.copy(green = 0.8f, alpha = 0.76f)
                             )
                         }
                     } else {
                         null
+                    },
+                    onCheckChanged = {
+                        globalstore.setCompactMainList(it)
+                        save_compact_flag()
                     }
-
                 )
                 // switch: compact list --------------------------
+
+                Spacer(modifier = Modifier
+                    .width(8.dp)
+                    .height(1.dp))
+
+                // switch: have_ac flag --------------------------
+                val flag_ac_color = Color.Blue.copy(green = 0.8f, alpha = 0.4f)
+                val flag_ac_color_brighter = Color.Blue.copy(green = 0.8f, alpha = 0.76f)
+                JCSwitch(
+                    switchWidth = 38.dp,
+                    switchHeight = 38.dp,
+                    isChecked = state_compactMainlist.haveacFilter,
+                    enabledColor = flag_ac_color_brighter,
+                    disabledColor = flag_ac_color,
+                    thumbContent = if (state_compactMainlist.haveacFilter) {
+                        {
+                            Icon(
+                                imageVector = Icons.Filled.Check,
+                                contentDescription = null,
+                                modifier = Modifier.size(SwitchDefaults.IconSize),
+                                tint = flag_ac_color_brighter
+                            )
+                        }
+                    } else {
+                        null
+                    },
+                    onCheckChanged = {
+                        globalstore.setHaveacFilter(it)
+                        save_haveac_flag()
+                        load_restaurants()
+                    }
+                )
+                // switch: have_ac flag --------------------------
+
+                Spacer(modifier = Modifier
+                    .width(8.dp)
+                    .height(1.dp))
 
                 // switch: for_summer flag --------------------------
                 val flag_color = Color.Yellow.copy(green = 0.8f, alpha = 0.4f)
                 val flag_color_brighter = Color.Yellow.copy(green = 0.8f, alpha = 0.76f)
-                Switch(
-                    modifier = Modifier
-                        .randomDebugBorder()
-                        .scale(0.6f),
-                    checked = state_compactMainlist.forsummerFilter,
-                    colors = SwitchDefaults.colors(uncheckedThumbColor = Color.DarkGray,
-                        uncheckedBorderColor = flag_color,
-                        checkedBorderColor = flag_color,
-                        uncheckedTrackColor = flag_color,
-                        checkedTrackColor = flag_color_brighter),
-                    onCheckedChange = {
-                        globalstore.setForsummerFilter(it)
-                        save_forsummer_flag()
-                        load_restaurants()
-                    },
+                JCSwitch(
+                    switchWidth = 38.dp,
+                    switchHeight = 38.dp,
+                    isChecked = state_compactMainlist.forsummerFilter,
+                    enabledColor = flag_color_brighter,
+                    disabledColor = flag_color,
                     thumbContent = if (state_compactMainlist.forsummerFilter) {
                         {
                             Icon(
                                 imageVector = Icons.Filled.Check,
                                 contentDescription = null,
                                 modifier = Modifier.size(SwitchDefaults.IconSize),
-                                tint = Color.Yellow.copy(green = 0.8f)
+                                tint = flag_color_brighter
                             )
                         }
                     } else {
                         null
+                    },
+                    onCheckChanged = {
+                        globalstore.setForsummerFilter(it)
+                        save_forsummer_flag()
+                        load_restaurants()
                     }
-
                 )
                 // switch: for_summer flag --------------------------
+
+                Spacer(modifier = Modifier
+                    .width(8.dp)
+                    .height(1.dp))
             }
         )
         // select and filter Row ---------------------
 
-        Row(modifier = Modifier.padding(start = 3.dp, end = 6.dp, bottom = 8.dp)) {
+        Row(modifier = Modifier.padding(start = 3.dp, end = 13.dp, bottom = 8.dp)) {
             // ----------- search filter input -----------
             val interactionSource = remember { MutableInteractionSource() }
             val textColor = MaterialTheme.colorScheme.onBackground
