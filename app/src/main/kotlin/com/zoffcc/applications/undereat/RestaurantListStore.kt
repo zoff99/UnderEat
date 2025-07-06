@@ -41,6 +41,7 @@ interface RestaurantListStore
     fun sortByDistance(restaurantDistance: ArrayList<RestDistance>)
     fun sortByRating()
     fun sortByAddeddateDesc()
+    fun sortByModifieddateDesc()
     fun filterByString(filter_string: String?)
     fun filterBySummerflag(flag: Boolean)
     fun filterByHaveacflag(flag: Boolean)
@@ -190,6 +191,11 @@ fun createRestaurantListStore(): RestaurantListStore
                 .sortedWith(compareByDescending<Restaurant> { it.added_timestamp }.thenBy { it.name }))
         }
 
+        override fun sortByModifieddateDesc() {
+            mutableStateFlow.value = state.copy(restaurantlist = state.restaurantlist
+                .sortedWith(compareByDescending<Restaurant> { it.modified_timestamp }.thenBy { it.name }))
+        }
+
         override fun filterByString(filter_string: String?) {
             if (!filter_string.isNullOrEmpty()) {
                 mutableStateFlow.value = state.copy(
@@ -316,5 +322,10 @@ fun sort_restaurants()
     {
         // HINT: show last added restaurant at the top of the list
         restaurantliststore.sortByAddeddateDesc()
+    }
+    else if (id == SORTER.MODIFIED_DATE.value)
+    {
+        // HINT: show last modified restaurant at the top of the list
+        restaurantliststore.sortByModifieddateDesc()
     }
 }

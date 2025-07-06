@@ -5,5 +5,6 @@ enum class SORTER(val value: Long) {
     ADDRESS(1),
     DISTANCE(2),
     RATING(3),
-    ADDED_DATE(4)
+    ADDED_DATE(4),
+    MODIFIED_DATE(5)
 }
