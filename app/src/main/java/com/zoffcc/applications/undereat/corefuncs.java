@@ -24,7 +24,7 @@ public class corefuncs
     private static String ret = "";
 
     static OrmaDatabase orma = null;
-    final static int ORMA_CURRENT_DB_SCHEMA_VERSION = 11; // increase for database schema changes // minimum is 1
+    final static int ORMA_CURRENT_DB_SCHEMA_VERSION = 13; // increase for database schema changes // minimum is 1
     public final static String MAIN_DB_NAME = "main.db"; // DO NOT CHANGE
     private static boolean PREF__DB_wal_mode = true; // use WAL mode, set "true" for release builds
     private final String PREF__DB_secrect_key = ""; // no encryption
@@ -179,6 +179,24 @@ public class corefuncs
             // @formatter:off
             final long now_ts = System.currentTimeMillis();
             run_multi_sql("update Restaurant set added_timestamp='" + now_ts + "', modified_timestamp='" + now_ts + "'\n");
+            // @formatter:on
+        }
+
+        if (new_version == 12)
+        {
+            // @formatter:off
+            final long now_ts = System.currentTimeMillis();
+            // we add the rowid here to the current timestamp so we preserve the ordering of old data without timestamps
+            run_multi_sql("update Restaurant set added_timestamp=('" + now_ts + "' + rowid), modified_timestamp=('" + now_ts + "' + rowid)\n");
+            // @formatter:on
+        }
+
+        if (new_version == 13)
+        {
+            // @formatter:off
+            final long now_ts = System.currentTimeMillis();
+            // ok now we substrace some seconds so if we edit right after this, the order will still be ok
+            run_multi_sql("update Restaurant set added_timestamp=('" + now_ts + "' + rowid - 600), modified_timestamp=('" + now_ts + "' + rowid - 600)\n");
             // @formatter:on
         }
 
