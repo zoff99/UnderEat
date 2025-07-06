@@ -9,6 +9,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.text.format.DateFormat
 import android.widget.Toast
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -121,6 +122,24 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
                         textAlign = TextAlign.Start,
                         style = TextStyle(fontSize = 14.sp)
                     )
+
+                    if ((globalstore.getSorterId() == SORTER.ADDED_DATE.value) ||
+                        (globalstore.getSorterId() == SORTER.MODIFIED_DATE.value)) {
+                        Row {
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("added", modifier = Modifier.width(90.dp).height(22.dp), fontSize = 12.sp)
+                            Text(
+                                DateFormat.format("yyyy.MM.dd HH:mm:ss", data.added_timestamp).toString(), modifier = Modifier.height(22.dp), fontSize = 12.sp)
+                        }
+                        Row {
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("modified", modifier = Modifier.width(90.dp).height(22.dp), fontSize = 12.sp)
+                            Text(
+                                DateFormat.format("yyyy.MM.dd HH:mm:ss", data.modified_timestamp).toString(), modifier = Modifier.height(22.dp), fontSize = 12.sp)
+                        }
+                        Spacer(modifier = Modifier.height(4.dp))
+                    }
+
                     Row(
                         modifier = Modifier
                             .randomDebugBorder()
