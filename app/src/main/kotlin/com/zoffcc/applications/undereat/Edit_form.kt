@@ -46,6 +46,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -69,8 +70,8 @@ fun edit_form(context: Context) {
     var show_delete_alert by remember { mutableStateOf(false) }
     val restaurant_id = globalstore.getRestaurantId()
     val rest_data = restaurantliststore.get(restaurant_id)
-    var text_added_timestamp by remember { mutableStateOf(rest_data.added_timestamp) }
-    var text_modified_timestamp by remember { mutableStateOf(rest_data.modified_timestamp) }
+    var text_added_timestamp by remember { mutableLongStateOf(rest_data.added_timestamp) }
+    var text_modified_timestamp by remember { mutableLongStateOf(rest_data.modified_timestamp) }
     var input_for_summer by remember { mutableStateOf(rest_data.for_summer) }
     var input_have_ac by remember { mutableStateOf(rest_data.have_ac) }
     var input_needs_reservation by remember { mutableStateOf(rest_data.need_reservation) }
