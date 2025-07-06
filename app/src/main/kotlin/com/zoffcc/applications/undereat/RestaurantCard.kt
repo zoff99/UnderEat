@@ -34,7 +34,7 @@ import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -317,7 +317,7 @@ private fun summer_label(data: Restaurant, compact: Boolean) {
     if (data.for_summer) {
         CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides Dp.Unspecified) {
             Icon(
-                imageVector = Icons.Filled.Warning,
+                imageVector = Icons.Filled.WbSunny,
                 contentDescription = "ok for summer",
                 modifier = Modifier.size(icons_size + padding_top)
                     .padding(start = padding_top, top = padding_start),
