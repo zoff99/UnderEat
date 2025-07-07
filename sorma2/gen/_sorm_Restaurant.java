@@ -36,4 +36,6 @@ public class Restaurant
     public long added_timestamp;
     @Column()
     public long modified_timestamp;
+    @Column()
+    public boolean only_evening;
 }

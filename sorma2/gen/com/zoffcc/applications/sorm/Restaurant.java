@@ -67,6 +67,9 @@ public class Restaurant
     @Column(indexed = true, helpers = Column.Helpers.ALL)
     public long modified_timestamp;
 
+    @Column(indexed = true, helpers = Column.Helpers.ALL)
+    public boolean only_evening;
+
     public static Restaurant deep_copy(Restaurant in)
     {
         Restaurant out = new Restaurant();
@@ -86,6 +89,7 @@ public class Restaurant
         out.have_ac = in.have_ac;
         out.added_timestamp = in.added_timestamp;
         out.modified_timestamp = in.modified_timestamp;
+        out.only_evening = in.only_evening;
 
         return out;
     }
@@ -93,7 +97,7 @@ public class Restaurant
     @Override
     public String toString()
     {
-        return "id=" + id + ", name=" + name + ", category_id=" + category_id + ", address=" + address + ", area_code=" + area_code + ", lat=" + lat + ", lon=" + lon + ", rating=" + rating + ", comment=" + comment + ", active=" + active + ", for_summer=" + for_summer + ", phonenumber=" + phonenumber + ", need_reservation=" + need_reservation + ", have_ac=" + have_ac + ", added_timestamp=" + added_timestamp + ", modified_timestamp=" + modified_timestamp;
+        return "id=" + id + ", name=" + name + ", category_id=" + category_id + ", address=" + address + ", area_code=" + area_code + ", lat=" + lat + ", lon=" + lon + ", rating=" + rating + ", comment=" + comment + ", active=" + active + ", for_summer=" + for_summer + ", phonenumber=" + phonenumber + ", need_reservation=" + need_reservation + ", have_ac=" + have_ac + ", added_timestamp=" + added_timestamp + ", modified_timestamp=" + modified_timestamp + ", only_evening=" + only_evening;
     }
 
 
@@ -159,6 +163,7 @@ public class Restaurant
                 out.have_ac = rs.getBoolean("have_ac");
                 out.added_timestamp = rs.getLong("added_timestamp");
                 out.modified_timestamp = rs.getLong("modified_timestamp");
+                out.only_evening = rs.getBoolean("only_evening");
 
                 list.add(out);
             }
@@ -235,6 +240,7 @@ public class Restaurant
                     + ",\"have_ac\""
                     + ",\"added_timestamp\""
                     + ",\"modified_timestamp\""
+                    + ",\"only_evening\""
                     + ")" +
                     "values" +
                     "("
@@ -253,6 +259,7 @@ public class Restaurant
                     + ",?13"
                     + ",?14"
                     + ",?15"
+                    + ",?16"
                     + ")";
 
             insert_pstmt = sqldb.prepareStatement(insert_pstmt_sql);
@@ -273,6 +280,7 @@ public class Restaurant
             insert_pstmt.setBoolean(13, this.have_ac);
             insert_pstmt.setLong(14, this.added_timestamp);
             insert_pstmt.setLong(15, this.modified_timestamp);
+            insert_pstmt.setBoolean(16, this.only_evening);
             // @formatter:on
 
             if (ORMA_TRACE)
@@ -736,6 +744,22 @@ public class Restaurant
         }
         this.sql_set = this.sql_set + " \"modified_timestamp\"=?" + (BINDVAR_OFFSET_SET + bind_set_count) + " ";
         bind_set_vars.add(new OrmaBindvar(BINDVAR_TYPE_Long, modified_timestamp));
+        bind_set_count++;
+        return this;
+    }
+
+    public Restaurant only_evening(boolean only_evening)
+    {
+        if (this.sql_set.equals(""))
+        {
+            this.sql_set = " set ";
+        }
+        else
+        {
+            this.sql_set = this.sql_set + " , ";
+        }
+        this.sql_set = this.sql_set + " \"only_evening\"=?" + (BINDVAR_OFFSET_SET + bind_set_count) + " ";
+        bind_set_vars.add(new OrmaBindvar(BINDVAR_TYPE_Boolean, only_evening));
         bind_set_count++;
         return this;
     }
@@ -1564,6 +1588,34 @@ public class Restaurant
         return this;
     }
 
+    public Restaurant only_eveningEq(boolean only_evening)
+    {
+        this.sql_where = this.sql_where + " and \"only_evening\"=?" + (BINDVAR_OFFSET_WHERE + bind_where_count) + " ";
+        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_Boolean, only_evening));
+        bind_where_count++;
+        return this;
+    }
+
+    public Restaurant only_eveningNotEq(boolean only_evening)
+    {
+        this.sql_where = this.sql_where + " and \"only_evening\"<>?" + (BINDVAR_OFFSET_WHERE + bind_where_count) + " ";
+        bind_where_vars.add(new OrmaBindvar(BINDVAR_TYPE_Boolean, only_evening));
+        bind_where_count++;
+        return this;
+    }
+
+    public Restaurant only_eveningIsNull()
+    {
+        this.sql_where = this.sql_where + " and \"only_evening\" IS NULL ";
+        return this;
+    }
+
+    public Restaurant only_eveningIsNotNull()
+    {
+        this.sql_where = this.sql_where + " and \"only_evening\" IS NOT NULL ";
+        return this;
+    }
+
 
     // ----------------- OrderBy funcs ------------------ //
     public Restaurant orderByIdAsc()
@@ -2011,6 +2063,34 @@ public class Restaurant
             this.sql_orderby = this.sql_orderby + " , ";
         }
         this.sql_orderby = this.sql_orderby + " \"modified_timestamp\" DESC ";
+        return this;
+    }
+
+    public Restaurant orderByOnly_eveningAsc()
+    {
+        if (this.sql_orderby.equals(""))
+        {
+            this.sql_orderby = " order by ";
+        }
+        else
+        {
+            this.sql_orderby = this.sql_orderby + " , ";
+        }
+        this.sql_orderby = this.sql_orderby + " \"only_evening\" ASC ";
+        return this;
+    }
+
+    public Restaurant orderByOnly_eveningDesc()
+    {
+        if (this.sql_orderby.equals(""))
+        {
+            this.sql_orderby = " order by ";
+        }
+        else
+        {
+            this.sql_orderby = this.sql_orderby + " , ";
+        }
+        this.sql_orderby = this.sql_orderby + " \"only_evening\" DESC ";
         return this;
     }
 

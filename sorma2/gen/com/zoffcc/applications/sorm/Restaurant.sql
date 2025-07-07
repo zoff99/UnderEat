@@ -15,5 +15,6 @@ CREATE TABLE IF NOT EXISTS "Restaurant" (
   "have_ac" BOOLEAN,
   "added_timestamp" INTEGER,
   "modified_timestamp" INTEGER,
+  "only_evening" BOOLEAN,
   PRIMARY KEY("id" AUTOINCREMENT)
 );

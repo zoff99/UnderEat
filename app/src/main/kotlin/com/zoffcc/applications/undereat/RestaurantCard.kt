@@ -33,6 +33,7 @@ import androidx.compose.material.icons.filled.ArrowCircleUp
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Nightlight
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.WbSunny
@@ -210,6 +211,7 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
                             Compass(data, compact)
                         }
                         summer_label(data, compact)
+                        only_evening_label(data, compact)
                         have_ac_label(data, compact)
                     }
                 } else {
@@ -227,6 +229,7 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context) {
                             }
                         )
                         summer_label(data, compact)
+                        only_evening_label(data, compact)
                         have_ac_label(data, compact)
                     }
                 }
@@ -341,6 +344,31 @@ private fun summer_label(data: Restaurant, compact: Boolean) {
                 modifier = Modifier.size(icons_size + padding_top)
                     .padding(start = padding_top, top = padding_start),
                 tint = Color.Yellow.copy(green = 0.8f)
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("ComposableNaming")
+@Composable
+private fun only_evening_label(data: Restaurant, compact: Boolean) {
+    var padding_top = 4.dp
+    var padding_start = 4.dp
+    var icons_size = SwitchDefaults.IconSize
+    if (compact) {
+        padding_top = 0.dp
+        padding_start = 2.dp
+        icons_size = SwitchDefaults.IconSize * 0.8f
+    }
+    if (data.only_evening) {
+        CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides Dp.Unspecified) {
+            Icon(
+                imageVector = Icons.Filled.Nightlight,
+                contentDescription = "usually opens only evening",
+                modifier = Modifier.size(icons_size + padding_top)
+                    .padding(start = padding_top, top = padding_start),
+                tint = Color.White.copy(green = 0.8f)
             )
         }
     }

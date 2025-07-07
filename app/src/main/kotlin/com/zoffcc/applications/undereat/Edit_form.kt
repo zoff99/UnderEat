@@ -74,6 +74,7 @@ fun edit_form(context: Context) {
     var text_modified_timestamp by remember { mutableLongStateOf(rest_data.modified_timestamp) }
     var input_for_summer by remember { mutableStateOf(rest_data.for_summer) }
     var input_have_ac by remember { mutableStateOf(rest_data.have_ac) }
+    var input_only_evening by remember { mutableStateOf(rest_data.only_evening) }
     var input_needs_reservation by remember { mutableStateOf(rest_data.need_reservation) }
     var input_name by remember {
         val textFieldValue =
@@ -321,6 +322,21 @@ fun edit_form(context: Context) {
             // ----------- have ac label -----------
             //
             //
+            // ----------- only evening label -----------
+            Row {
+                Text(text = "opens only evening",
+                    modifier = Modifier.padding(start = 12.dp, end = 5.dp).align(Alignment.CenterVertically)
+                )
+                Checkbox(
+                    checked = input_only_evening,
+                    onCheckedChange = { input_only_evening = it },
+                    modifier = Modifier.size(60.dp).align(Alignment.CenterVertically),
+                    enabled = true
+                )
+            }
+            // ----------- only_evening label -----------
+            //
+            //
             // ----------- need reservation -----------
             Row {
                 Text(text = "needs reservation",
@@ -486,6 +502,7 @@ fun edit_form(context: Context) {
                             r.active = true
                             r.for_summer = input_for_summer
                             r.have_ac = input_have_ac
+                            r.only_evening = input_only_evening
                             r.need_reservation = input_needs_reservation
                             r.rating = rating
                             r.category_id = cat_list[cat_itemPosition.intValue - 1].id
@@ -498,6 +515,7 @@ fun edit_form(context: Context) {
                                 .need_reservation(r.need_reservation)
                                 .comment(r.comment).category_id(r.category_id)
                                 .modified_timestamp(System.currentTimeMillis())
+                                .only_evening(r.only_evening)
                                 .phonenumber(r.phonenumber).execute()
 
                             restore_mainlist_state()
