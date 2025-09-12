@@ -24,7 +24,7 @@ public class corefuncs
     private static String ret = "";
 
     static OrmaDatabase orma = null;
-    final static int ORMA_CURRENT_DB_SCHEMA_VERSION = 15; // increase for database schema changes // minimum is 1
+    final static int ORMA_CURRENT_DB_SCHEMA_VERSION = 16; // increase for database schema changes // minimum is 1
     public final static String MAIN_DB_NAME = "main.db"; // DO NOT CHANGE
     private static boolean PREF__DB_wal_mode = true; // use WAL mode, set "true" for release builds
     private final String PREF__DB_secrect_key = ""; // no encryption
@@ -39,7 +39,8 @@ public class corefuncs
         COCKTAILS(6),
         POOL(7),
         STORE(8),
-        ARABIC(9);
+        ARABIC(9),
+        ITALIAN(10);
         public int value;
         private Category(int value)
         {
@@ -213,6 +214,13 @@ public class corefuncs
         {
             // @formatter:off
             run_multi_sql("insert into Category (id, name) values (9, 'Arabisch')");
+            // @formatter:on
+        }
+
+        if (new_version == 16)
+        {
+            // @formatter:off
+            run_multi_sql("insert into Category (id, name) values (10, 'Italienisch')");
             // @formatter:on
         }
 
