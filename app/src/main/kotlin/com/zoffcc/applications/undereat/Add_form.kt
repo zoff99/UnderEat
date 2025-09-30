@@ -56,10 +56,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zoffcc.applications.sorm.Restaurant
 import com.zoffcc.applications.undereat.corefuncs.orma
+import okhttp3.OkHttpClient
 import org.json.JSONArray
-import java.net.HttpURLConnection
-import java.net.URL
 import java.util.concurrent.LinkedBlockingQueue
+import java.util.concurrent.TimeUnit
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("ComposableNaming", "UseKtx")
@@ -507,9 +507,24 @@ fun get_address(search_item: String,
         val url = HTTP_NOMINATIM_SEARCH_URL +
                 Uri.encode(search_item)
         Log.i(TAG, "XXXXX:url:" + url)
-        val connection = URL(url).openConnection() as HttpURLConnection
+
+        var client = OkHttpClient().newBuilder()
+            .readTimeout(5, TimeUnit.SECONDS)
+            .callTimeout(6, TimeUnit.SECONDS)
+            .connectTimeout(8, TimeUnit.SECONDS)
+            .writeTimeout(5, TimeUnit.SECONDS)
+            .build()
+
+        val request = okhttp3.Request.Builder()
+            .header("User-Agent", UNDEREAT_USERAGENT)
+            .url(url)
+            .get()
+            .build()
+
         try {
-            val data_json = connection.inputStream.bufferedReader().use { it.readText() }
+            val response = client.newCall(request).execute()
+            val data_json = response.body?.string()
+            Log.i(TAG, "XX" + data_json)
             if (!data_json.isNullOrEmpty()) {
                 // Log.i(TAG, data_json)
                 val json_array = JSONArray(data_json)
@@ -526,7 +541,24 @@ fun get_address(search_item: String,
                 } catch (_: Exception) {
                 }
                 Log.i(TAG, "addr:2:" + house_number)
-                val city_district = address_json.getString("city_district")
+                var city_district = ""
+                try {
+                    city_district = address_json.getString("city_district")
+                } catch (_: Exception) {
+                    try {
+                        city_district = address_json.getString("city")
+                    } catch (_: Exception) {
+                        try {
+                            city_district = address_json.getString("suburb")
+                        } catch (_: Exception) {
+                            try {
+                                city_district = address_json.getString("county")
+                            } catch (_: Exception) {
+                                city_district = address_json.getString("country")
+                            }
+                        }
+                    }
+                }
                 Log.i(TAG, "addr:3:" + city_district)
                 val postcode = address_json.getString("postcode")
                 Log.i(TAG, "addr:4:" + postcode)
@@ -541,7 +573,7 @@ fun get_address(search_item: String,
         }
         finally {
             try {
-                connection.disconnect()
+                // disconnect ?
             } catch(e: Exception){
                 e.printStackTrace()
             }
@@ -575,9 +607,23 @@ fun get_phonenumber(search_item: String,
         val url = HTTP_NOMINATIM_SEARCH_URL +
                 Uri.encode(search_item)
         Log.i(TAG, "XXXXX:url:" + url)
-        val connection = URL(url).openConnection() as HttpURLConnection
+
+        var client = OkHttpClient().newBuilder()
+            .readTimeout(5, TimeUnit.SECONDS)
+            .callTimeout(6, TimeUnit.SECONDS)
+            .connectTimeout(8, TimeUnit.SECONDS)
+            .writeTimeout(5, TimeUnit.SECONDS)
+            .build()
+
+        val request = okhttp3.Request.Builder()
+            .header("User-Agent", UNDEREAT_USERAGENT)
+            .url(url)
+            .get()
+            .build()
+
         try {
-            val data_json = connection.inputStream.bufferedReader().use { it.readText() }
+            val response = client.newCall(request).execute()
+            val data_json = response.body?.string()
             if (!data_json.isNullOrEmpty()) {
                 // Log.i(TAG, data_json)
                 val json_array = JSONArray(data_json)
@@ -604,7 +650,7 @@ fun get_phonenumber(search_item: String,
         }
         finally {
             try {
-                connection.disconnect()
+                // connection.disconnect()
             } catch(e: Exception){
                 e.printStackTrace()
             }
@@ -643,9 +689,23 @@ fun get_lat_lon(search_item: String,
         val url = HTTP_NOMINATIM_SEARCH_URL +
                 Uri.encode(search_item)
         Log.i(TAG, "XXXXX:url:" + url)
-        val connection = URL(url).openConnection() as HttpURLConnection
+
+        var client = OkHttpClient().newBuilder()
+            .readTimeout(5, TimeUnit.SECONDS)
+            .callTimeout(6, TimeUnit.SECONDS)
+            .connectTimeout(8, TimeUnit.SECONDS)
+            .writeTimeout(5, TimeUnit.SECONDS)
+            .build()
+
+        val request = okhttp3.Request.Builder()
+            .header("User-Agent", UNDEREAT_USERAGENT)
+            .url(url)
+            .get()
+            .build()
+
         try {
-            val data_json = connection.inputStream.bufferedReader().use { it.readText() }
+            val response = client.newCall(request).execute()
+            val data_json = response.body?.string()
             if (!data_json.isNullOrEmpty()) {
                 // Log.i(TAG, data_json)
                 val json_array = JSONArray(data_json)
@@ -669,7 +729,7 @@ fun get_lat_lon(search_item: String,
         }
         finally {
             try {
-                connection.disconnect()
+                // connection.disconnect()
             } catch(e: Exception){
                 e.printStackTrace()
             }
