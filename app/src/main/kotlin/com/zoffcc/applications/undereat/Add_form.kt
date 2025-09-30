@@ -57,6 +57,7 @@ import androidx.compose.ui.unit.sp
 import com.zoffcc.applications.sorm.Restaurant
 import com.zoffcc.applications.undereat.corefuncs.orma
 import okhttp3.OkHttpClient
+import okhttp3.Response
 import org.json.JSONArray
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.TimeUnit
@@ -521,8 +522,9 @@ fun get_address(search_item: String,
             .get()
             .build()
 
+        var response: Response? = null
         try {
-            val response = client.newCall(request).execute()
+            response = client.newCall(request).execute()
             val data_json = response.body?.string()
             Log.i(TAG, "XX" + data_json)
             if (!data_json.isNullOrEmpty()) {
@@ -573,7 +575,7 @@ fun get_address(search_item: String,
         }
         finally {
             try {
-                // disconnect ?
+                response?.body?.close()
             } catch(e: Exception){
                 e.printStackTrace()
             }
@@ -621,8 +623,9 @@ fun get_phonenumber(search_item: String,
             .get()
             .build()
 
+        var response: Response? = null
         try {
-            val response = client.newCall(request).execute()
+            response = client.newCall(request).execute()
             val data_json = response.body?.string()
             if (!data_json.isNullOrEmpty()) {
                 // Log.i(TAG, data_json)
@@ -650,7 +653,7 @@ fun get_phonenumber(search_item: String,
         }
         finally {
             try {
-                // connection.disconnect()
+                response?.body?.close()
             } catch(e: Exception){
                 e.printStackTrace()
             }
@@ -703,8 +706,9 @@ fun get_lat_lon(search_item: String,
             .get()
             .build()
 
+        var response: Response? = null
         try {
-            val response = client.newCall(request).execute()
+            response = client.newCall(request).execute()
             val data_json = response.body?.string()
             if (!data_json.isNullOrEmpty()) {
                 // Log.i(TAG, data_json)
@@ -729,7 +733,7 @@ fun get_lat_lon(search_item: String,
         }
         finally {
             try {
-                // connection.disconnect()
+                response?.body?.close()
             } catch(e: Exception){
                 e.printStackTrace()
             }
