@@ -31,17 +31,7 @@ public class corefuncs
     public final static boolean DEMO_SHOWCASE_DEBUG_ONLY = false; // set "false" for release builds
 
     public static enum Category {
-        VIENNA_KITCHEN(1),
-        CHINESE(2),
-        JAPANESE(3),
-        HEURIGEN(4),
-        EIS(5),
-        COCKTAILS(6),
-        POOL(7),
-        STORE(8),
-        ARABIC(9),
-        ITALIAN(10),
-        ZOO(11);
+        STORE(8); // this number is now set in stone, sorry.
         public int value;
         private Category(int value)
         {
@@ -369,7 +359,7 @@ public class corefuncs
                     r.active = true;
                     r.for_summer = kotlin.random.Random.Default.nextBoolean();
                     r.have_ac = kotlin.random.Random.Default.nextBoolean();
-                    r.category_id = Category.CHINESE.value;
+                    r.category_id = 1; // hardcoded here
                     orma.insertIntoRestaurant(r);
                 }
                 catch (Exception e)
