@@ -43,7 +43,8 @@ import com.zoffcc.applications.sorm.OrmaDatabase
 import com.zoffcc.applications.sorm.OrmaDatabase.run_query_for_single_result
 import java.io.File
 
-const val export_sql_filename = "export.uedb"
+const val import_file_extension = ".uedb"
+const val export_sql_filename = "export" + import_file_extension
 const val export_ics_filename = "export.ics"
 private const val sql_dump_prefix = "import_5907edf"
 
@@ -63,17 +64,26 @@ fun settings_form(context: Context) {
 
     if (show_import_alert)
     {
+        val dbs_path: String
+        var sql_export_filename: String = ""
+        try
+        {
+            dbs_path = context.filesDir.absolutePath
+            // val dbs_path: String = context.getExternalFilesDir(null)!!.absolutePath
+            sql_export_filename = dbs_path + "/" + export_sql_filename
+            Log.i(TAG, "import filename: " + sql_export_filename)
+        }
+        catch(_: Exception)
+        {
+        }
+
         AlertDialog(onDismissRequest = { },
-            title = { Text("Import data") },
+            title = { Text("Import data from file:" + "\n" + sql_export_filename) },
             confirmButton = {
                 Button(onClick = {
                     try {
                         // now import the db from sqlite file -------------
                         // val dbs_path: String = context.getDir(sql_export_dir, MODE_PRIVATE).absolutePath
-                        val dbs_path: String = context.filesDir.absolutePath
-                        // val dbs_path: String = context.getExternalFilesDir(null)!!.absolutePath
-                        val sql_export_filename: String = dbs_path + "/" + export_sql_filename
-                        Log.i(TAG, "import filename: " + sql_export_filename)
                         val sql_01 = "ATTACH DATABASE '$sql_export_filename' AS $sql_dump_prefix KEY '';"
                         val sql_02 = "SELECT * from $sql_dump_prefix.Restaurant;"
                         // HINT: !!! keep these columns updated with current schema definition!!!
