@@ -105,7 +105,7 @@ dependencies {
     // we need desugaring here to support APIs down to 21
     // add sqlite-jdbc module here -------------
     implementation "me.saket.swipe:swipe:1.3.0"
-    implementation 'com.github.zoff99:pkgs_zoffccAndroidJDBC:1.0.19'
+    implementation 'com.github.zoff99:pkgs_zoffccAndroidJDBC:1.0.20'
     // add sqlite-jdbc module here -------------
     implementation 'com.github.nanihadesuka:LazyColumnScrollbar:2.2.0'
     implementation 'com.squareup.okhttp3:okhttp:4.12.0'
