@@ -246,6 +246,11 @@ fun createRestaurantListStore(): RestaurantListStore
             {
                 return true
             }
+            else if (it.comment.lowercase().replace("\\p{Zs}+".toRegex(), "").unaccent()
+                    .contains(filter_string2.lowercase().unaccent()))
+            {
+                return true
+            }
             return false
         }
 
