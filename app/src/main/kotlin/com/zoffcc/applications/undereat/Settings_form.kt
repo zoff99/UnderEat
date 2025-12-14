@@ -40,6 +40,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.FileProvider
 import com.zoffcc.applications.sorm.OrmaDatabase
+import com.zoffcc.applications.sorm.OrmaDatabase.get_current_sqlcipher_version
+import com.zoffcc.applications.sorm.OrmaDatabase.get_current_sqlite_version
+import com.zoffcc.applications.sorm.OrmaDatabase.get_sqlite_type
 import com.zoffcc.applications.sorm.OrmaDatabase.run_query_for_single_result
 import java.io.File
 
@@ -268,22 +271,6 @@ fun settings_form(context: Context) {
                     e.printStackTrace()
                 }
 
-                var debug__sqlite_version: String? = "unknown"
-                try {
-                    debug__sqlite_version =
-                        run_query_for_single_result("SELECT sqlite_version()")
-                } catch (e: java.lang.Exception) {
-                    e.printStackTrace()
-                }
-
-                var debug__cipher_version: String? = "unknown"
-                try {
-                    debug__cipher_version =
-                        run_query_for_single_result("PRAGMA cipher_version")
-                } catch (e: java.lang.Exception) {
-                    e.printStackTrace()
-                }
-
                 var debug__cipher_provider: String? = "unknown"
                 try {
                     debug__cipher_provider =
@@ -303,8 +290,9 @@ fun settings_form(context: Context) {
                 var debug_output = ""
                 debug_output = debug_output + "--- sorma2 ---" + "\n"
                 debug_output = debug_output + "sorma_version=" + OrmaDatabase.getVersion() + "\n"
-                debug_output = debug_output + "cipher_version=" + debug__cipher_version + "\n"
-                debug_output = debug_output + "sqlite_version=" + debug__sqlite_version + "\n"
+                debug_output = debug_output + "sqlite_type=" + get_sqlite_type() + "\n"
+                debug_output = debug_output + "sqlite_version=" + get_current_sqlite_version() + "\n"
+                debug_output = debug_output + "cipher_version=" + get_current_sqlcipher_version() + "\n"
                 debug_output = debug_output + "cipher_provider=" + debug__cipher_provider + "\n"
                 debug_output = debug_output + "cipher_provider_version=" + debug__cipher_provider_version + "\n"
                 Text("" + debug_output, fontSize = 14.sp)
