@@ -27,6 +27,13 @@ data class RestDistance(
     var distance: Long = MAX_DISTANCE_REST
 )
 
+private val REGEX_UNACCENT = "\\p{InCombiningDiacriticalMarks}+".toRegex()
+
+fun CharSequence.unaccent(): String {
+    val temp = Normalizer.normalize(this, Normalizer.Form.NFD)
+    return REGEX_UNACCENT.replace(temp, "")
+}
+
 interface RestaurantListStore
 {
     fun clear()
@@ -225,13 +232,6 @@ fun createRestaurantListStore(): RestaurantListStore
                         true
                     }
                 })
-        }
-
-        private val REGEX_UNACCENT = "\\p{InCombiningDiacriticalMarks}+".toRegex()
-
-        fun CharSequence.unaccent(): String {
-            val temp = Normalizer.normalize(this, Normalizer.Form.NFD)
-            return REGEX_UNACCENT.replace(temp, "")
         }
 
         private fun filter_by_search_string(it: Restaurant, filter_string: String): Boolean {

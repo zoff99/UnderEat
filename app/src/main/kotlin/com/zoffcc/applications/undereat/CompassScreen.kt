@@ -28,7 +28,7 @@ fun CompassScreen() {
         Spacer(modifier = Modifier.width(1.dp).height(35.dp))
         Row {
             Spacer(modifier = Modifier.weight(5F).height(1.dp))
-            restaurant_name_view(data, false)
+            restaurant_name_view(data, false, null)
             Spacer(modifier = Modifier.weight(5F).height(1.dp))
         }
 

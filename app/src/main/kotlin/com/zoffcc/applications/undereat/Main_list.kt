@@ -762,7 +762,7 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                         backgroundUntilSwipeThreshold = Color.Yellow.copy(alpha = 0.6f),
                         swipeThreshold = 100.dp,
                     ) {
-                        RestaurantCard(index, data, context)
+                        RestaurantCard(index, data, context, input_filter)
                     }
                 }
             }
