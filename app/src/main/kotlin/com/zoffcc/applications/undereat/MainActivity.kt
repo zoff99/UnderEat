@@ -91,6 +91,10 @@ class MainActivity : ComponentActivity() {
         {
             globalstore.updateMainscreenState(MAINSCREEN.MAINLIST)
         }
+        else if (globalstore.getMainscreenState() == MAINSCREEN.SHOW_ADDRESS)
+        {
+            globalstore.updateMainscreenState(MAINSCREEN.MAINLIST)
+        }
         else if (globalstore.getMainscreenState() == MAINSCREEN.ADD)
         {
             globalstore.updateMainscreenState(MAINSCREEN.MAINLIST)
@@ -172,6 +176,10 @@ fun MainScreen(context: Context) {
     else if (state_mainscreen.mainscreen_state == MAINSCREEN.COMPASS)
     {
         CompassScreen()
+    }
+    else if (state_mainscreen.mainscreen_state == MAINSCREEN.SHOW_ADDRESS)
+    {
+        ShowAddressScreen()
     }
     else if (state_mainscreen.mainscreen_state == MAINSCREEN.ADD)
     {

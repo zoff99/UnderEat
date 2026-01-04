@@ -95,6 +95,9 @@ fun RestaurantCard(index: Int, data: Restaurant, context: Context, input_filter:
                 if (globalstore.getSorterId() == SORTER.DISTANCE.value) {
                     globalstore.setEditRestaurantId(data.id)
                     globalstore.updateMainscreenState(MAINSCREEN.COMPASS)
+                } else {
+                    globalstore.setEditRestaurantId(data.id)
+                    globalstore.updateMainscreenState(MAINSCREEN.SHOW_ADDRESS)
                 }
             }
         ,

@@ -7,4 +7,5 @@ enum class MAINSCREEN(val value: Int) {
     EDIT(2),
     SETTINGS(3),
     COMPASS(4),
+    SHOW_ADDRESS(5),
 }
