@@ -67,6 +67,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
@@ -197,7 +199,9 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                     )
                 }
             )
-            Row(modifier = Modifier
+            Row(modifier = Modifier.semantics {
+                    contentDescription = "Restaurants (click for Settings)"
+                }
                 .fillMaxWidth()
                 .weight(10F)
                 .align(Alignment.CenterVertically)
