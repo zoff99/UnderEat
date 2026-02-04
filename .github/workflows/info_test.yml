@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        api-level: [35, 33, 29, 21]
+        api-level: [29]
     permissions:
       contents: write
     if: ${{ true }}
@@ -86,12 +86,7 @@ jobs:
             adb pull /sdcard/window_dump.xml
             cat window_dump.xml
             cat window_dump.xml |grep -i 'for settings'|sed -e 's#^.*click for##'|sed -e 's#/.*$##'|awk '{print $12}'|sed -e 's#^.*="\[##'|sed -e 's#\].*$##'
-            xy=$(cat window_dump.xml |grep -i 'for settings'|sed -e 's#^.*click for##'|sed -e 's#/.*$##'|awk '{print $12}'|sed -e 's#^.*="\[##'|sed -e 's#\].*$##')
-            x=$(cat window_dump.xml |grep -i 'for settings'|sed -e 's#^.*click for##'|sed -e 's#/.*$##'|awk '{print $12}'|sed -e 's#^.*="\[##'|sed -e 's#\].*$##'|awk -F',' '{ print $1}')
-            y=$(cat window_dump.xml |grep -i 'for settings'|sed -e 's#^.*click for##'|sed -e 's#/.*$##'|awk '{print $12}'|sed -e 's#^.*="\[##'|sed -e 's#\].*$##'|awk -F',' '{ print $2}')
-            echo $x
-            echo $y
-            adb shell input tap $x $y
+            x=$(cat window_dump.xml |grep -i 'for settings'|sed -e 's#^.*click for##'|sed -e 's#/.*$##'|awk '{print $12}'|sed -e 's#^.*="\[##'|sed -e 's#\].*$##'|awk -F',' '{ print $1}') ; y=$(cat window_dump.xml |grep -i 'for settings'|sed -e 's#^.*click for##'|sed -e 's#/.*$##'|awk '{print $12}'|sed -e 's#^.*="\[##'|sed -e 's#\].*$##'|awk -F',' '{ print $2}') ; adb shell input tap $x $y
             sleep 1
             adb exec-out screencap -p > ~/info_screen01_${{ matrix.api-level }}.png
             ls -al ~/info_screen01_${{ matrix.api-level }}.png
