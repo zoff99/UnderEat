@@ -1,5 +1,6 @@
 #! /bin/sh
-url='https://github.com/zoff99/UnderEat/releases/download/nightly/android_screen01_29.png'
+url_001='https://github.com/zoff99/UnderEat/releases/download/nightly/android_screen01_29.png'
+url_002='https://github.com/zoff99/UnderEat/releases/download/nightly/info_screen01_29.png'
 
 _HOME2_=$(dirname $0)
 export _HOME2_
@@ -9,4 +10,5 @@ export _HOME_
 basedir="$_HOME_""/../"
 
 cd "$basedir"
-wget "$url" -O ./fastlane/metadata/android/en-US/images/phoneScreenshots/000.png
+wget "$url_001" -O ./fastlane/metadata/android/en-US/images/phoneScreenshots/000.png
+wget "$url_002" -O ./fastlane/metadata/android/en-US/images/phoneScreenshots/010.png
