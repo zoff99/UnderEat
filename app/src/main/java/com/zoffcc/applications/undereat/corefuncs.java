@@ -348,14 +348,42 @@ public class corefuncs
 
         if (DEMO_SHOWCASE_DEBUG_ONLY)
         {
+            String[] restaurantNames = {
+                    "The Gourmet Bistro", "Sunset Diner", "Urban Eatery", "Oceanview Cafe",
+                    "Mountain Retreat", "City Lights Restaurant", "Riverfront Grill",
+                    "The Cozy Corner", "Skyline Lounge", "Garden Fresh"
+                    // Add more names if desired
+            };
+
+            String[] streetNames = {
+                    "Maple Street", "Oak Avenue", "Pine Road", "Cedar Lane",
+                    "Birch Boulevard", "Elm Street", "Spruce Drive", "Willow Way"
+            };
+
             Random rnd = new Random();
             for (int i = 0; i < 200; i++)
             {
                 try
                 {
                     Restaurant r = new Restaurant();
+                    /*
                     r.name = randomIdentifier(6) + " Restaurant " + i;
                     r.address = "" + rnd.nextInt() + " street " + randomIdentifier(12);
+                     */
+
+                    String baseName = restaurantNames[rnd.nextInt(restaurantNames.length)];
+                    int rndNumber = rnd.nextInt(999) + 1; // 1 to 999
+                    String name = rndNumber + " " + baseName;
+
+                    // Generate address with 4-digit PO district number
+                    int districtNumber = rnd.nextInt(9000) + 1000; // 1000 to 9999
+                    String street = streetNames[rnd.nextInt(streetNames.length)];
+                    int houseNumber = rnd.nextInt(999) + 1; // 1 to 999
+                    String address = houseNumber + " " + street + ", PO District " + districtNumber;
+
+                    r.name = name;
+                    r.address = address;
+
                     r.active = true;
                     r.for_summer = kotlin.random.Random.Default.nextBoolean();
                     r.have_ac = kotlin.random.Random.Default.nextBoolean();
@@ -476,5 +504,6 @@ public class corefuncs
         }
         return builder.toString();
     }
+
 }
 
