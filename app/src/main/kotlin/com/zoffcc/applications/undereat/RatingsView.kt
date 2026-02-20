@@ -8,6 +8,7 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -32,22 +33,36 @@ fun StarRatingBar(
         Spacer(modifier = Modifier.width(starSpacingDp * 2))
         for (i in 1..maxStars) {
             val isSelected = i <= rating
-            val icon = if (isSelected) Icons.Filled.Star else Icons.Default.Star
-            val iconTintColor = if (isSelected) Color(0xFFFFC700) else Color(0x20FFFFFF)
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = iconTintColor,
-                modifier = Modifier
-                    .selectable(
-                        enabled = isEnabled,
-                        selected = isSelected,
-                        onClick = {
-                            onRatingChanged(i.toFloat())
-                        }
-                    )
-                    .width(starSizeDp).height(starSizeDp)
-            )
+
+            if ((i == 1) && (rating < 1.5f) && (rating > 0.5f))
+            {
+                // Draw exclamation mark inside a triangle
+                Icon(
+                    imageVector = Icons.Filled.Warning, // Exclamation mark icon
+                    contentDescription = null,
+                    tint = Color.Red,
+                    modifier = Modifier.width(starSizeDp).height(starSizeDp)
+                )
+            }
+            else
+            {
+                val icon = if (isSelected) Icons.Filled.Star else Icons.Default.Star
+                val iconTintColor = if (isSelected) Color(0xFFFFC700) else Color(0x20FFFFFF)
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = iconTintColor,
+                    modifier = Modifier
+                        .selectable(
+                            enabled = isEnabled,
+                            selected = isSelected,
+                            onClick = {
+                                onRatingChanged(i.toFloat())
+                            }
+                        )
+                        .width(starSizeDp).height(starSizeDp)
+                )
+            }
 
             if (i < maxStars) {
                 Spacer(modifier = Modifier.width(starSpacingDp))
