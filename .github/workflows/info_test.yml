@@ -95,14 +95,14 @@ jobs:
             sleep 2
 
       - name: upload screenshots
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: linuxscreen_${{ matrix.api-level }}
           path: |
             /home/runner/info_screen*.png
 
       - name: upload screenshots
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: adb_log_${{ matrix.api-level }}
           path: |
