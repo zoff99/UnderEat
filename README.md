@@ -7,6 +7,7 @@
 <a href="https://hosted.weblate.org/engage/trifa-a-tox-client-for-android/"><img src="https://hosted.weblate.org/widget/trifa-a-tox-client-for-android/undereat/svg-badge.svg" alt="Translation status" /></a>
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 [![Liberapay](https://img.shields.io/liberapay/goal/zoff.svg?logo=liberapay)](https://liberapay.com/zoff/donate)
+&nbsp;[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/zoff99/UnderEat)
 
 &nbsp;&nbsp;&nbsp;&nbsp;Looking for UnderEat Desktop version? [follow me](https://github.com/zoff99/undereat_material/)
 
