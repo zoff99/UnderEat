@@ -121,7 +121,7 @@ dependencyVerification {
         'com.fasterxml.jackson.core:jackson-core:2.16.1:jackson-core-2.16.1.jar:f5f8ef90609e64fec82eb908e497dc7d81b2eb983fe509b870292a193cde4dfb',
         'com.github.mangstadt:vinnie:2.0.2:vinnie-2.0.2.jar:f75c47679f85d8bb2a8508338c77fbe4d75520e551c3b93fde5cf93f7c5e59c4',
         'com.github.nanihadesuka:LazyColumnScrollbar:2.2.0:LazyColumnScrollbar-2.2.0.aar:2a5aa926b3caa9f4e3df718a173eec7dbd9005f845ebe9e48301b8f3d367f787',
-        'com.github.zoff99:pkgs_zoffccAndroidJDBC:1.0.22:pkgs_zoffccAndroidJDBC-1.0.22.aar:6e9b9565760c1020be1d93a98194bd29ca898c71e78fe32e9cfdf4a1fb6229f6',
+        'com.github.zoff99:pkgs_zoffccAndroidJDBC:1.0.23:pkgs_zoffccAndroidJDBC-1.0.23.aar:2238945a98ca95e1a1c4808ae3ad26d5ebd489ee0d5e4f6870a8181a581199f9',
         'com.google.android:annotations:4.1.1.4:annotations-4.1.1.4.jar:ba734e1e84c09d615af6a09d33034b4f0442f8772dec120efb376d86a565ae15',
         'com.google.api.grpc:proto-google-common-protos:2.17.0:proto-google-common-protos-2.17.0.jar:4ef1fe0c327fc1521d1d753b0b1c4a875a54bd14ebded3afff0ca395320b6ea9',
         'com.google.code.findbugs:jsr305:3.0.2:jsr305-3.0.2.jar:766ad2a0783f2687962c8ad74ceecc38a28b9f72a2d085ee438b7813e928d0c7',
