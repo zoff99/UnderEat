@@ -1,5 +1,7 @@
 # Sorma<sup>2</sup> - Simple ORM(Android)<sup>2</sup> <sub>(also for Desktop)<sub>
 
+sorma2 is a two-phase ORM system that generates Java code from annotated schema definitions during development, then uses that generated code at runtime for database operations.<br>
+
 It is based on the wonderful https://github.com/maskarade/Android-Orma by [FUJI Goro](https://github.com/gfx)
 <br>
 <br>
@@ -19,6 +21,36 @@ see: https://github.com/xerial/sqlite-jdbc/issues/1094<br>
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/zoff99/sorma2)
 
 <img src="https://raw.githubusercontent.com/zoff99/sorma2/refs/heads/master/sorma2_coms.png" width="300">
+
+## What is Sorma2?
+
+sorma2 is a pure Java code generator designed for efficient SQLite database access. It is suitable for both Android and Desktop Java applications.
+
+- **Purpose:** Generates Java source code for SQLite ORM based on schema definition files.
+- **Approach:** Unlike runtime ORMs, Sorma2 generates all necessary code at development time, avoiding reflection overhead and ensuring compile-time type safety.
+
+
+## Architecture
+
+### 1. Development Phase
+- Developers write schema files prefixed with `_sorm_`.
+- Schema files contain annotated Java class definitions.
+- The **Generator** class processes these files to produce complete ORM implementation code.
+
+### 2. Runtime Phase
+- The generated code offers a fluent API for database operations.
+- Platform-specific JDBC drivers handle actual SQLite communication.
+
+
+## Key Characteristics
+
+- **No Reflection at Runtime:** Improves performance and type safety.
+- **Readable Java Source Code:** Generated code is clear and maintainable.
+- **Type-safe Query Building API:** Ensures compile-time correctness.
+- **Support for Encrypted Databases:** Compatible with SQLCipher.
+- **Multi-threaded Operation:** Supports WAL mode for concurrency.
+- **Cross-platform Compatibility:** Works on Android API 21+ and Desktop Java 17+.
+
 
 # Usage
 
@@ -68,7 +100,7 @@ Android project you will need `com.github.zoff99:pkgs_zoffccAndroidJDBC` from [j
 add this dependency to your `build.gradle` file
 
 ```
-implementation 'com.github.zoff99:pkgs_zoffccAndroidJDBC:1.0.22'
+implementation 'com.github.zoff99:pkgs_zoffccAndroidJDBC:1.0.23'
 ```
 
 
