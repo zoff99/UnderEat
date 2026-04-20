@@ -17,10 +17,13 @@
     <uses-feature
         android:name="android.hardware.sensor.gyroscope"
         android:required="false" />
-
-    <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
     <application
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -40,6 +43,24 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".MapActivity"
+            android:configChanges="screenSize|locale|touchscreen|navigation|orientation|fontScale|keyboard|keyboardHidden"
+            android:windowSoftInputMode="stateHidden"
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme"
+        android:exported="false">
+        </activity>
+
+        <activity
+            android:name=".MapView2"
+            android:configChanges="screenSize|locale|touchscreen|navigation|orientation|fontScale|keyboard|keyboardHidden"
+            android:windowSoftInputMode="stateHidden"
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme"
+            android:exported="false">
         </activity>
 
         <activity

@@ -18,6 +18,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
@@ -35,11 +36,13 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Map
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
@@ -67,6 +70,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
@@ -82,6 +86,8 @@ import biweekly.ICalendar
 import biweekly.component.VEvent
 import biweekly.util.Duration
 import com.zoffcc.applications.sorm.Category
+import com.zoffcc.applications.sorm.Restaurant
+import com.zoffcc.applications.undereat.MapActivity.set_restaurant_list
 import com.zoffcc.applications.undereat.corefuncs.DEMO_SHOWCASE_DEBUG_ONLY
 import com.zoffcc.applications.undereat.corefuncs.SpecialCategory.SPECIAL_CATEGORY_ALL
 import com.zoffcc.applications.undereat.corefuncs.SpecialCategory.SPECIAL_CATEGORY_NOSTORE
@@ -98,6 +104,7 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
+import kotlin.jvm.java
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -184,22 +191,32 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
             Button(
                 modifier = Modifier
                     .height(50.dp)
-                    .padding(4.dp),
+                    .width(55.dp)
+                    .padding(top = 4.dp, bottom = 4.dp, start = 4.dp, end = 4.dp),
+                contentPadding = PaddingValues(
+                    start = 0.dp,
+                    top = 0.dp,
+                    end = 0.dp,
+                    bottom = 0.dp
+                ),
                 shape = RoundedCornerShape(10.dp),
                 elevation = ButtonDefaults.buttonElevation(4.dp),
                 onClick = {
                     globalstore.updateMainscreenState(MAINSCREEN.ADD)
                 },
                 content = {
-                    Text(
-                        text = "add",
-                        style = TextStyle(
-                            fontSize = 12.sp,
-                        )
+                    Icon(
+                        modifier = Modifier
+                            .padding(0.dp)
+                            .height(25.dp)
+                            .width(25.dp),
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "add Restaurant"
                     )
                 }
             )
-            Row(modifier = Modifier.semantics {
+            Row(modifier = Modifier
+                .semantics {
                     contentDescription = "Restaurants (click for Settings)"
                 }
                 .fillMaxWidth()
@@ -228,10 +245,46 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                     )
                 )
             }
+            val context: Context = LocalContext.current
             Button(
                 modifier = Modifier
                     .height(50.dp)
-                    .padding(4.dp),
+                    .width(60.dp)
+                    .padding(top = 4.dp, bottom = 4.dp),
+                contentPadding = PaddingValues(
+                    start = 0.dp,
+                    top = 0.dp,
+                    end = 0.dp,
+                    bottom = 0.dp
+                ),
+                shape = RoundedCornerShape(10.dp),
+                elevation = ButtonDefaults.buttonElevation(4.dp),
+                onClick = {
+                    set_restaurant_list(restaurants.restaurantlist)
+                    val intent = Intent(context, MapActivity::class.java)
+                    context.startActivity(intent)
+                },
+                content = {
+                    Icon(
+                        modifier = Modifier
+                            .padding(0.dp)
+                            .height(32.dp)
+                            .width(32.dp),
+                        imageVector = Icons.Default.Map,
+                        contentDescription = "show on map"
+                    )
+                }
+            )
+            Button(
+                modifier = Modifier
+                    .height(50.dp)
+                    .padding(top = 4.dp, bottom = 4.dp, start = 4.dp, end = 4.dp),
+                contentPadding = PaddingValues(
+                    start = 6.dp,
+                    top = 0.dp,
+                    end = 8.dp,
+                    bottom = 0.dp
+                ),
                 shape = RoundedCornerShape(10.dp),
                 elevation = ButtonDefaults.buttonElevation(4.dp),
                 onClick = {
@@ -251,14 +304,14 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                             .randomDebugBorder()
                             .padding(0.dp),
                         imageVector = Icons.Default.Call,
-                        contentDescription = "Call Restaurant"
+                        contentDescription = "Call Taxi"
                     )
                     Spacer(modifier = Modifier.width(5.dp))
                     Text(
                         modifier = Modifier.padding(0.dp),
                         text = "Taxi",
                         style = TextStyle(
-                            fontSize = 13.sp,
+                            fontSize = 17.sp,
                         )
                     )
                 }
@@ -724,7 +777,9 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                     val createICS = SwipeAction(
                         icon = {
                             Text("Calender")
-                            Spacer(modifier = Modifier.width(10.dp).height(1.dp))
+                            Spacer(modifier = Modifier
+                                .width(10.dp)
+                                .height(1.dp))
                             Icon(
                                 Icons.Default.DateRange,
                                 contentDescription = "create ICS file",
@@ -749,7 +804,9 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                                 modifier = Modifier.padding(start = 20.dp),
                                 tint = Color.White
                             )
-                            Spacer(modifier = Modifier.width(10.dp).height(1.dp))
+                            Spacer(modifier = Modifier
+                                .width(10.dp)
+                                .height(1.dp))
                             Text("Edit")
                         },
                         background = Color.Cyan.copy(alpha = 0.6f),
