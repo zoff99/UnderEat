@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageButton;
 
 import com.zoffcc.applications.sorm.Restaurant;
@@ -17,7 +16,6 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
-import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
 import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay;
@@ -42,7 +40,7 @@ public class MapActivity extends AppCompatActivity
     private static final GeoPoint MAP_DEFAULT_CENTER = new GeoPoint(48.20800970787025f, 16.36652915417636f);
     private static final double MAP_DEFAULT_ZOOM_LEVEL = 17.0d;
 
-    static MapView2 map = null;
+    static MapView map = null;
     static IMapController mapController = null;
     static MyLocationNewOverlay mLocationOverlay = null;
     static RotationGestureOverlay mRotationGestureOverlay = null;
