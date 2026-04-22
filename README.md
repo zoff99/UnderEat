@@ -15,8 +15,13 @@
 <b>Organise your favorite restaurants and bars</b><br>
 
 Edit, sort and browse. Export and import your data. Show the direction to the nearest restaurant from your current location<br>
-Full network access permission is needed for address and location searches in Nominatim.<br>
-https://nominatim.openstreetmap.org/
+
+* Full network access permission is needed for address and location searches in Nominatim, and for OSM map tiles.<br>
+https://nominatim.openstreetmap.org/<br>
+https://tile.openstreetmap.org<br>
+* Location access permission is needed for distance sorting and the map view.<br>
+* External Storage access permission is needed for storing the OSM map tiles.<br>
+https://github.com/osmdroid/osmdroid/wiki/Prerequisites#manifest-additions
 <br><br>
 
 <img src="https://github.com/zoff99/UnderEat/releases/download/nightly/android_screen01_21.png" height="300"></a>&nbsp;
