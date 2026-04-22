@@ -23,7 +23,8 @@ https://nominatim.openstreetmap.org/
 <img src="https://github.com/zoff99/UnderEat/releases/download/nightly/android_screen01_29.png" height="300"></a>&nbsp;
 <img src="https://github.com/zoff99/UnderEat/releases/download/nightly/android_screen01_33.png" height="300"></a>&nbsp;
 <img src="https://github.com/zoff99/UnderEat/releases/download/nightly/android_screen01_35.png" height="300"></a><br>
-<img src="https://github.com/zoff99/UnderEat/releases/download/nightly/info_screen01_29.png" height="300">
+<img src="https://github.com/zoff99/UnderEat/releases/download/nightly/info_screen01_29.png" height="300">&nbsp;
+<img src="https://github.com/zoff99/UnderEat/releases/download/nightly/map_screen01_29.png" height="300">
 
 <br>
 Any use of this project's code by GitHub Copilot, past or present, is done
