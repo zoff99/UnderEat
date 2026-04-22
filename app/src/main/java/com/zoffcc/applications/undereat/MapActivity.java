@@ -67,6 +67,13 @@ public class MapActivity extends AppCompatActivity
         org.osmdroid.config.Configuration.getInstance().setAnimationSpeedDefault(animationSpeedDefault); //used in animateTo() calls
         org.osmdroid.config.Configuration.getInstance().setAnimationSpeedShort(animationSpeedShort); //during zoom animation
 
+        try
+        {
+            Log.i(TAG, "base_path_for_OSM:" + org.osmdroid.config.Configuration.getInstance().getOsmdroidBasePath());
+        }
+        catch(Exception ignored)
+        {
+        }
 
         setContentView(R.layout.map_activity);
 
