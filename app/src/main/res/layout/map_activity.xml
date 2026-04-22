@@ -6,6 +6,7 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
+    <!--
     <ImageButton
         android:id="@+id/back_on_screen_button"
         android:layout_width="50dp"
@@ -18,7 +19,7 @@
         android:src="@drawable/previous"
         tools:ignore="HardcodedText">
     </ImageButton>
-
+    -->
     <org.osmdroid.views.MapView
         android:id="@+id/map"
         android:layout_width="fill_parent"

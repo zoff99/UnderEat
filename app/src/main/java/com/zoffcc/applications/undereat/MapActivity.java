@@ -1,6 +1,7 @@
 package com.zoffcc.applications.undereat;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -31,6 +32,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import static com.zoffcc.applications.undereat.Edit_formKt.geo_coord_longdb_to_double;
+import static com.zoffcc.applications.undereat.NorthingOverlay.set_northing_callback;
 
 public class MapActivity extends AppCompatActivity
 {
@@ -75,17 +77,12 @@ public class MapActivity extends AppCompatActivity
         {
         }
 
+        Log.i(TAG, "OSM:isMapViewHardwareAccelerated:" + org.osmdroid.config.Configuration.getInstance().isMapViewHardwareAccelerated());
+
         setContentView(R.layout.map_activity);
 
         String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
         requestPermissionsIfNecessary(permissions);
-
-        back_on_screen_button = findViewById(R.id.back_on_screen_button);
-        back_on_screen_button.setOnClickListener(v -> {
-            // Triggers the exact same behavior as the physical back button
-            Log.i(TAG, "XXXXXXXXXX");
-            onBackPressed();
-        });
 
         map = findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
@@ -122,10 +119,23 @@ public class MapActivity extends AppCompatActivity
         catch(Exception ignored)
         {
         }
-        final ItemizedIconOverlay<OverlayItem> mOverlay = new ItemizedIconOverlay<>(items,
-                                                                                    null,
-                                                                                    this);
+        @SuppressLint("UseCompatLoadingForDrawables") final ItemizedIconOverlay<OverlayItem> mOverlay =
+                new ItemizedIconOverlay<>(items,
+                                          this.getResources().getDrawable(org.osmdroid.library.R.drawable.moreinfo_arrow_pressed),
+                                          null,
+                                          this);
         map.getOverlays().add(mOverlay);
+
+        NorthingOverlay northing_ov = new NorthingOverlay(this, map);
+        map.getOverlays().add(northing_ov);
+        set_northing_callback(new NorthingOverlay.NorthingCallback() {
+            @Override
+            public void update_is_northing(boolean value)
+            {
+                Log.i(TAG, "**CLICK**");
+                onBackPressed();
+            }
+        });
     }
 
     @Override
