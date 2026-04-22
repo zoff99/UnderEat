@@ -80,6 +80,7 @@ jobs:
             ./gradlew build ; ./gradlew installDebug
             adb shell 'pm grant com.zoffcc.applications.undereat android.permission.ACCESS_COARSE_LOCATION'
             adb shell 'pm grant com.zoffcc.applications.undereat android.permission.ACCESS_FINE_LOCATION'
+            adb shell 'pm grant com.zoffcc.applications.undereat android.permission.WRITE_EXTERNAL_STORAGE'
             adb shell am start -n com.zoffcc.applications.undereat/com.zoffcc.applications.undereat.MainActivity  &
             sleep 60
             adb shell uiautomator dump
@@ -87,7 +88,7 @@ jobs:
             cat window_dump.xml
             cat window_dump.xml |grep -i 'show on map'|sed -e 's#^.*show on map##'|sed -e 's#/.*$##'|awk '{print $12}'|sed -e 's#^.*="\[##'|sed -e 's#\].*$##'
             x=$(cat window_dump.xml |grep -i 'show on map'|sed -e 's#^.*show on map##'|sed -e 's#/.*$##'|awk '{print $12}'|sed -e 's#^.*="\[##'|sed -e 's#\].*$##'|awk -F',' '{ print $1}') ; y=$(cat window_dump.xml |grep -i 'show on map'|sed -e 's#^.*show on map##'|sed -e 's#/.*$##'|awk '{print $12}'|sed -e 's#^.*="\[##'|sed -e 's#\].*$##'|awk -F',' '{ print $2}') ; adb shell input tap $x $y
-            sleep 1
+            sleep 60
             adb exec-out screencap -p > ~/map_screen01_${{ matrix.api-level }}.png
             ls -al ~/map_screen01_${{ matrix.api-level }}.png
             adb logcat -d |grep 'UnderEat'
