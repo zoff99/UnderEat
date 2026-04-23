@@ -261,6 +261,7 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                 shape = RoundedCornerShape(10.dp),
                 elevation = ButtonDefaults.buttonElevation(4.dp),
                 onClick = {
+                    Log.i(TAG, "start MapActivity")
                     set_restaurant_list(restaurants.restaurantlist)
                     val intent = Intent(context, MapActivity::class.java)
                     context.startActivity(intent)

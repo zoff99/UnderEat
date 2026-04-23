@@ -24,8 +24,6 @@ import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay;
-import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
-import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +49,7 @@ public class MapActivity extends AppCompatActivity
 
     static MapView map = null;
     static IMapController mapController = null;
-    static MyLocationNewOverlay mLocationOverlay = null;
+    static RotatingLocationOverlay mLocationOverlay = null;
     static RotationGestureOverlay mRotationGestureOverlay = null;
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     static List<Restaurant> restaurants = new ArrayList<>();
@@ -88,9 +86,6 @@ public class MapActivity extends AppCompatActivity
 
         setContentView(R.layout.map_activity);
 
-        String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        requestPermissionsIfNecessary(permissions);
-
         map = findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
         map.setFlingEnabled(true);
@@ -115,8 +110,12 @@ public class MapActivity extends AppCompatActivity
         map.setMultiTouchControls(true);
         map.getOverlays().add(mRotationGestureOverlay);
 
-        mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(this), map);
+        mLocationOverlay = new RotatingLocationOverlay(this, map);
         mLocationOverlay.enableMyLocation();
+        mLocationOverlay.enableFollowLocation();
+        mLocationOverlay.setEnableAutoStop(false);
+        mLocationOverlay.setDrawAccuracyEnabled(true);
+        mLocationOverlay.setOptionsMenuEnabled(false);
         map.getOverlays().add(mLocationOverlay);
 
         try
@@ -177,6 +176,8 @@ public class MapActivity extends AppCompatActivity
                 onBackPressed();
             }
         });
+
+        Log.i(TAG, "onCreate finished");
     }
 
     @NonNull
@@ -203,22 +204,19 @@ public class MapActivity extends AppCompatActivity
     {
         super.onResume();
         map.onResume();
+        mLocationOverlay.enableMyLocation();
+        mLocationOverlay.enableFollowLocation();
+        mLocationOverlay.setEnableAutoStop(false);
+        Log.i(TAG, "onResume");
+        // Log.d("LifecycleDebug", "onResume called. Config: " + getResources().getConfiguration().toString());
     }
 
     @Override
     protected void onPause()
     {
         super.onPause();
-
-        try
-        {
-            // map.getOverlayManager().remove(4);
-        }
-        catch(Exception e)
-        {
-        }
-
         map.onPause();
+        Log.i(TAG, "onPause");
     }
 
     @Override
@@ -248,38 +246,6 @@ public class MapActivity extends AppCompatActivity
         }
         catch(Exception e)
         {
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        ArrayList<String> permissionsToRequest = new ArrayList<>();
-        for (int i = 0; i < grantResults.length; i++) {
-            permissionsToRequest.add(permissions[i]);
-        }
-        if (!permissionsToRequest.isEmpty()) {
-            ActivityCompat.requestPermissions(
-                    this,
-                    permissionsToRequest.toArray(new String[0]),
-                    REQUEST_PERMISSIONS_REQUEST_CODE);
-        }
-    }
-
-    private void requestPermissionsIfNecessary(String[] permissions) {
-        ArrayList<String> permissionsToRequest = new ArrayList<>();
-        for (String permission : permissions) {
-            if (ContextCompat.checkSelfPermission(this, permission)
-                != PackageManager.PERMISSION_GRANTED) {
-                // Permission is not granted
-                permissionsToRequest.add(permission);
-            }
-        }
-        if (!permissionsToRequest.isEmpty()) {
-            ActivityCompat.requestPermissions(
-                    this,
-                    permissionsToRequest.toArray(new String[0]),
-                    REQUEST_PERMISSIONS_REQUEST_CODE);
         }
     }
 
