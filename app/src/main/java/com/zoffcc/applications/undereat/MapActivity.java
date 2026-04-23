@@ -5,11 +5,15 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.ImageButton;
 
+import com.zoffcc.applications.sorm.Category;
 import com.zoffcc.applications.sorm.Restaurant;
 
 import org.osmdroid.api.IMapController;
@@ -30,9 +34,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 
 import static com.zoffcc.applications.undereat.Edit_formKt.geo_coord_longdb_to_double;
 import static com.zoffcc.applications.undereat.NorthingOverlay.set_northing_callback;
+import static com.zoffcc.applications.undereat.corefuncs.orma;
 
 public class MapActivity extends AppCompatActivity
 {
@@ -105,26 +111,64 @@ public class MapActivity extends AppCompatActivity
         mLocationOverlay.enableMyLocation();
         map.getOverlays().add(mLocationOverlay);
 
-        ArrayList<OverlayItem> items = new ArrayList<>();
         try
         {
-            for (Restaurant restaurant : restaurants)
+            // HINT: categories start with "1" !!
+            int max_categories = orma.selectFromCategory().toList().size();
+            List<Integer> category_colors = new ArrayList<>(max_categories);
+
+            category_colors.add(0xFFFF4444); // Red
+            category_colors.add(0xFFFFBB33); // Orange
+            category_colors.add(0xFF99CC00); // Green
+            category_colors.add(0xFF33B5E5); // Blue
+            category_colors.add(0xFFAA66CC); // Purple
+            category_colors.add(0xFF0099CC); // Dark Blue
+            category_colors.add(0xFF669900); // Dark Green
+            category_colors.add(0xFFFF8800); // Dark Orange
+            category_colors.add(0xFFCC0000); // Dark Red
+            category_colors.add(0xFF222222); // Near Black
+
+            for (int cur_category = 1; cur_category <= max_categories; cur_category++)
             {
-                Log.i(TAG, "r: " + geo_coord_longdb_to_double(restaurant.lat) + " " + geo_coord_longdb_to_double(restaurant.lon));
-                items.add(new OverlayItem("", "",
-                                          new GeoPoint(geo_coord_longdb_to_double(restaurant.lat), geo_coord_longdb_to_double(restaurant.lon)))
-                );
+                ArrayList<OverlayItem> items = new ArrayList<>();
+                int found_restaurants = 0;
+                for (Restaurant restaurant : restaurants)
+                {
+                    if (restaurant.category_id == cur_category)
+                    {
+                        Log.i(TAG, "r: " + geo_coord_longdb_to_double(restaurant.lat) + " " +
+                                   geo_coord_longdb_to_double(restaurant.lon));
+                        items.add(new OverlayItem("", "", new GeoPoint(geo_coord_longdb_to_double(restaurant.lat),
+                                                                       geo_coord_longdb_to_double(restaurant.lon))));
+                        found_restaurants++;
+                    }
+                }
+                if (found_restaurants > 0)
+                {
+                    Drawable rawDrawable = ContextCompat.getDrawable(this, R.drawable.outline_location_on_24);
+                    Drawable wrappedDrawable = DrawableCompat.wrap(rawDrawable).mutate();
+                    try
+                    {
+                        DrawableCompat.setTint(wrappedDrawable, category_colors.get(cur_category - 1));
+                    }
+                    catch(Exception e)
+                    {
+                        DrawableCompat.setTint(wrappedDrawable, Color.BLUE);
+                    }
+                    DrawableCompat.setTintMode(wrappedDrawable, PorterDuff.Mode.SRC_IN);
+
+                    @SuppressLint("UseCompatLoadingForDrawables") final ItemizedIconOverlay<OverlayItem> mOverlay
+                            = new ItemizedIconOverlay<>(
+                            items,
+                            wrappedDrawable,
+                            null, this);
+                    map.getOverlays().add(mOverlay);
+                }
             }
         }
         catch(Exception ignored)
         {
         }
-        @SuppressLint("UseCompatLoadingForDrawables") final ItemizedIconOverlay<OverlayItem> mOverlay =
-                new ItemizedIconOverlay<>(items,
-                                          this.getResources().getDrawable(org.osmdroid.library.R.drawable.moreinfo_arrow_pressed),
-                                          null,
-                                          this);
-        map.getOverlays().add(mOverlay);
 
         NorthingOverlay northing_ov = new NorthingOverlay(this, map);
         map.getOverlays().add(northing_ov);
