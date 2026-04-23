@@ -16,6 +16,8 @@ import java.util.Set;
 import static android.content.Context.MODE_PRIVATE;
 import static com.zoffcc.applications.sorm.OrmaDatabase.run_multi_sql;
 import static com.zoffcc.applications.sorm.OrmaDatabase.set_schema_upgrade_callback;
+import static com.zoffcc.applications.undereat.Edit_formKt.geo_coord_double_to_longdb;
+import static com.zoffcc.applications.undereat.EuropeLocationGenerator.generateRandomEuropeLocation;
 
 @SuppressWarnings("ALL")
 public class corefuncs
@@ -381,13 +383,17 @@ public class corefuncs
                     int houseNumber = rnd.nextInt(999) + 1; // 1 to 999
                     String address = houseNumber + " " + street + ", PO District " + districtNumber;
 
+                    double[] rnd_gps = generateRandomEuropeLocation();
+                    r.lat = geo_coord_double_to_longdb(rnd_gps[0]);
+                    r.lon = geo_coord_double_to_longdb(rnd_gps[1]);
+
                     r.name = name;
                     r.address = address;
 
                     r.active = true;
                     r.for_summer = kotlin.random.Random.Default.nextBoolean();
                     r.have_ac = kotlin.random.Random.Default.nextBoolean();
-                    r.category_id = 1; // hardcoded here
+                    r.category_id = rnd.nextInt(11) + 1;
                     orma.insertIntoRestaurant(r);
                 }
                 catch (Exception e)

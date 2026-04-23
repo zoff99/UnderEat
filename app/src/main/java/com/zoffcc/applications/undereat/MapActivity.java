@@ -38,6 +38,7 @@ import androidx.core.graphics.drawable.DrawableCompat;
 
 import static com.zoffcc.applications.undereat.Edit_formKt.geo_coord_longdb_to_double;
 import static com.zoffcc.applications.undereat.NorthingOverlay.set_northing_callback;
+import static com.zoffcc.applications.undereat.corefuncs.DEMO_SHOWCASE_DEBUG_ONLY;
 import static com.zoffcc.applications.undereat.corefuncs.orma;
 
 public class MapActivity extends AppCompatActivity
@@ -99,7 +100,14 @@ public class MapActivity extends AppCompatActivity
 
         mapController = map.getController();
         mapController.setCenter(new GeoPoint(MAP_DEFAULT_CENTER));
-        mapController.setZoom(MAP_DEFAULT_ZOOM_LEVEL);
+        if (DEMO_SHOWCASE_DEBUG_ONLY)
+        {
+            mapController.setZoom(6);
+        }
+        else
+        {
+            mapController.setZoom(MAP_DEFAULT_ZOOM_LEVEL);
+        }
 
         mRotationGestureOverlay = new RotationGestureOverlay(map);
         mRotationGestureOverlay.setEnabled(true);
