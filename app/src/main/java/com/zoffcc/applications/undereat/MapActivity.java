@@ -123,19 +123,7 @@ public class MapActivity extends AppCompatActivity
         {
             // HINT: categories start with "1" !!
             int max_categories = orma.selectFromCategory().toList().size();
-            List<Integer> category_colors = new ArrayList<>(max_categories);
-
-            category_colors.add(0xFFFF4444); // Red #1
-            category_colors.add(0xFFFFBB33); // Orange #2
-            category_colors.add(0xFF99CC00); // Green #3
-            category_colors.add(0xFF33B5E5); // Blue #4
-            category_colors.add(0xFFAA66CC); // Purple #5
-            category_colors.add(0xFF0099CC); // Dark Blue #6
-            category_colors.add(0xFF669900); // Dark Green #7
-            category_colors.add(0xFFFF8800); // Dark Orange #8
-            category_colors.add(0xFFCC0000); // Dark Red #9
-            category_colors.add(0xFF222222); // Near Black #10
-            category_colors.add(0xFFFF4081); // Pink/Magenta #11
+            final List<Integer> category_colors = get_poi_colors(max_categories);
 
             for (int cur_category = 1; cur_category <= max_categories; cur_category++)
             {
@@ -189,6 +177,25 @@ public class MapActivity extends AppCompatActivity
                 onBackPressed();
             }
         });
+    }
+
+    @NonNull
+    private static List<Integer> get_poi_colors(int max_categories)
+    {
+        List<Integer> category_colors = new ArrayList<>(max_categories);
+
+        category_colors.add(0xFFFF4444); // Red #1
+        category_colors.add(0xFFFFBB33); // Orange #2
+        category_colors.add(0xFF99CC00); // Green #3
+        category_colors.add(0xFF33B5E5); // Blue #4
+        category_colors.add(0xFFAA66CC); // Purple #5
+        category_colors.add(0xFF0099CC); // Dark Blue #6
+        category_colors.add(0xFF669900); // Dark Green #7
+        category_colors.add(0xFFFF8800); // Dark Orange #8
+        category_colors.add(0xFFCC0000); // Dark Red #9
+        category_colors.add(0xFF222222); // Near Black #10
+        category_colors.add(0xFFFF4081); // Pink/Magenta #11
+        return category_colors;
     }
 
     @Override
