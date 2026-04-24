@@ -124,24 +124,7 @@ public class NorthingOverlay extends Overlay
 
     @Override
     public boolean onSingleTapConfirmed(final MotionEvent e, final MapView mapView) {
-
-        float dx = e.getX();
-        float dy = e.getY();
-
-        // Log.i(TAG, "onSingleTapConfirmed" + " " + mCompassCenterX + " " + mCompassCenterY + " " + mCompassRadius);
-        // Log.i(TAG, "onSingleTapConfirmed" + " " + dx + " " + dy + " " + compas_rect_x + " " + compas_rect_y);
-
-        // Log.i(TAG, "onSingleTapConfirmed" + " " + dx + " " + dy + " " + " " + mCompassRadius + " " + mScale);
-        // Log.i(TAG, "onSingleTapConfirmed" + " " + (mCompassRadius * mScale) * 4);
-
-        //if ((dx <= (mCompassRadius * mScale) * 4) && (dy <= (mCompassRadius * mScale) * 4))
-        //{
-            // Log.i(TAG, "onSingleTapConfirmed " + e);
-            if (northing_callback_function != null) {
-                northing_callback_function.update_is_northing(is_northed);
-            }
-            return true;
-        //}
+        return false;
     }
 
     private void invalidateCompass() {

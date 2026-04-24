@@ -13,6 +13,8 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
+import android.view.MotionEvent;
 
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
@@ -23,13 +25,14 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 import androidx.core.content.ContextCompat;
 
 public class RotatingLocationOverlay extends MyLocationNewOverlay {
-    private final MapView mMapView;
-    private boolean isManualMode = false;
 
+    private static final String TAG = "RotatingLocationOverlay";
+
+    private final MapView mMapView;
     private final Handler handler = new Handler(Looper.getMainLooper());
     private GeoPoint currentVisualPos;
     private float currentVisualBearing = 0f;
-
+    protected boolean enableAutoStop = true;
     private static final int TOTAL_STEPS = 20;
     private static final int STEP_DURATION_MS = 1000 / TOTAL_STEPS; // Exactly 50ms
 
@@ -49,6 +52,33 @@ public class RotatingLocationOverlay extends MyLocationNewOverlay {
                 Color.parseColor("#3142f0"));
         // Bitmap arrowBitmap = getBitmapFromVector(c, org.osmdroid.library.R.drawable.twotone_navigation_black_48, Color.parseColor("#2196F3")); // Bright blue arrow
         setDirectionIcon(location_arrow_2);
+    }
+
+    @Override
+    public boolean onSingleTapConfirmed(final MotionEvent e, final MapView mapView) {
+        Log.i(TAG, "onSingleTapConfirmed:");
+        return false;
+    }
+
+    public void setEnableAutoStop(boolean value){
+        this.enableAutoStop=value;
+    }
+    public boolean getEnableAutoStop(){
+        return this.enableAutoStop;
+    }
+
+
+    @Override
+    public boolean onTouchEvent(final MotionEvent event, final MapView mapView) {
+        final boolean isSingleFingerDrag = (event.getAction() == MotionEvent.ACTION_MOVE)
+                                           && (event.getPointerCount() == 1);
+        if (event.getAction() == MotionEvent.ACTION_DOWN && enableAutoStop) {
+            this.disableFollowLocation();
+        } else if (isSingleFingerDrag && isFollowLocationEnabled()) {
+            return true;  // prevent the pan
+        }
+
+        return super.onTouchEvent(event, mapView);
     }
 
     private Bitmap getBitmapFromVector(Context context, int drawableId, int tintColor) {
@@ -137,7 +167,7 @@ public class RotatingLocationOverlay extends MyLocationNewOverlay {
 
                 RotatingLocationOverlay.super.onLocationChanged(interpolatedLoc, source);
 
-                if (isFollowLocationEnabled() && !isManualMode) {
+                if (isFollowLocationEnabled()) {
                     mMapView.getController().setCenter(currentVisualPos);
                     if (incomingHasBearing) {
                         mMapView.setMapOrientation(-currentVisualBearing);
@@ -155,11 +185,6 @@ public class RotatingLocationOverlay extends MyLocationNewOverlay {
     @Override
     protected void drawMyLocation(Canvas canvas, Projection pj, Location lastFix) {
         super.drawMyLocation(canvas, pj, lastFix);
-    }
-
-    public void resetToGpsMode() {
-        this.isManualMode = false;
-        mMapView.setMapOrientation(0);
     }
 
     public static Bitmap tintImageWithBorder(Bitmap bitmap, int tintColor) {

@@ -1,19 +1,15 @@
 package com.zoffcc.applications.undereat;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.ImageButton;
 
-import com.zoffcc.applications.sorm.Category;
 import com.zoffcc.applications.sorm.Restaurant;
 
 import org.osmdroid.api.IMapController;
@@ -30,12 +26,10 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 
 import static com.zoffcc.applications.undereat.Edit_formKt.geo_coord_longdb_to_double;
-import static com.zoffcc.applications.undereat.NorthingOverlay.set_northing_callback;
 import static com.zoffcc.applications.undereat.corefuncs.DEMO_SHOWCASE_DEBUG_ONLY;
 import static com.zoffcc.applications.undereat.corefuncs.orma;
 
@@ -43,7 +37,6 @@ public class MapActivity extends AppCompatActivity
 {
     private static final String TAG = "MapActivity";
 
-    // HINT: set default map center to vienna city center
     private static final GeoPoint MAP_DEFAULT_CENTER = new GeoPoint(48.20800970787025f, 16.36652915417636f);
     private static final double MAP_DEFAULT_ZOOM_LEVEL = 17.0d;
 
@@ -51,9 +44,7 @@ public class MapActivity extends AppCompatActivity
     static IMapController mapController = null;
     static RotatingLocationOverlay mLocationOverlay = null;
     static RotationGestureOverlay mRotationGestureOverlay = null;
-    private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     static List<Restaurant> restaurants = new ArrayList<>();
-    ImageButton back_on_screen_button = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,19 +95,20 @@ public class MapActivity extends AppCompatActivity
             mapController.setZoom(MAP_DEFAULT_ZOOM_LEVEL);
         }
 
-        mRotationGestureOverlay = new RotationGestureOverlay(map);
-        mRotationGestureOverlay.setEnabled(true);
-        mRotationGestureOverlay.setOptionsMenuEnabled(false);
-        map.setMultiTouchControls(true);
-        map.getOverlays().add(mRotationGestureOverlay);
-
         mLocationOverlay = new RotatingLocationOverlay(this, map);
         mLocationOverlay.enableMyLocation();
         mLocationOverlay.enableFollowLocation();
-        mLocationOverlay.setEnableAutoStop(false);
+        mLocationOverlay.setEnableAutoStop(true);
         mLocationOverlay.setDrawAccuracyEnabled(true);
-        mLocationOverlay.setOptionsMenuEnabled(false);
+        mLocationOverlay.setEnabled(true);
+        // mLocationOverlay.setOptionsMenuEnabled(false);
         map.getOverlays().add(mLocationOverlay);
+
+        mRotationGestureOverlay = new RotationGestureOverlay(map);
+        mRotationGestureOverlay.setEnabled(true);
+        // mRotationGestureOverlay.setOptionsMenuEnabled(false);
+        map.setMultiTouchControls(true);
+        map.getOverlays().add(mRotationGestureOverlay);
 
         try
         {
@@ -168,6 +160,7 @@ public class MapActivity extends AppCompatActivity
 
         NorthingOverlay northing_ov = new NorthingOverlay(this, map);
         map.getOverlays().add(northing_ov);
+        /*
         set_northing_callback(new NorthingOverlay.NorthingCallback() {
             @Override
             public void update_is_northing(boolean value)
@@ -176,7 +169,7 @@ public class MapActivity extends AppCompatActivity
                 onBackPressed();
             }
         });
-
+        */
         Log.i(TAG, "onCreate finished");
     }
 
