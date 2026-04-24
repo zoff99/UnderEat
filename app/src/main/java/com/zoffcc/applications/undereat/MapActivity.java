@@ -3,6 +3,7 @@ package com.zoffcc.applications.undereat;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -12,6 +13,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
 
@@ -150,7 +152,15 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
                     {
                         Log.i(TAG, "r: " + geo_coord_longdb_to_double(restaurant.lat) + " " +
                                    geo_coord_longdb_to_double(restaurant.lon));
-                        items.add(new OverlayItem("", "", new GeoPoint(geo_coord_longdb_to_double(restaurant.lat),
+                        String res_name = "";
+                        try
+                        {
+                            res_name = restaurant.name;
+                        }
+                        catch(Exception ignored)
+                        {
+                        }
+                        items.add(new OverlayItem("" + res_name, "", new GeoPoint(geo_coord_longdb_to_double(restaurant.lat),
                                                                        geo_coord_longdb_to_double(restaurant.lon))));
                         found_restaurants++;
                     }
@@ -175,12 +185,15 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
                             wrappedDrawable,
                             null, this);
                     map.getOverlays().add(mOverlay);
+                    FastTextOverlay textOverlay = new FastTextOverlay(items);
+                    map.getOverlays().add(textOverlay);
                 }
             }
         }
         catch(Exception ignored)
         {
         }
+
 
         NorthingOverlay northing_ov = new NorthingOverlay(this, map);
         map.getOverlays().add(northing_ov);
@@ -195,6 +208,20 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
         });
         */
         Log.i(TAG, "onCreate finished");
+    }
+
+    public static float convertPixelsToDp(float px, Context context) {
+        return px / ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+    }
+
+    public static float pxToDp(float px) {
+        float density = Resources.getSystem().getDisplayMetrics().density;
+        return px / density;
+    }
+
+    public static float dpToPx(float dp) {
+        float density = Resources.getSystem().getDisplayMetrics().density;
+        return dp * density;
     }
 
     @NonNull
@@ -251,7 +278,7 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
         {
             mLocationOverlay.disableMyLocation();
         }
-        catch(Exception e)
+        catch(Exception ignored)
         {
         }
 
@@ -263,7 +290,7 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
             }
             map.getOverlays().clear();
         }
-        catch(Exception e)
+        catch(Exception ignored)
         {
         }
     }
