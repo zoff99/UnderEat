@@ -20,6 +20,7 @@ const val LOCATION_SORT_INTERAL_MILLISECS = 5 * 1000
 interface LocationStore {
     fun setLocation(lat_value: Double, lon_value: Double)
     fun setHeading(azimuth: Int)
+    fun getHeading(): Int
     val stateFlow: StateFlow<localtionstore_state>
     val state get() = stateFlow.value
 }
@@ -80,6 +81,10 @@ fun createLocationStore(): LocationStore {
             if (azimuth != state.heading) {
                 mutableStateFlow.value = state.copy(heading = azimuth)
             }
+        }
+
+        override fun getHeading(): Int {
+            return state.heading
         }
     }
 }

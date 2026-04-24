@@ -46,7 +46,8 @@ public class GPSTracker extends Service implements LocationListener, SensorEvent
 
     float[] rMat = new float[9];
     float[] orientation = new float[3];
-    int mAzimuth = 0;
+    static int mAzimuth = 0;
+    static boolean has_azimuth = false;
     String where = "NW";
     private final float[] mLastAccelerometer = new float[3];
     private final float[] mLastMagnetometer = new float[3];
@@ -418,6 +419,7 @@ public class GPSTracker extends Service implements LocationListener, SensorEvent
         // the result is clockwise. E = 90°, N = 0°, W = 275°, S = 180°
         // Log.i(TAG, "azz: " + mAzimuth + "° " + where);
         getLocationstore().setHeading(mAzimuth);
+        has_azimuth = true;
     }
 
     @Override

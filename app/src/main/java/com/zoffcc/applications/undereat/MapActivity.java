@@ -6,6 +6,10 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -33,7 +37,7 @@ import static com.zoffcc.applications.undereat.Edit_formKt.geo_coord_longdb_to_d
 import static com.zoffcc.applications.undereat.corefuncs.DEMO_SHOWCASE_DEBUG_ONLY;
 import static com.zoffcc.applications.undereat.corefuncs.orma;
 
-public class MapActivity extends AppCompatActivity
+public class MapActivity extends AppCompatActivity implements SensorEventListener
 {
     private static final String TAG = "MapActivity";
 
@@ -45,6 +49,23 @@ public class MapActivity extends AppCompatActivity
     static RotatingLocationOverlay mLocationOverlay = null;
     static RotationGestureOverlay mRotationGestureOverlay = null;
     static List<Restaurant> restaurants = new ArrayList<>();
+
+    float[] rMat = new float[9];
+    float[] orientation = new float[3];
+    static int mAzimuth_map = 0;
+    static boolean has_azimuth_map = false;
+    String where = "NW";
+    private final float[] mLastAccelerometer = new float[3];
+    private final float[] mLastMagnetometer = new float[3];
+    private boolean mLastAccelerometerSet = false;
+    private boolean mLastMagnetometerSet = false;
+
+    static private SensorManager sensorManager;
+    static private Sensor accelerometer;
+    static private Sensor magnetometer;
+    static private Sensor rotationsense;
+    static boolean haveSensor = false;
+    static boolean haveSensor2 = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -200,6 +221,7 @@ public class MapActivity extends AppCompatActivity
         mLocationOverlay.enableMyLocation();
         mLocationOverlay.enableFollowLocation();
         mLocationOverlay.setEnableAutoStop(false);
+        start_sensors(this);
         Log.i(TAG, "onResume");
         // Log.d("LifecycleDebug", "onResume called. Config: " + getResources().getConfiguration().toString());
     }
@@ -208,6 +230,7 @@ public class MapActivity extends AppCompatActivity
     protected void onPause()
     {
         super.onPause();
+        stop_sensors();
         map.onPause();
         Log.i(TAG, "onPause");
     }
@@ -255,6 +278,134 @@ public class MapActivity extends AppCompatActivity
         catch(Exception e)
         {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event)
+    {
+        if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
+            SensorManager.getRotationMatrixFromVector(rMat, event.values);
+            mAzimuth_map = (int) (Math.toDegrees(SensorManager.getOrientation(rMat, orientation)[0]) + 360) % 360;
+        }
+
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            System.arraycopy(event.values, 0, mLastAccelerometer, 0, event.values.length);
+            mLastAccelerometerSet = true;
+        } else if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+            System.arraycopy(event.values, 0, mLastMagnetometer, 0, event.values.length);
+            mLastMagnetometerSet = true;
+        }
+        if (mLastAccelerometerSet && mLastMagnetometerSet) {
+            SensorManager.getRotationMatrix(rMat, null, mLastAccelerometer, mLastMagnetometer);
+            SensorManager.getOrientation(rMat, orientation);
+            mAzimuth_map = (int) (Math.toDegrees(SensorManager.getOrientation(rMat, orientation)[0]) + 360) % 360;
+        }
+
+        mAzimuth_map = Math.round(mAzimuth_map);
+
+        if (mAzimuth_map >= 350 || mAzimuth_map <= 10)
+            where = "N";
+        if (mAzimuth_map < 350 && mAzimuth_map > 280)
+            where = "NW";
+        if (mAzimuth_map <= 280 && mAzimuth_map > 260)
+            where = "W";
+        if (mAzimuth_map <= 260 && mAzimuth_map > 190)
+            where = "SW";
+        if (mAzimuth_map <= 190 && mAzimuth_map > 170)
+            where = "S";
+        if (mAzimuth_map <= 170 && mAzimuth_map > 100)
+            where = "SE";
+        if (mAzimuth_map <= 100 && mAzimuth_map > 80)
+            where = "E";
+        if (mAzimuth_map <= 80 && mAzimuth_map > 10)
+            where = "NE";
+
+        // the result is clockwise. E = 90°, N = 0°, W = 275°, S = 180°
+        // Log.i(TAG, "azz: " + mAzimuth + "° " + where);
+        has_azimuth_map = true;
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy)
+    {
+
+    }
+
+    void start_sensors(Context c)
+    {
+        try
+        {
+            sensorManager = (SensorManager) c.getSystemService(SENSOR_SERVICE);
+            if (sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR) == null)
+            {
+                if ((sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) == null) ||
+                    (sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) == null))
+                {
+                    Log.i(TAG, "No Sensor available");
+                }
+                else
+                {
+                    accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+                    magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+                    haveSensor = sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_UI);
+                    haveSensor2 = sensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_UI);
+                }
+            }
+            else
+            {
+                rotationsense = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+                haveSensor = sensorManager.registerListener(this, rotationsense, SensorManager.SENSOR_DELAY_UI);
+            }
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            Log.i(TAG, "EE7:" + e.getMessage());
+        }
+    }
+
+    void stop_sensors()
+    {
+        try
+        {
+            sensorManager.unregisterListener(this, accelerometer);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            Log.i(TAG, "EE2.2:" + e.getMessage());
+        }
+
+        try
+        {
+            sensorManager.unregisterListener(this, magnetometer);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            Log.i(TAG, "EE2.3:" + e.getMessage());
+        }
+
+        try
+        {
+            sensorManager.unregisterListener(this, rotationsense);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            Log.i(TAG, "EE2.4:" + e.getMessage());
+        }
+
+
+        try
+        {
+            sensorManager.unregisterListener(this);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            Log.i(TAG, "EE2.5:" + e.getMessage());
         }
     }
 }

@@ -24,7 +24,11 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import androidx.core.content.ContextCompat;
 
-public class RotatingLocationOverlay extends MyLocationNewOverlay {
+import static com.zoffcc.applications.undereat.MapActivity.has_azimuth_map;
+import static com.zoffcc.applications.undereat.MapActivity.mAzimuth_map;
+
+public class RotatingLocationOverlay extends MyLocationNewOverlay
+{
 
     private static final String TAG = "RotatingLocationOverlay";
 
@@ -32,7 +36,6 @@ public class RotatingLocationOverlay extends MyLocationNewOverlay {
     private final Handler handler = new Handler(Looper.getMainLooper());
     private GeoPoint currentVisualPos;
     private float currentVisualBearing = 0f;
-    private boolean was_follow_location = false;
     protected boolean enableAutoStop = true;
     private static final int TOTAL_STEPS = 20;
     private static final int STEP_DURATION_MS = 1000 / TOTAL_STEPS; // Exactly 50ms
@@ -67,7 +70,6 @@ public class RotatingLocationOverlay extends MyLocationNewOverlay {
     public boolean getEnableAutoStop(){
         return this.enableAutoStop;
     }
-
 
     @Override
     public boolean onTouchEvent(final MotionEvent event, final MapView mapView) {
@@ -170,7 +172,14 @@ public class RotatingLocationOverlay extends MyLocationNewOverlay {
                     // and apply rotation
                 } else {
                     // If no bearing, OSM defaults to "person" icon
-                    interpolatedLoc.removeBearing();
+                    if (has_azimuth_map)
+                    {
+                        interpolatedLoc.setBearing(mAzimuth_map);
+                    }
+                    else
+                    {
+                        interpolatedLoc.removeBearing();
+                    }
                 }
 
                 RotatingLocationOverlay.super.onLocationChanged(interpolatedLoc, source);
