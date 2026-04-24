@@ -1,10 +1,14 @@
 package com.zoffcc.applications.undereat;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Handler;
@@ -38,8 +42,13 @@ public class RotatingLocationOverlay extends MyLocationNewOverlay {
         // Bitmap personBitmap = getBitmapFromVector(c, org.osmdroid.library.R.drawable.person, Color.parseColor("#1976D2")); // Blueish person
         // setPersonIcon(personBitmap);
         // Direction Icon (Arrow)
-        Bitmap arrowBitmap = getBitmapFromVector(c, org.osmdroid.library.R.drawable.twotone_navigation_black_48, Color.parseColor("#2196F3")); // Bright blue arrow
-        setDirectionIcon(arrowBitmap);
+
+        @SuppressLint("UseCompatLoadingForDrawables") Bitmap location_arrow_2 = tintImageWithBorder(
+                ((BitmapDrawable) c.getResources().getDrawable(
+                        R.drawable.round_navigation_color_48)).getBitmap(),
+                Color.parseColor("#3142f0"));
+        // Bitmap arrowBitmap = getBitmapFromVector(c, org.osmdroid.library.R.drawable.twotone_navigation_black_48, Color.parseColor("#2196F3")); // Bright blue arrow
+        setDirectionIcon(location_arrow_2);
     }
 
     private Bitmap getBitmapFromVector(Context context, int drawableId, int tintColor) {
@@ -151,5 +160,44 @@ public class RotatingLocationOverlay extends MyLocationNewOverlay {
     public void resetToGpsMode() {
         this.isManualMode = false;
         mMapView.setMapOrientation(0);
+    }
+
+    public static Bitmap tintImageWithBorder(Bitmap bitmap, int tintColor) {
+        int borderSize = 4; // Thickness of the hard border
+        int borderColor = 0xFF000000; // Solid black
+
+        // 1. Calculate the new dimensions
+        int newWidth = bitmap.getWidth() + (borderSize * 2);
+        int newHeight = bitmap.getHeight() + (borderSize * 2);
+        Bitmap bitmapResult = Bitmap.createBitmap(newWidth, newHeight, Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(bitmapResult);
+
+        // 2. Prepare the silhouette paint
+        // ExtractAlpha creates a bitmap that only contains the transparency of the original
+        Bitmap alphaBitmap = bitmap.extractAlpha();
+        Paint borderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        borderPaint.setColor(borderColor);
+
+        // 3. Draw the silhouette at offsets to create a hard border
+        // This covers Top, Bottom, Left, Right, and Diagonals
+        for (int x = -borderSize; x <= borderSize; x++) {
+            for (int y = -borderSize; y <= borderSize; y++) {
+                // Only draw if we are on the edge of the border radius
+                if (x * x + y * y <= borderSize * borderSize) {
+                    canvas.drawBitmap(alphaBitmap, borderSize + x, borderSize + y, borderPaint);
+                }
+            }
+        }
+
+        // 4. Draw the tinted image on top in the center
+        Paint tintPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        tintPaint.setColorFilter(new PorterDuffColorFilter(tintColor, PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, borderSize, borderSize, tintPaint);
+
+        // Cleanup
+        alphaBitmap.recycle();
+
+        return bitmapResult;
     }
 }
