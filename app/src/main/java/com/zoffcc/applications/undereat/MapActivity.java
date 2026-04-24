@@ -13,6 +13,7 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.WindowManager;
 
 import com.zoffcc.applications.sorm.Restaurant;
 
@@ -97,6 +98,8 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
         Log.i(TAG, "OSM:isMapViewHardwareAccelerated:" + org.osmdroid.config.Configuration.getInstance().isMapViewHardwareAccelerated());
 
         setContentView(R.layout.map_activity);
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         map = findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
