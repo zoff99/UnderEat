@@ -32,6 +32,7 @@ public class RotatingLocationOverlay extends MyLocationNewOverlay {
     private final Handler handler = new Handler(Looper.getMainLooper());
     private GeoPoint currentVisualPos;
     private float currentVisualBearing = 0f;
+    private boolean was_follow_location = false;
     protected boolean enableAutoStop = true;
     private static final int TOTAL_STEPS = 20;
     private static final int STEP_DURATION_MS = 1000 / TOTAL_STEPS; // Exactly 50ms
@@ -61,7 +62,7 @@ public class RotatingLocationOverlay extends MyLocationNewOverlay {
     }
 
     public void setEnableAutoStop(boolean value){
-        this.enableAutoStop=value;
+        this.enableAutoStop = value;
     }
     public boolean getEnableAutoStop(){
         return this.enableAutoStop;
@@ -107,6 +108,13 @@ public class RotatingLocationOverlay extends MyLocationNewOverlay {
     @Override
     public void onLocationChanged(final Location location, org.osmdroid.views.overlay.mylocation.IMyLocationProvider source) {
         if (location == null) return;
+
+        // HINT: this is a hack. you can not switch this off for now !!
+        if (!super.isFollowLocationEnabled())
+        {
+            enableFollowLocation();
+        }
+        // HINT: this is a hack. you can not switch this off for now !!
 
         if (currentVisualPos == null) {
             currentVisualPos = new GeoPoint(location.getLatitude(), location.getLongitude());
