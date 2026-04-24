@@ -14,6 +14,7 @@ import org.osmdroid.views.overlay.OverlayItem;
 import java.util.List;
 
 import static com.zoffcc.applications.undereat.MapActivity.dpToPx;
+import static com.zoffcc.applications.undereat.corefuncs.DEMO_SHOWCASE_DEBUG_ONLY;
 
 public class FastTextOverlay extends Overlay
 {
@@ -43,6 +44,10 @@ public class FastTextOverlay extends Overlay
     @Override
     public void draw(Canvas canvas, MapView mapView, boolean shadow) {
         int minZoomShowText = 17;
+        if (DEMO_SHOWCASE_DEBUG_ONLY)
+        {
+            minZoomShowText = 5;
+        }
         if (shadow || mapView.getZoomLevelDouble() < minZoomShowText) return;
 
         Projection projection = mapView.getProjection();
