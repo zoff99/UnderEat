@@ -150,21 +150,27 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
                 {
                     if (restaurant.category_id == cur_category)
                     {
-                        Log.i(TAG, "r: " + geo_coord_longdb_to_double(restaurant.lat) + " " +
-                                   geo_coord_longdb_to_double(restaurant.lon));
-                        String res_name = "";
-                        try
+                        // HINT: exclude "bad" restaurants
+                        if ((restaurant.rating < 1.5f) && (restaurant.rating > 0.5f))
                         {
-                            res_name = restaurant.name;
+                            Log.i(TAG, "r: " + geo_coord_longdb_to_double(restaurant.lat) + " " +
+                                       geo_coord_longdb_to_double(restaurant.lon));
+                            String res_name = "";
+                            try
+                            {
+                                res_name = restaurant.name;
+                            }
+                            catch (Exception ignored)
+                            {
+                            }
+                            items.add(new OverlayItem("" + res_name, "",
+                                                      new GeoPoint(geo_coord_longdb_to_double(restaurant.lat),
+                                                                   geo_coord_longdb_to_double(restaurant.lon))));
+                            found_restaurants++;
                         }
-                        catch(Exception ignored)
-                        {
-                        }
-                        items.add(new OverlayItem("" + res_name, "", new GeoPoint(geo_coord_longdb_to_double(restaurant.lat),
-                                                                       geo_coord_longdb_to_double(restaurant.lon))));
-                        found_restaurants++;
                     }
                 }
+
                 if (found_restaurants > 0)
                 {
                     Drawable rawDrawable = ContextCompat.getDrawable(this, R.drawable.outline_location_on_24);
