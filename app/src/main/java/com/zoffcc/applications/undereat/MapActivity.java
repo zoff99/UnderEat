@@ -145,13 +145,14 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
             for (int cur_category = 1; cur_category <= max_categories; cur_category++)
             {
                 ArrayList<OverlayItem> items = new ArrayList<>();
+                ArrayList<OverlayItem> items_stars = new ArrayList<>();
                 int found_restaurants = 0;
                 for (Restaurant restaurant : restaurants)
                 {
                     if (restaurant.category_id == cur_category)
                     {
                         // HINT: exclude "bad" restaurants
-                        if ((restaurant.rating < 1.5f) && (restaurant.rating > 0.5f))
+                        if (!((restaurant.rating < 1.5f) && (restaurant.rating > 0.5f)))
                         {
                             Log.i(TAG, "r: " + geo_coord_longdb_to_double(restaurant.lat) + " " +
                                        geo_coord_longdb_to_double(restaurant.lon));
@@ -164,6 +165,9 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
                             {
                             }
                             items.add(new OverlayItem("" + res_name, "",
+                                                      new GeoPoint(geo_coord_longdb_to_double(restaurant.lat),
+                                                                   geo_coord_longdb_to_double(restaurant.lon))));
+                            items_stars.add(new OverlayItem("" + restaurant.rating, "",
                                                       new GeoPoint(geo_coord_longdb_to_double(restaurant.lat),
                                                                    geo_coord_longdb_to_double(restaurant.lon))));
                             found_restaurants++;
@@ -193,6 +197,8 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
                     map.getOverlays().add(mOverlay);
                     FastTextOverlay textOverlay = new FastTextOverlay(items);
                     map.getOverlays().add(textOverlay);
+                    FastStarOverlay starOverlay = new FastStarOverlay(items_stars);
+                    map.getOverlays().add(starOverlay);
                 }
             }
         }
