@@ -188,9 +188,20 @@ fun createRestaurantListStore(): RestaurantListStore
             mutableStateFlow.value = state.copy(restaurantlist = l)
         }
 
+        /*
         override fun sortByRating() {
             mutableStateFlow.value = state.copy(restaurantlist = state.restaurantlist
                 .sortedWith(compareByDescending<Restaurant> { it.rating }.thenBy { it.name }))
+        }
+         */
+
+        override fun sortByRating() {
+            mutableStateFlow.value = state.copy(
+                restaurantlist = state.restaurantlist
+                    .sortedWith(compareByDescending<Restaurant> {
+                        if (it.rating == 1) Int.MIN_VALUE + 1 else it.rating
+                    }.thenBy { it.name })
+            )
         }
 
         override fun sortByAddeddateDesc() {
