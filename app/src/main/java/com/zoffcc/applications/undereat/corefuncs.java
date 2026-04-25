@@ -386,7 +386,7 @@ public class corefuncs
                     double[] rnd_gps = generateLocationFromEither();
                     r.lat = geo_coord_double_to_longdb(rnd_gps[0]);
                     r.lon = geo_coord_double_to_longdb(rnd_gps[1]);
-
+                    r.rating = rand.nextInt(4) + 2;
                     r.name = name;
                     r.address = address;
 
