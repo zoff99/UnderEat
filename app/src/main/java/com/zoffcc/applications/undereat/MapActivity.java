@@ -155,7 +155,7 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
                         if (!((restaurant.lat == 0.0d) && (restaurant.lon == 0.0d)))
                         {
                             // HINT: exclude "bad" restaurants
-                            //**// if (!((restaurant.rating < 1.5f) && (restaurant.rating > 0.5f)))
+                            if (!((restaurant.rating < 1.5f) && (restaurant.rating > 0.5f)))
                             {
                                 Log.i(TAG, "r: " + geo_coord_longdb_to_double(restaurant.lat) + " " +
                                            geo_coord_longdb_to_double(restaurant.lon));
