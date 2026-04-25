@@ -114,7 +114,7 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
         mapController.setCenter(new GeoPoint(MAP_DEFAULT_CENTER));
         if (DEMO_SHOWCASE_DEBUG_ONLY)
         {
-            mapController.setZoom(10);
+            mapController.setZoom(8);
         }
         else
         {
