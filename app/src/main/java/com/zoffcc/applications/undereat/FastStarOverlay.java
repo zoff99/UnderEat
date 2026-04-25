@@ -77,7 +77,7 @@ public class FastStarOverlay extends Overlay {
                     {
                         // Calculate fill level for this specific star (0.0 to 1.0)
                         float fillLevel = Math.max(0, Math.min(1, rating - i));
-                        drawStar(canvas, startX + (i * starSpacing), y, fillLevel);
+                        drawStar(canvas, startX + (i * starSpacing), y, fillLevel, i, rating);
                     }
                 }
 
@@ -86,38 +86,73 @@ public class FastStarOverlay extends Overlay {
         }
     }
 
-    private void drawStar(Canvas canvas, float cx, float cy, float fillLevel) {
-        Path path = new Path();
-        double outerRadius = starSize;
-        double innerRadius = starSize * 0.5;
-        double angle = Math.PI / 5;
+    private void drawStar(Canvas canvas, float cx, float cy, float fillLevel, int star_num, float rating) {
 
-        for (int i = 0; i < 10; i++) {
-            double r = (i % 2 == 0) ? outerRadius : innerRadius;
-            float x = (float) (cx + Math.cos(i * angle - Math.PI / 2) * r);
-            float y = (float) (cy + Math.sin(i * angle - Math.PI / 2) * r);
-            if (i == 0) path.moveTo(x, y);
-            else path.lineTo(x, y);
-        }
-        path.close();
+        if (rating == 1.0f)
+        {
+            if (star_num == 2)
+            {
+                // Draw Red Triangle
+                Path triangle = new Path();
+                triangle.moveTo(cx, cy - starSize); // Top
+                triangle.lineTo(cx + starSize, cy + starSize); // Bottom Right
+                triangle.lineTo(cx - starSize, cy + starSize); // Bottom Left
+                triangle.close();
 
-        // Draw the background/empty star border first
-        canvas.drawPath(path, starOutlinePaint);
+                Paint trianglePaint = new Paint(starFillPaint);
+                trianglePaint.setColor(Color.RED);
+                canvas.drawPath(triangle, trianglePaint);
+                canvas.drawPath(triangle, starOutlinePaint);
 
-        if (fillLevel > 0) {
-            canvas.save();
-            if (fillLevel < 1) {
-                // Clip the canvas so only the left portion of the star is filled
-                float clipWidth = (float) (starSize * 2 * fillLevel);
-                canvas.clipRect(cx - starSize, cy - starSize, (cx - starSize) + clipWidth, cy + starSize);
+                // Draw Black "!"
+                Paint textPaint = new Paint();
+                textPaint.setColor(Color.BLACK);
+                textPaint.setTextAlign(Paint.Align.CENTER);
+                textPaint.setTextSize(starSize * 1.2f);
+                textPaint.setFakeBoldText(true);
+                // Adjust Y slightly to center the symbol visually
+                canvas.drawText("!", cx, cy + (starSize * 0.5f), textPaint);
             }
-            canvas.drawPath(path, starFillPaint);
-            canvas.restore();
+        }
+        else
+        {
 
-            // Redraw outline on top to ensure the black border isn't clipped
+            Path path = new Path();
+            double outerRadius = starSize;
+            double innerRadius = starSize * 0.5;
+            double angle = Math.PI / 5;
+
+            for (int i = 0; i < 10; i++)
+            {
+                double r = (i % 2 == 0) ? outerRadius : innerRadius;
+                float x = (float) (cx + Math.cos(i * angle - Math.PI / 2) * r);
+                float y = (float) (cy + Math.sin(i * angle - Math.PI / 2) * r);
+                if (i == 0)
+                    path.moveTo(x, y);
+                else
+                    path.lineTo(x, y);
+            }
+            path.close();
+
+            // Draw the background/empty star border first
             canvas.drawPath(path, starOutlinePaint);
+
+            if (fillLevel > 0)
+            {
+                canvas.save();
+                if (fillLevel < 1)
+                {
+                    // Clip the canvas so only the left portion of the star is filled
+                    float clipWidth = (float) (starSize * 2 * fillLevel);
+                    canvas.clipRect(cx - starSize, cy - starSize, (cx - starSize) + clipWidth, cy + starSize);
+                }
+                canvas.drawPath(path, starFillPaint);
+                canvas.restore();
+
+                // Redraw outline on top to ensure the black border isn't clipped
+                canvas.drawPath(path, starOutlinePaint);
+            }
         }
     }
-
 }
 
