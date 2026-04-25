@@ -203,7 +203,6 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
             public void update_is_northing(boolean value)
             {
                 Log.i(TAG, "**CLICK**");
-                onBackPressed();
             }
         });
         */
