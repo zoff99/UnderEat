@@ -6,7 +6,6 @@
 package com.zoffcc.applications.undereat
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -87,7 +86,6 @@ import biweekly.ICalendar
 import biweekly.component.VEvent
 import biweekly.util.Duration
 import com.zoffcc.applications.sorm.Category
-import com.zoffcc.applications.sorm.Restaurant
 import com.zoffcc.applications.undereat.MapActivity.set_restaurant_list
 import com.zoffcc.applications.undereat.corefuncs.DEMO_SHOWCASE_DEBUG_ONLY
 import com.zoffcc.applications.undereat.corefuncs.SpecialCategory.SPECIAL_CATEGORY_ALL
