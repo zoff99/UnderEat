@@ -151,26 +151,31 @@ public class MapActivity extends AppCompatActivity implements SensorEventListene
                 {
                     if (restaurant.category_id == cur_category)
                     {
-                        // HINT: exclude "bad" restaurants
-                        if (!((restaurant.rating < 1.5f) && (restaurant.rating > 0.5f)))
+                        // HINT: exclude empty lat / lon (0.0 / 0.0)
+                        if (!((restaurant.lat == 0.0d) && (restaurant.lon == 0.0d)))
                         {
-                            Log.i(TAG, "r: " + geo_coord_longdb_to_double(restaurant.lat) + " " +
-                                       geo_coord_longdb_to_double(restaurant.lon));
-                            String res_name = "";
-                            try
+                            // HINT: exclude "bad" restaurants
+                            if (!((restaurant.rating < 1.5f) && (restaurant.rating > 0.5f)))
                             {
-                                res_name = restaurant.name;
+                                Log.i(TAG, "r: " + geo_coord_longdb_to_double(restaurant.lat) + " " +
+                                           geo_coord_longdb_to_double(restaurant.lon));
+                                String res_name = "";
+                                try
+                                {
+                                    res_name = restaurant.name;
+                                }
+                                catch (Exception ignored)
+                                {
+                                }
+                                items.add(new OverlayItem("" + res_name, "",
+                                                          new GeoPoint(geo_coord_longdb_to_double(restaurant.lat),
+                                                                       geo_coord_longdb_to_double(restaurant.lon))));
+                                items_stars.add(new OverlayItem("" + restaurant.rating, "",
+                                                                new GeoPoint(geo_coord_longdb_to_double(restaurant.lat),
+                                                                             geo_coord_longdb_to_double(
+                                                                                     restaurant.lon))));
+                                found_restaurants++;
                             }
-                            catch (Exception ignored)
-                            {
-                            }
-                            items.add(new OverlayItem("" + res_name, "",
-                                                      new GeoPoint(geo_coord_longdb_to_double(restaurant.lat),
-                                                                   geo_coord_longdb_to_double(restaurant.lon))));
-                            items_stars.add(new OverlayItem("" + restaurant.rating, "",
-                                                      new GeoPoint(geo_coord_longdb_to_double(restaurant.lat),
-                                                                   geo_coord_longdb_to_double(restaurant.lon))));
-                            found_restaurants++;
                         }
                     }
                 }
