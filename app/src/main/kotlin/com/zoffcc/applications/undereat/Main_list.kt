@@ -244,7 +244,6 @@ fun main_list(restaurants: StateRestaurantList, context: Context) {
                     )
                 )
             }
-            val context: Context = LocalContext.current
             Button(
                 modifier = Modifier
                     .height(50.dp)
